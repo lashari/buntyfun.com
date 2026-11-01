@@ -21,6 +21,7 @@
 /database/*.sqlite
 /database/*.sqlite-*
 /vendor
+/dist
 Homestead.json
 Homestead.yaml
 Thumbs.db
