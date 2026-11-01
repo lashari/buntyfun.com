@@ -67,11 +67,18 @@ abstraction ready for both, not two paid integrations running at once.
   moderation beyond length limits and a prompt-level tone instruction (no moderation API wired
   up), and a premium-tier bypass of the daily cap (no visitor accounts or payments exist yet to
   hang that off of).
-- **Needs a key to actually generate**: this environment has no `GEMINI_API_KEY`/`OPENAI_API_KEY`
-  and no network access to either provider's API from this sandbox. The integration is verified
-  with `Http::fake()` in `tests/Feature/AiFunStudioTest.php` (request shape, response parsing,
-  the daily-limit and not-configured paths) — that's the honest way to test this without a live
-  key, not a substitute for setting a real one wherever this actually serves users.
+- **Confirmed working live**: a real `GEMINI_API_KEY` was added and tested against the actual
+  Gemini API through the full stack (HTTP endpoint → CSRF → rate limit → provider → real
+  response → usage logged) — not just the `Http::fake()` tests in `tests/Feature/AiFunStudioTest.php`,
+  which cover request shape, response parsing, and the daily-limit/not-configured paths without
+  spending real API calls on every test run. `OPENAI_API_KEY` is saved too but untested from
+  this sandbox — `api.openai.com` is blocked by this environment's own network policy
+  (confirmed via direct curl: `CONNECT tunnel failed`), unrelated to the key or the code.
+- **Model name lesson**: `GeminiProvider`'s default model is `gemini-flash-lite-latest`, a
+  "latest" alias — not a pinned version. Pinned names like `gemini-1.5-flash` and
+  `gemini-2.5-flash` both turned out to be already retired by the time this was tested live,
+  each with a 404 naming its replacement. A pinned model name is a silent expiry date; the
+  `-latest` alias tracks whatever Google currently considers current.
 
 ## Urdu / RTL
 

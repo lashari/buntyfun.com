@@ -10,7 +10,7 @@ class GeminiProvider implements AiProviderContract
 {
     public function __construct(
         private readonly ?string $apiKey,
-        private readonly string $model = 'gemini-1.5-flash',
+        private readonly string $model = 'gemini-flash-lite-latest',
     ) {}
 
     public function generate(string $prompt): string
