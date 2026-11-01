@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\GameAdminController;
 use App\Http\Controllers\Admin\NameEntryAdminController;
 use App\Http\Controllers\Admin\QuizAdminController;
 use App\Http\Controllers\Admin\UrduContentAdminController;
+use App\Http\Controllers\Admin\WallpaperAdminController;
 use App\Http\Controllers\BirthdayMessageController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\HomeController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SeoController;
 use App\Http\Controllers\ShareEventController;
 use App\Http\Controllers\UrduContentController;
+use App\Http\Controllers\WallpaperController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -55,6 +57,12 @@ Route::prefix('ur/entertainment')->group(function () {
     Route::get('/{urduContent:slug}', [UrduContentController::class, 'show'])->name('urdu-content.show');
 });
 
+Route::prefix('wallpapers')->group(function () {
+    Route::get('/', [WallpaperController::class, 'index'])->name('wallpapers.index');
+    Route::get('/{wallpaper:slug}', [WallpaperController::class, 'show'])->name('wallpapers.show');
+    Route::get('/{wallpaper:slug}/download', [WallpaperController::class, 'download'])->name('wallpapers.download');
+});
+
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'create'])->name('login');
     Route::post('/login', [AdminAuthController::class, 'store'])->name('login.store');
@@ -84,5 +92,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('urdu-content', UrduContentAdminController::class)->except(['show']);
         Route::post('urdu-content/{urdu_content}/publish', [UrduContentAdminController::class, 'publish'])->name('urdu-content.publish');
         Route::post('urdu-content/{urdu_content}/unpublish', [UrduContentAdminController::class, 'unpublish'])->name('urdu-content.unpublish');
+
+        Route::resource('wallpapers', WallpaperAdminController::class)->except(['show']);
+        Route::post('wallpapers/{wallpaper}/publish', [WallpaperAdminController::class, 'publish'])->name('wallpapers.publish');
+        Route::post('wallpapers/{wallpaper}/unpublish', [WallpaperAdminController::class, 'unpublish'])->name('wallpapers.unpublish');
     });
 });

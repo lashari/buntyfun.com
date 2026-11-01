@@ -9,6 +9,7 @@ php artisan key:generate
 touch database/database.sqlite      # local only — production uses MySQL
 php artisan migrate
 php artisan db:seed                 # creates a super_admin; see "Local admin login" below
+php artisan storage:link            # required for /wallpapers — serves storage/app/public
 npm install
 ```
 
@@ -53,18 +54,26 @@ a new, independently-rollback-able release:
 3. Zip that folder and upload it via cPanel File Manager, extracting it into
    `release/<short-commit-hash>/` on the server (never directly into the live document root).
 4. Copy the server's existing `.env` into the new release folder (never overwrite it from git).
-5. Point the domain's document root symlink (`current` → `release/<short-commit-hash>/public`)
+5. **Uploaded content must survive the swap.** User-uploaded wallpapers live in
+   `storage/app/public/wallpapers` — that's inside the release folder, which gets replaced on
+   every deploy. On the server, keep one persistent folder outside any release, e.g.
+   `~/shared/storage-app-public/`, and inside each new release replace
+   `storage/app/public` with a symlink to it (`ln -s ../../../shared/storage-app-public
+   storage/app/public`) before running `storage:link`. Never let a release's
+   `storage/app/public` be a real directory — that's exactly how uploads get silently wiped
+   on the next deploy.
+6. Point the domain's document root symlink (`current` → `release/<short-commit-hash>/public`)
    at the new release. If the account's cPanel plan doesn't support a document-root symlink,
    update the addon domain's document root setting directly to the new release's `public/`
    folder instead.
-6. Run once, against the new release:
+7. Run once, against the new release:
    ```bash
    php artisan migrate --force
    php artisan config:cache
    php artisan route:cache
    php artisan view:cache
    ```
-7. Confirm the site loads correctly before deleting any old release folder.
+8. Confirm the site loads correctly before deleting any old release folder.
 
 Keep at least the previous two release folders on disk — they're what rollback uses.
 

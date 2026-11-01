@@ -7,6 +7,7 @@ use App\Models\Game;
 use App\Models\NameEntry;
 use App\Models\Quiz;
 use App\Models\UrduContent;
+use App\Models\Wallpaper;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -21,6 +22,7 @@ class SearchController extends Controller
             'wishes' => collect(),
             'names' => collect(),
             'urdu' => collect(),
+            'wallpapers' => collect(),
         ];
 
         if ($q !== '') {
@@ -29,6 +31,7 @@ class SearchController extends Controller
             $results['wishes'] = BirthdayMessage::where('status', 'published')->where('body', 'like', "%{$q}%")->take(5)->get();
             $results['names'] = NameEntry::where('status', 'published')->where('name_en', 'like', "%{$q}%")->take(5)->get();
             $results['urdu'] = UrduContent::where('status', 'published')->where('body', 'like', "%{$q}%")->take(5)->get();
+            $results['wallpapers'] = Wallpaper::where('status', 'published')->where('title', 'like', "%{$q}%")->take(5)->get();
         }
 
         return view('search.index', ['q' => $q, 'results' => $results]);

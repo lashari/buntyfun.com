@@ -7,6 +7,7 @@ use App\Models\Game;
 use App\Models\NameEntry;
 use App\Models\Quiz;
 use App\Models\UrduContent;
+use App\Models\Wallpaper;
 use Illuminate\Http\Response;
 
 class SeoController extends Controller
@@ -20,6 +21,7 @@ class SeoController extends Controller
             ['loc' => route('birthday-messages.index'), 'changefreq' => 'weekly'],
             ['loc' => route('name-entries.index'), 'changefreq' => 'weekly'],
             ['loc' => route('urdu-content.index'), 'changefreq' => 'weekly'],
+            ['loc' => route('wallpapers.index'), 'changefreq' => 'weekly'],
         ]);
 
         foreach (Quiz::where('status', 'published')->get() as $quiz) {
@@ -40,6 +42,10 @@ class SeoController extends Controller
 
         foreach (UrduContent::where('status', 'published')->get() as $item) {
             $urls->push(['loc' => route('urdu-content.show', $item), 'changefreq' => 'monthly']);
+        }
+
+        foreach (Wallpaper::where('status', 'published')->get() as $wallpaper) {
+            $urls->push(['loc' => route('wallpapers.show', $wallpaper), 'changefreq' => 'yearly']);
         }
 
         $xml = view('seo.sitemap', ['urls' => $urls])->render();

@@ -6,6 +6,7 @@ use App\Models\BirthdayMessage;
 use App\Models\Game;
 use App\Models\NameEntry;
 use App\Models\Quiz;
+use App\Models\Wallpaper;
 
 class HomeController extends Controller
 {
@@ -16,6 +17,7 @@ class HomeController extends Controller
             'games' => Game::where('status', 'published')->latest()->take(3)->get(),
             'wishes' => BirthdayMessage::where('status', 'published')->latest()->take(3)->get(),
             'names' => NameEntry::where('status', 'published')->latest()->take(3)->get(),
+            'wallpapers' => Wallpaper::where('status', 'published')->latest()->take(3)->get(),
         ]);
     }
 }
