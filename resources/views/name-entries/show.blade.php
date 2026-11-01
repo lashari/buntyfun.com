@@ -4,12 +4,12 @@
         @if ($name->name_ar)
             <p class="mt-1 text-2xl text-slate-600" dir="rtl">{{ $name->name_ar }}</p>
         @endif
-        <p class="mt-4 text-xs uppercase tracking-wide text-slate-400">
+        <p class="mt-4 text-xs uppercase tracking-wide text-slate-500">
             {{ Str::headline($name->gender) }} @if ($name->origin) · {{ $name->origin }} @endif
         </p>
         <p class="mt-4 text-lg leading-relaxed">{{ $name->meaning }}</p>
 
-        <p class="mt-6 text-xs text-slate-400">Source: {{ $name->source_ref }}</p>
+        <p class="mt-6 text-xs text-slate-500">Source: {{ $name->source_ref }}</p>
 
         @if ($related->isNotEmpty())
             <div class="mt-10">

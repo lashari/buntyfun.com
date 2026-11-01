@@ -26,7 +26,7 @@
             @forelse ($messages as $message)
                 <a href="{{ route('birthday-messages.show', $message) }}" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md">
                     <p class="text-sm text-slate-700" @if ($message->language === 'ur') dir="rtl" @endif>{{ Str::limit($message->body, 140) }}</p>
-                    <p class="mt-2 text-xs uppercase tracking-wide text-slate-400">{{ Str::headline($message->relationship) }} · {{ Str::headline($message->tone) }}</p>
+                    <p class="mt-2 text-xs uppercase tracking-wide text-slate-500">{{ Str::headline($message->relationship) }} · {{ Str::headline($message->tone) }}</p>
                 </a>
             @empty
                 <p class="text-sm text-slate-500">No wishes match these filters yet.</p>

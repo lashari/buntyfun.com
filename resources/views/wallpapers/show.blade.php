@@ -13,7 +13,7 @@
         </div>
 
         @if ($wallpaper->attribution || $wallpaper->source_url)
-            <p class="mt-6 text-xs text-slate-400">
+            <p class="mt-6 text-xs text-slate-500">
                 @if ($wallpaper->attribution) {{ $wallpaper->attribution }} @endif
                 @if ($wallpaper->source_url) · <a href="{{ $wallpaper->source_url }}" class="hover:underline" rel="nofollow noopener" target="_blank">Source</a> @endif
             </p>

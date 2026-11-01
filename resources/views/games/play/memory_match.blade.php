@@ -42,6 +42,7 @@
         <div class="mx-auto mt-6 grid grid-cols-4 gap-2">
             <template x-for="(card, i) in cards" :key="card.id">
                 <button type="button" @click="flip(i)"
+                        :aria-label="(flipped.includes(i) || matched.includes(i)) ? `Card ${i + 1}: ${card.icon}` : `Card ${i + 1}, face down`"
                         class="flex h-16 w-16 items-center justify-center rounded-lg border border-slate-200 bg-white text-2xl hover:bg-slate-50">
                     <span x-show="flipped.includes(i) || matched.includes(i)" x-text="card.icon"></span>
                 </button>

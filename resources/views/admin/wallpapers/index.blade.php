@@ -10,7 +10,7 @@
                 <img src="{{ $wallpaper->url() }}" alt="{{ $wallpaper->title }}" class="aspect-video w-full object-cover">
                 <div class="p-3">
                     <p class="font-medium">{{ $wallpaper->title }}</p>
-                    <p class="text-xs text-slate-400">{{ Str::headline($wallpaper->category) }} · {{ $wallpaper->resolutionLabel() }} · {{ Str::headline($wallpaper->license) }}</p>
+                    <p class="text-xs text-slate-500">{{ Str::headline($wallpaper->category) }} · {{ $wallpaper->resolutionLabel() }} · {{ Str::headline($wallpaper->license) }}</p>
                     <span class="mt-1 inline-block rounded-full px-2 py-0.5 text-xs {{ $wallpaper->status === 'published' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600' }}">
                         {{ Str::headline($wallpaper->status) }}
                     </span>

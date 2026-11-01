@@ -52,7 +52,7 @@
                 <option value="published" @selected($quiz->status === 'published')>Published</option>
             </select>
             @unless (auth()->user()->canPublish())
-                <p class="mt-1 text-xs text-slate-400">Your role can submit for review, but only an admin can publish.</p>
+                <p class="mt-1 text-xs text-slate-500">Your role can submit for review, but only an admin can publish.</p>
             @endunless
         </div>
 

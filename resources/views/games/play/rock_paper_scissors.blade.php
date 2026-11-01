@@ -24,7 +24,7 @@
 
         <div class="mt-6 flex justify-center gap-4 text-5xl" x-show="you" x-cloak>
             <span x-text="emoji[you]"></span>
-            <span class="text-2xl text-slate-400 self-center">vs</span>
+            <span class="text-2xl text-slate-500 self-center">vs</span>
             <span x-text="emoji[cpu]"></span>
         </div>
         <p class="mt-4 font-semibold"
@@ -35,8 +35,9 @@
 
         <div class="mt-8 flex justify-center gap-3">
             <template x-for="choice in choices" :key="choice">
-                <button type="button" @click="play(choice)" class="rounded-full border border-slate-200 bg-white px-5 py-3 text-2xl hover:bg-slate-50">
-                    <span x-text="emoji[choice]"></span>
+                <button type="button" @click="play(choice)" :aria-label="choice"
+                        class="rounded-full border border-slate-200 bg-white px-5 py-3 text-2xl hover:bg-slate-50">
+                    <span x-text="emoji[choice]" aria-hidden="true"></span>
                 </button>
             </template>
         </div>

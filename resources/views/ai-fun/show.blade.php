@@ -39,7 +39,7 @@
             <textarea x-model="input" rows="2" maxlength="300" placeholder="Type something to get started…"
                       class="w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-violet-500 focus:outline-none"></textarea>
             <div class="mt-3 flex items-center justify-between">
-                <p class="text-xs text-slate-400" x-text="`${remaining} free generation${remaining === 1 ? '' : 's'} left today`"></p>
+                <p class="text-xs text-slate-500" x-text="`${remaining} free generation${remaining === 1 ? '' : 's'} left today`"></p>
                 <button type="submit" :disabled="loading || remaining <= 0"
                         class="rounded-full bg-violet-600 px-6 py-2 font-semibold text-white hover:bg-violet-700 disabled:opacity-50">
                     <span x-show="!loading">Generate</span>

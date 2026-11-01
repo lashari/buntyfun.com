@@ -5,7 +5,7 @@
         @foreach ($counts as $key => $count)
             <div class="rounded-xl border border-slate-200 bg-white p-5">
                 <p class="text-sm text-slate-500">{{ Str::headline($key) }}</p>
-                <p class="mt-1 text-2xl font-bold">{{ $count['published'] }} <span class="text-sm font-normal text-slate-400">/ {{ $count['total'] }} total</span></p>
+                <p class="mt-1 text-2xl font-bold">{{ $count['published'] }} <span class="text-sm font-normal text-slate-500">/ {{ $count['total'] }} total</span></p>
             </div>
         @endforeach
     </div>

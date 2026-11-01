@@ -15,7 +15,7 @@
     <div class="mx-auto max-w-md px-4 py-10 text-center"
          x-data="{ selected: null, correct: {{ $question['correct'] }} }">
         <h1 class="text-2xl font-bold">{{ $game->title }}</h1>
-        <p class="mt-1 text-xs uppercase tracking-wide text-slate-400">{{ now()->format('F j, Y') }}</p>
+        <p class="mt-1 text-xs uppercase tracking-wide text-slate-500">{{ now()->format('F j, Y') }}</p>
 
         <p class="mt-6 text-lg font-medium">{{ $question['q'] }}</p>
 

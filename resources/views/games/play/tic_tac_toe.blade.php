@@ -32,6 +32,7 @@
         <div class="mx-auto mt-6 grid w-64 grid-cols-3 gap-2">
             <template x-for="(cell, i) in board" :key="i">
                 <button type="button" @click="play(i)"
+                        :aria-label="cell ? `Cell ${i + 1}: ${cell}` : `Cell ${i + 1}, empty`"
                         class="flex h-20 w-20 items-center justify-center rounded-lg border border-slate-200 bg-white text-3xl font-bold hover:bg-slate-50">
                     <span x-text="cell"></span>
                 </button>

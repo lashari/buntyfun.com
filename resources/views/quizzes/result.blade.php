@@ -15,7 +15,7 @@
              }">
             <a :href="`https://wa.me/?text=${encodeURIComponent('{{ $quiz->title }}: {{ $result->outcome_label }} ' + window.location.href)}`"
                target="_blank" rel="noopener"
-               class="rounded-full bg-emerald-600 px-5 py-2 font-semibold text-white hover:bg-emerald-700">
+               class="rounded-full bg-emerald-700 px-5 py-2 font-semibold text-white hover:bg-emerald-800">
                 Share on WhatsApp
             </a>
             <button type="button" @click="copy()" class="rounded-full border border-slate-300 px-5 py-2 font-semibold hover:bg-slate-50">

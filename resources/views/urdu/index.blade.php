@@ -15,7 +15,7 @@
             @forelse ($content as $item)
                 <a href="{{ route('urdu-content.show', $item) }}" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md">
                     <p class="text-lg leading-relaxed">{{ Str::limit($item->body, 100) }}</p>
-                    <p class="mt-2 text-xs uppercase tracking-wide text-slate-400">{{ $item->category }}</p>
+                    <p class="mt-2 text-xs uppercase tracking-wide text-slate-500">{{ $item->category }}</p>
                 </a>
             @empty
                 <p class="text-sm text-slate-500">ابھی کوئی مواد دستیاب نہیں ہے۔</p>
