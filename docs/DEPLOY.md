@@ -26,6 +26,10 @@ npm run dev
   console — copy it from there.
 - In any non-local/testing environment, it refuses to run without `ADMIN_PASSWORD` explicitly
   set — it will never seed a guessable production password.
+- If you ever set a known password by hand for manual testing (e.g. via `tinker`), rotate it
+  back to a random value immediately afterward. Never leave a known or guessable password on
+  an admin account, even in a local dev database — and never commit a real password anywhere,
+  including here.
 
 ## Building for deploy
 
