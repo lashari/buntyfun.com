@@ -62,6 +62,8 @@ class WallpaperAdminController extends Controller
 
     public function destroy(Request $request, Wallpaper $wallpaper)
     {
+        $this->authorizeDelete($request);
+
         Storage::disk('public')->delete($wallpaper->file_path);
         AuditLog::record($request->user(), 'deleted', 'wallpaper', $wallpaper->id);
         $wallpaper->delete();
@@ -94,7 +96,10 @@ class WallpaperAdminController extends Controller
             'attribution' => ['nullable', 'string', 'max:255'],
             'source_url' => ['nullable', 'url', 'max:500'],
             'status' => ['required', 'in:draft,in_review,published'],
-            'image' => [$requireImage ? 'required' : 'nullable', 'image', 'max:10240'],
+            // Explicit raster mimes, not the generic 'image' rule — that allows SVG,
+            // which can embed <script> and executes if the stored file's raw URL is
+            // ever opened directly rather than rendered inside an <img> tag.
+            'image' => [$requireImage ? 'required' : 'nullable', 'mimes:jpeg,png,webp,gif', 'max:10240'],
         ]);
 
         $validator->after(function ($validator) use ($request) {

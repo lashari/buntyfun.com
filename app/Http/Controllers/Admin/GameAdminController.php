@@ -55,6 +55,8 @@ class GameAdminController extends Controller
 
     public function destroy(Request $request, Game $game)
     {
+        $this->authorizeDelete($request);
+
         AuditLog::record($request->user(), 'deleted', 'game', $game->id);
         $game->delete();
 

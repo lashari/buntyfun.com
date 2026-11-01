@@ -54,6 +54,8 @@ class UrduContentAdminController extends Controller
 
     public function destroy(Request $request, UrduContent $urduContent)
     {
+        $this->authorizeDelete($request);
+
         AuditLog::record($request->user(), 'deleted', 'urdu_content', $urduContent->id);
         $urduContent->delete();
 

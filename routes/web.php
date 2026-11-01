@@ -29,19 +29,19 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
 
-Route::post('/share-events', [ShareEventController::class, 'store'])->name('share-events.store');
+Route::post('/share-events', [ShareEventController::class, 'store'])->middleware('throttle:30,1')->name('share-events.store');
 
 Route::prefix('quizzes')->group(function () {
     Route::get('/', [QuizController::class, 'index'])->name('quizzes.index');
     Route::get('/{quiz:slug}', [QuizController::class, 'show'])->name('quizzes.show');
-    Route::post('/{quiz:slug}/submit', [QuizController::class, 'submit'])->name('quizzes.submit');
+    Route::post('/{quiz:slug}/submit', [QuizController::class, 'submit'])->middleware('throttle:20,1')->name('quizzes.submit');
     Route::get('/{quiz:slug}/result/{result:result_slug}', [QuizController::class, 'result'])->name('quizzes.result');
 });
 
 Route::prefix('games')->group(function () {
     Route::get('/', [GameController::class, 'index'])->name('games.index');
     Route::get('/{game:slug}', [GameController::class, 'show'])->name('games.show');
-    Route::post('/{game:slug}/scores', [GameController::class, 'storeScore'])->name('games.scores.store');
+    Route::post('/{game:slug}/scores', [GameController::class, 'storeScore'])->middleware('throttle:20,1')->name('games.scores.store');
 });
 
 Route::prefix('birthday-wishes')->group(function () {
@@ -75,7 +75,7 @@ Route::prefix('ai-fun')->group(function () {
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'create'])->name('login');
-    Route::post('/login', [AdminAuthController::class, 'store'])->name('login.store');
+    Route::post('/login', [AdminAuthController::class, 'store'])->middleware('throttle:5,1')->name('login.store');
     Route::post('/logout', [AdminAuthController::class, 'destroy'])->name('logout');
 
     Route::middleware('auth')->group(function () {

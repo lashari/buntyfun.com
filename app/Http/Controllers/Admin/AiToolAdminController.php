@@ -54,6 +54,8 @@ class AiToolAdminController extends Controller
 
     public function destroy(Request $request, AiTool $aiTool)
     {
+        $this->authorizeDelete($request);
+
         AuditLog::record($request->user(), 'deleted', 'ai_tool', $aiTool->id);
         $aiTool->delete();
 

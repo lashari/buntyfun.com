@@ -61,6 +61,8 @@ class BirthdayMessageAdminController extends Controller
 
     public function destroy(Request $request, BirthdayMessage $birthdayMessage)
     {
+        $this->authorizeDelete($request);
+
         AuditLog::record($request->user(), 'deleted', 'birthday_message', $birthdayMessage->id);
         $birthdayMessage->delete();
 

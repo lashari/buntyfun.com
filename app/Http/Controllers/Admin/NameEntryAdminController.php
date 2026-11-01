@@ -54,6 +54,8 @@ class NameEntryAdminController extends Controller
 
     public function destroy(Request $request, NameEntry $nameEntry)
     {
+        $this->authorizeDelete($request);
+
         AuditLog::record($request->user(), 'deleted', 'name_entry', $nameEntry->id);
         $nameEntry->delete();
 

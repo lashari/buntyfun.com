@@ -40,4 +40,14 @@ trait HandlesPublishing
         $model->update(['status' => 'draft']);
         AuditLog::record($request->user(), 'unpublished', $entityType, $model->id);
     }
+
+    /**
+     * Deletion is at least as consequential as publishing — an editor who can only
+     * draft/submit for review must not be able to permanently remove content instead.
+     * Call this as the first line of every destroy() method using this trait.
+     */
+    protected function authorizeDelete(Request $request): void
+    {
+        abort_unless($request->user()->canPublish(), 403);
+    }
 }

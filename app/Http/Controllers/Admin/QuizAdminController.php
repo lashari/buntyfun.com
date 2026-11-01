@@ -63,6 +63,8 @@ class QuizAdminController extends Controller
 
     public function destroy(Request $request, Quiz $quiz)
     {
+        $this->authorizeDelete($request);
+
         AuditLog::record($request->user(), 'deleted', 'quiz', $quiz->id);
         $quiz->delete();
 
