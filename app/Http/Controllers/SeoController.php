@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\BirthdayMessage;
+use App\Models\Game;
+use App\Models\NameEntry;
+use App\Models\Quiz;
+use Illuminate\Http\Response;
+
+class SeoController extends Controller
+{
+    public function sitemap(): Response
+    {
+        $urls = collect([
+            ['loc' => route('home'), 'changefreq' => 'daily'],
+            ['loc' => route('quizzes.index'), 'changefreq' => 'daily'],
+            ['loc' => route('games.index'), 'changefreq' => 'weekly'],
+            ['loc' => route('birthday-messages.index'), 'changefreq' => 'weekly'],
+            ['loc' => route('name-entries.index'), 'changefreq' => 'weekly'],
+        ]);
+
+        foreach (Quiz::where('status', 'published')->get() as $quiz) {
+            $urls->push(['loc' => route('quizzes.show', $quiz), 'changefreq' => 'monthly']);
+        }
+
+        foreach (Game::where('status', 'published')->get() as $game) {
+            $urls->push(['loc' => route('games.show', $game), 'changefreq' => 'monthly']);
+        }
+
+        foreach (BirthdayMessage::where('status', 'published')->get() as $message) {
+            $urls->push(['loc' => route('birthday-messages.show', $message), 'changefreq' => 'monthly']);
+        }
+
+        foreach (NameEntry::where('status', 'published')->get() as $name) {
+            $urls->push(['loc' => route('name-entries.show', $name), 'changefreq' => 'yearly']);
+        }
+
+        $xml = view('seo.sitemap', ['urls' => $urls])->render();
+
+        return response($xml, 200)->header('Content-Type', 'application/xml');
+    }
+
+    public function robots(): Response
+    {
+        $lines = [
+            'User-agent: *',
+            'Allow: /',
+            'Sitemap: '.route('sitemap'),
+        ];
+
+        return response(implode("\n", $lines), 200)->header('Content-Type', 'text/plain');
+    }
+}

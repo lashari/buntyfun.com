@@ -46,10 +46,18 @@ class DemoContentSeeder extends Seeder
         $q2->answers()->updateOrCreate(['position' => 1], ['label' => 'Beach', 'score_value' => 1]);
         $q2->answers()->updateOrCreate(['position' => 2], ['label' => 'Mountains', 'score_value' => 2]);
 
-        foreach (['tic-tac-toe' => 'Tic-Tac-Toe', 'rock-paper-scissors' => 'Rock Paper Scissors'] as $slug => $title) {
+        // Games are self-contained client-side mechanics, not editorial prose — safe to
+        // publish directly, unlike the content types below that need a human sign-off.
+        foreach ([
+            'tic-tac-toe' => 'Tic-Tac-Toe',
+            'rock-paper-scissors' => 'Rock Paper Scissors',
+            'word-scramble' => 'Word Scramble',
+            'memory-match' => 'Memory Match',
+            'daily-brain-challenge' => 'Daily Brain Challenge',
+        ] as $slug => $title) {
             Game::updateOrCreate(
                 ['slug' => $slug],
-                ['category_id' => $games->id, 'title' => $title, 'status' => 'draft']
+                ['category_id' => $games->id, 'title' => $title, 'status' => 'published']
             );
         }
 
@@ -60,7 +68,7 @@ class DemoContentSeeder extends Seeder
                 'relationship' => 'best_friend',
                 'tone' => 'funny',
                 'language' => 'en',
-                'body' => "Happy birthday to the person who knows all my secrets and still hangs out with me anyway!",
+                'body' => 'Happy birthday to the person who knows all my secrets and still hangs out with me anyway!',
                 'status' => 'in_review',
             ]
         );

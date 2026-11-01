@@ -1,0 +1,80 @@
+<x-layout>
+    <section class="bg-gradient-to-b from-violet-50 to-white px-4 py-16 text-center">
+        <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Your Daily Dose of Fun.</h1>
+        <p class="mx-auto mt-4 max-w-xl text-lg text-slate-600">
+            Play exciting games, discover fun quizzes, create personalized wishes and explore
+            something new every day.
+        </p>
+        <div class="mt-8 flex justify-center gap-4">
+            <a href="{{ route('quizzes.index') }}" class="rounded-full bg-violet-600 px-6 py-3 font-semibold text-white hover:bg-violet-700">Explore Fun</a>
+            <a href="{{ route('games.index') }}" class="rounded-full border border-violet-200 bg-white px-6 py-3 font-semibold text-violet-700 hover:bg-violet-50">Play a Game</a>
+        </div>
+    </section>
+
+    <div class="mx-auto max-w-6xl space-y-12 px-4 py-12">
+        <section>
+            <div class="mb-4 flex items-center justify-between">
+                <h2 class="text-2xl font-bold">Trending Quizzes</h2>
+                <a href="{{ route('quizzes.index') }}" class="text-sm font-medium text-violet-600 hover:underline">See all</a>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-3">
+                @forelse ($quizzes as $quiz)
+                    <a href="{{ route('quizzes.show', $quiz) }}" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md">
+                        <h3 class="font-semibold">{{ $quiz->title }}</h3>
+                    </a>
+                @empty
+                    <p class="text-sm text-slate-500">No quizzes published yet.</p>
+                @endforelse
+            </div>
+        </section>
+
+        <section>
+            <div class="mb-4 flex items-center justify-between">
+                <h2 class="text-2xl font-bold">Popular Games</h2>
+                <a href="{{ route('games.index') }}" class="text-sm font-medium text-violet-600 hover:underline">See all</a>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-3">
+                @forelse ($games as $game)
+                    <a href="{{ route('games.show', $game) }}" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md">
+                        <h3 class="font-semibold">{{ $game->title }}</h3>
+                    </a>
+                @empty
+                    <p class="text-sm text-slate-500">No games published yet.</p>
+                @endforelse
+            </div>
+        </section>
+
+        <section>
+            <div class="mb-4 flex items-center justify-between">
+                <h2 class="text-2xl font-bold">Birthday Wishes</h2>
+                <a href="{{ route('birthday-messages.index') }}" class="text-sm font-medium text-violet-600 hover:underline">See all</a>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-3">
+                @forelse ($wishes as $wish)
+                    <a href="{{ route('birthday-messages.show', $wish) }}" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md">
+                        <p class="text-sm text-slate-600">{{ Str::limit($wish->body, 90) }}</p>
+                    </a>
+                @empty
+                    <p class="text-sm text-slate-500">No wishes published yet.</p>
+                @endforelse
+            </div>
+        </section>
+
+        <section>
+            <div class="mb-4 flex items-center justify-between">
+                <h2 class="text-2xl font-bold">Islamic Names</h2>
+                <a href="{{ route('name-entries.index') }}" class="text-sm font-medium text-violet-600 hover:underline">See all</a>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-3">
+                @forelse ($names as $name)
+                    <a href="{{ route('name-entries.show', $name) }}" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md">
+                        <h3 class="font-semibold">{{ $name->name_en }}</h3>
+                        <p class="text-sm text-slate-500">{{ Str::limit($name->meaning, 60) }}</p>
+                    </a>
+                @empty
+                    <p class="text-sm text-slate-500">No names published yet.</p>
+                @endforelse
+            </div>
+        </section>
+    </div>
+</x-layout>
