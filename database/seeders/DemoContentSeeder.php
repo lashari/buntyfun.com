@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\BirthdayMessage;
 use App\Models\Category;
 use App\Models\Game;
-use App\Models\NameEntry;
 use App\Models\Quiz;
 use Illuminate\Database\Seeder;
 
@@ -72,32 +71,5 @@ class DemoContentSeeder extends Seeder
                 'status' => 'in_review',
             ]
         );
-
-        // Well-documented standard Arabic etymology, not a claim of Quranic origin.
-        // Seeded as in_review — an editor with a verified reference must approve before publish.
-        foreach ([
-            [
-                'name_en' => 'Muhammad',
-                'name_ar' => 'محمد',
-                'name_ur' => 'محمد',
-                'gender' => 'male',
-                'meaning' => 'Praiseworthy, one who is praised',
-                'origin' => 'Arabic',
-                'source_ref' => 'PLACEHOLDER — verify against a published Arabic lexicon before publishing',
-                'slug' => 'muhammad',
-            ],
-            [
-                'name_en' => 'Fatima',
-                'name_ar' => 'فاطمة',
-                'name_ur' => 'فاطمہ',
-                'gender' => 'female',
-                'meaning' => "One who weans/abstains; a name of the Prophet's daughter",
-                'origin' => 'Arabic',
-                'source_ref' => 'PLACEHOLDER — verify against a published Arabic lexicon before publishing',
-                'slug' => 'fatima',
-            ],
-        ] as $name) {
-            NameEntry::updateOrCreate(['slug' => $name['slug']], [...$name, 'status' => 'in_review']);
-        }
     }
 }

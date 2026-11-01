@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             RoleUserSeeder::class,
             CategorySeeder::class,
             DemoContentSeeder::class,
+            IslamicNamesSeeder::class,
         ]);
     }
 }
