@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             DemoContentSeeder::class,
             IslamicNamesSeeder::class,
+            BirthdayWishesSeeder::class,
         ]);
     }
 }

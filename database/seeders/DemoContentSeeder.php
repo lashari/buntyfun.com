@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\BirthdayMessage;
 use App\Models\Category;
 use App\Models\Game;
 use App\Models\Quiz;
@@ -19,7 +18,6 @@ class DemoContentSeeder extends Seeder
     {
         $games = Category::where('slug', 'games')->firstOrFail();
         $quizzes = Category::where('slug', 'quizzes')->firstOrFail();
-        $wishes = Category::where('slug', 'birthday-wishes')->firstOrFail();
 
         $quiz = Quiz::updateOrCreate(
             ['slug' => 'how-well-do-you-know-your-best-friend'],
@@ -59,17 +57,5 @@ class DemoContentSeeder extends Seeder
                 ['category_id' => $games->id, 'title' => $title, 'status' => 'published']
             );
         }
-
-        BirthdayMessage::updateOrCreate(
-            ['slug' => 'best-friend-funny-01'],
-            [
-                'category_id' => $wishes->id,
-                'relationship' => 'best_friend',
-                'tone' => 'funny',
-                'language' => 'en',
-                'body' => 'Happy birthday to the person who knows all my secrets and still hangs out with me anyway!',
-                'status' => 'in_review',
-            ]
-        );
     }
 }
