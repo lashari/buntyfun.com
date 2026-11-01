@@ -35,13 +35,28 @@ npm run dev
 ## Building for deploy
 
 ```bash
-composer install --no-dev --optimize-autoloader
-npm install
-npm run build
+deploy/build-release.sh
 ```
 
-This produces `public/build/` (hashed, versioned assets) — the only build artifact that needs
-to ship; `node_modules` and the Vite dev server never go to production.
+Produces `dist/release-<short-commit-hash>.zip` — a clean export of the committed tree
+(`git archive`, so untracked files and `.env` are never in it), production PHP deps,
+built frontend assets, `node_modules`/`tests`/`.github`/dev-only files stripped. Refuses to
+run if the working tree has uncommitted changes — commit first.
+
+It also strips any `.git` directory it finds inside `vendor/` before zipping. Composer can
+install a package from git source instead of a dist zip depending on the environment it runs
+in (confirmed on this project's own build sandbox — one package's history alone added ~250MB);
+a shipped `vendor/` must never contain one, regardless of why it got there.
+
+Verified end-to-end before trusting it: built the zip, extracted it to a clean directory,
+ran `migrate`/`storage:link`/`config:cache`/`route:cache`/`view:cache` against it, served it,
+and hit the homepage, games, quizzes, sitemap and admin login — all 200/302 as expected, no
+errors. The 25MB result is what actually shipped; an earlier version produced 280MB before the
+vendor `.git` strip was added.
+
+If you need to do it by hand instead: `composer install --no-dev --optimize-autoloader`,
+`npm install && npm run build` — but the script exists because doing this by hand is exactly
+how the 280MB mistake would ship unnoticed.
 
 ## Deploying to WebSouls cPanel (zip upload)
 
