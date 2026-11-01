@@ -1,4 +1,4 @@
-@props(['dir' => 'ltr', 'lang' => 'en'])
+@props(['dir' => 'ltr', 'lang' => 'en', 'ads' => true])
 <!DOCTYPE html>
 <html lang="{{ $lang }}" dir="{{ $dir }}">
 <head>
@@ -10,6 +10,18 @@
     @if ($dir === 'rtl')
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=noto-nastaliq-urdu" rel="stylesheet">
+    @endif
+    @if (config('services.ga4.measurement_id'))
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.ga4.measurement_id') }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '{{ config('services.ga4.measurement_id') }}');
+        </script>
+    @endif
+    @if ($ads && config('services.adsense.client_id'))
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config('services.adsense.client_id') }}" crossorigin="anonymous"></script>
     @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -35,9 +47,13 @@
         </div>
     </header>
 
+    <x-ad-slot :enabled="$ads" />
+
     <main>
         {{ $slot }}
     </main>
+
+    <x-ad-slot :enabled="$ads" />
 
     <footer class="mt-16 border-t border-slate-200 bg-white">
         <div class="mx-auto max-w-6xl px-4 py-8 text-sm text-slate-500">

@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    // Both blank by default — never show ads before AdSense approval, never load
+    // analytics against an unconfigured property. Blank = no-op, not a crash.
+    'adsense' => [
+        'client_id' => env('ADSENSE_CLIENT_ID'),
+    ],
+
+    'ga4' => [
+        'measurement_id' => env('GA4_MEASUREMENT_ID'),
+    ],
+
 ];
