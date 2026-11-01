@@ -31,12 +31,20 @@ git archive HEAD | tar -x -C "$BUILD_DIR"
 pushd "$BUILD_DIR" > /dev/null
 
 echo "==> Installing production PHP dependencies"
-COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --quiet
+COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --quiet
 
 echo "==> Building frontend assets"
 npm ci --silent
 npm run build --silent
 rm -rf node_modules
+
+echo "==> Stripping any VCS metadata Composer left inside vendor/"
+# Some environments' Composer clones packages via git instead of fetching a dist
+# zip even with --prefer-dist (seen on this project's own build sandbox: a single
+# package's .git history added ~250MB). A shipped vendor/ must never contain one,
+# whatever the reason it appeared — this is a hard safety net, not a workaround
+# for a single environment.
+find vendor -mindepth 2 -maxdepth 4 -type d -name ".git" -prune -exec rm -rf {} +
 
 echo "==> Removing dev-only paths that must never ship"
 rm -rf tests .github deploy .styleci.yml phpunit.xml .editorconfig .gitattributes
