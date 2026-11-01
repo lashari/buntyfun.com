@@ -18,24 +18,26 @@ class UrduContentSeeder extends Seeder
      * No poetry: real Urdu poetry is under copyright or attributed to known
      * poets, and nothing here claims to be anyone's original verse.
      *
-     * Seeded as in_review, not published. This batch has NOT been checked by
-     * a fluent/native Urdu speaker — do not publish on my say-so alone. The
-     * "jokes" category carries the highest risk of reading flat or unnatural
-     * and deserves the closest look.
+     * Seeded as in_review. Re-reviewed and published at the owner's explicit
+     * instruction, on an AI's own best-effort read rather than a fluent/native
+     * Urdu speaker's sign-off — that tradeoff was made knowingly, not silently.
+     * Two items were revised on this pass: a stiff greeting, and the flatter
+     * of the two jokes (swapped for an actual wordplay joke: "سونا" meaning
+     * both "to sleep" and "gold").
      */
     public function run(): void
     {
         $items = [
             ['greetings', 'السلام علیکم! امید ہے آپ کا دن خوشیوں سے بھرا ہو۔'],
             ['greetings', 'صبح بخیر! نیا دن، نئی امید، نئی مسکراہٹ۔'],
-            ['greetings', 'آپ سے مل کر طبیعت خوش ہو گئی۔ امید ہے آپ ہمیشہ خوش رہیں۔'],
+            ['greetings', 'آپ سے مل کر بہت خوشی ہوئی۔ امید ہے آپ ہمیشہ خوش رہیں۔'],
 
             ['friendship', 'دوست وہ ہوتا ہے جو خاموشی کو بھی سمجھ لے۔'],
             ['friendship', 'سچی دوستی وقت کے ساتھ پرانی نہیں ہوتی، صرف گہری ہوتی ہے۔'],
             ['friendship', 'تمہارے بغیر ہر کہانی ادھوری لگتی ہے، میرے دوست۔'],
 
             ['jokes', 'استاد نے پوچھا: "تم رات کو کیوں نہیں پڑھتے؟" بچے نے کہا: "کیونکہ دن میں سونے کا وقت نہیں ملتا۔"'],
-            ['jokes', 'ایک شخص نے دوسرے سے پوچھا: "تمہاری گھڑی میں وقت کیا ہے؟" دوسرے نے کہا: "وہی جو تمہاری گھڑی میں ہے، ہم دونوں اسی دنیا میں ہیں۔"'],
+            ['jokes', 'کسی نے ایک لڑکے سے پوچھا: "تمہارا خواب کیا ہے؟" لڑکے نے کہا: "سونا۔"'],
 
             ['quotes', 'وقت زخم نہیں بھرتا، وہ صرف ہمیں اُن کے ساتھ جینا سکھا دیتا ہے۔'],
             ['quotes', 'خاموشی بھی ایک زبان ہے، جسے صرف وہی سمجھتے ہیں جو دل سے سنتے ہیں۔'],
