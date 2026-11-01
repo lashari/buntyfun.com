@@ -1,4 +1,5 @@
-<x-layout :title="'Birthday wish for '.Str::headline($message->relationship).' — BuntyFun'" description="Copy or share this birthday wish.">
+<x-layout :dir="$message->language === 'ur' ? 'rtl' : 'ltr'" :lang="$message->language"
+          :title="'Birthday wish for '.Str::headline($message->relationship).' — BuntyFun'" description="Copy or share this birthday wish.">
     <div class="mx-auto max-w-xl px-4 py-12">
         <p class="text-xs uppercase tracking-wide text-slate-400">{{ Str::headline($message->relationship) }} · {{ Str::headline($message->tone) }}</p>
         <p class="mt-4 text-xl leading-relaxed">{{ $message->body }}</p>

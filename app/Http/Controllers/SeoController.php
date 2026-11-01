@@ -6,6 +6,7 @@ use App\Models\BirthdayMessage;
 use App\Models\Game;
 use App\Models\NameEntry;
 use App\Models\Quiz;
+use App\Models\UrduContent;
 use Illuminate\Http\Response;
 
 class SeoController extends Controller
@@ -18,6 +19,7 @@ class SeoController extends Controller
             ['loc' => route('games.index'), 'changefreq' => 'weekly'],
             ['loc' => route('birthday-messages.index'), 'changefreq' => 'weekly'],
             ['loc' => route('name-entries.index'), 'changefreq' => 'weekly'],
+            ['loc' => route('urdu-content.index'), 'changefreq' => 'weekly'],
         ]);
 
         foreach (Quiz::where('status', 'published')->get() as $quiz) {
@@ -34,6 +36,10 @@ class SeoController extends Controller
 
         foreach (NameEntry::where('status', 'published')->get() as $name) {
             $urls->push(['loc' => route('name-entries.show', $name), 'changefreq' => 'yearly']);
+        }
+
+        foreach (UrduContent::where('status', 'published')->get() as $item) {
+            $urls->push(['loc' => route('urdu-content.show', $item), 'changefreq' => 'monthly']);
         }
 
         $xml = view('seo.sitemap', ['urls' => $urls])->render();

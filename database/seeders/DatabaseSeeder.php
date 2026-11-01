@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             DemoContentSeeder::class,
             IslamicNamesSeeder::class,
             BirthdayWishesSeeder::class,
+            UrduContentSeeder::class,
         ]);
     }
 }

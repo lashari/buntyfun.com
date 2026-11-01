@@ -13,3 +13,7 @@
 [x-cloak] {
     display: none !important;
 }
+
+.font-urdu {
+    font-family: 'Noto Nastaliq Urdu', 'Noto Naskh Arabic', serif;
+}

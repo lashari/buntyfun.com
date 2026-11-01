@@ -37,6 +37,23 @@ queue driver to Redis, add a worker process) — same path eDirect360 already do
 - `name_entries` — Islamic names directory; `source_ref` is a required column, never optional
 - `content_views` / `share_events` — minimal, timestamp-only event logs feeding admin analytics
 - `audit_logs` — every publish/unpublish/edit by an admin, enforced via `AuditLog::record()`
+- `urdu_contents` — Urdu Entertainment (greetings, jokes, quotes, inspirational, love,
+  friendship, festival; no poetry — copyright risk). Urdu birthday wishes reuse
+  `birthday_messages` with `language='ur'` rather than a separate table.
+
+## Urdu / RTL
+
+`/ur/entertainment` is a separate URL namespace per the project's own requirement. The
+`<x-layout>` component takes `:dir` and `:lang` props; any page passing `dir="rtl"` gets
+`dir="rtl" lang="ur"` on `<html>`, a `font-urdu` class (Noto Nastaliq Urdu, loaded only on
+that page — not on every English page's load) and RTL-correct markup. Birthday wishes reuse
+the same component, switching `:dir` per-row based on `$message->language`.
+
+**Human review gate**: Urdu content carries a stricter publish bar than English content.
+AI-drafted Urdu text is seeded `in_review` and must be checked by a fluent/native speaker for
+naturalness before publish — self-review the way English content was reviewed does not apply
+here, since fluency judgment isn't something to self-certify in a language you're less certain
+of. The admin UI says this explicitly on the Urdu Content screens.
 
 ## Ads and the condolence exclusion
 

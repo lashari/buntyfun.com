@@ -15,12 +15,17 @@
                     <option value="{{ $tone }}" @selected(request('tone') === $tone)>{{ Str::headline($tone) }}</option>
                 @endforeach
             </select>
+            <select name="language" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" onchange="this.form.submit()">
+                <option value="">English &amp; Urdu</option>
+                <option value="en" @selected(request('language') === 'en')>English</option>
+                <option value="ur" @selected(request('language') === 'ur')>اردو</option>
+            </select>
         </form>
 
         <div class="mt-6 grid gap-4 sm:grid-cols-2">
             @forelse ($messages as $message)
                 <a href="{{ route('birthday-messages.show', $message) }}" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md">
-                    <p class="text-sm text-slate-700">{{ Str::limit($message->body, 140) }}</p>
+                    <p class="text-sm text-slate-700" @if ($message->language === 'ur') dir="rtl" @endif>{{ Str::limit($message->body, 140) }}</p>
                     <p class="mt-2 text-xs uppercase tracking-wide text-slate-400">{{ Str::headline($message->relationship) }} · {{ Str::headline($message->tone) }}</p>
                 </a>
             @empty

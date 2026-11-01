@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\GameAdminController;
 use App\Http\Controllers\Admin\NameEntryAdminController;
 use App\Http\Controllers\Admin\QuizAdminController;
+use App\Http\Controllers\Admin\UrduContentAdminController;
 use App\Http\Controllers\BirthdayMessageController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\HomeController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SeoController;
 use App\Http\Controllers\ShareEventController;
+use App\Http\Controllers\UrduContentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -48,6 +50,11 @@ Route::prefix('islamic-names')->group(function () {
     Route::get('/{nameEntry:slug}', [NameEntryController::class, 'show'])->name('name-entries.show');
 });
 
+Route::prefix('ur/entertainment')->group(function () {
+    Route::get('/', [UrduContentController::class, 'index'])->name('urdu-content.index');
+    Route::get('/{urduContent:slug}', [UrduContentController::class, 'show'])->name('urdu-content.show');
+});
+
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'create'])->name('login');
     Route::post('/login', [AdminAuthController::class, 'store'])->name('login.store');
@@ -73,5 +80,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('name-entries/{name_entry}/unpublish', [NameEntryAdminController::class, 'unpublish'])->name('name-entries.unpublish');
 
         Route::resource('categories', CategoryAdminController::class)->only(['index', 'store', 'update']);
+
+        Route::resource('urdu-content', UrduContentAdminController::class)->except(['show']);
+        Route::post('urdu-content/{urdu_content}/publish', [UrduContentAdminController::class, 'publish'])->name('urdu-content.publish');
+        Route::post('urdu-content/{urdu_content}/unpublish', [UrduContentAdminController::class, 'unpublish'])->name('urdu-content.unpublish');
     });
 });
