@@ -19,6 +19,7 @@
                 <a href="{{ route('admin.name-entries.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Islamic Names</a>
                 <a href="{{ route('admin.urdu-content.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Urdu Content</a>
                 <a href="{{ route('admin.wallpapers.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Wallpapers</a>
+                <a href="{{ route('admin.ai-tools.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">AI Tools</a>
                 @auth
                     @if (auth()->user()->isSuperAdmin())
                         <a href="{{ route('admin.categories.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Categories</a>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AiToolAdminController;
 use App\Http\Controllers\Admin\BirthdayMessageAdminController;
 use App\Http\Controllers\Admin\CategoryAdminController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Admin\NameEntryAdminController;
 use App\Http\Controllers\Admin\QuizAdminController;
 use App\Http\Controllers\Admin\UrduContentAdminController;
 use App\Http\Controllers\Admin\WallpaperAdminController;
+use App\Http\Controllers\AiFunController;
 use App\Http\Controllers\BirthdayMessageController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\HomeController;
@@ -63,6 +65,14 @@ Route::prefix('wallpapers')->group(function () {
     Route::get('/{wallpaper:slug}/download', [WallpaperController::class, 'download'])->name('wallpapers.download');
 });
 
+Route::prefix('ai-fun')->group(function () {
+    Route::get('/', [AiFunController::class, 'index'])->name('ai-tools.index');
+    Route::get('/{aiTool:slug}', [AiFunController::class, 'show'])->name('ai-tools.show');
+    Route::post('/{aiTool:slug}/generate', [AiFunController::class, 'generate'])
+        ->middleware('throttle:6,1')
+        ->name('ai-tools.generate');
+});
+
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'create'])->name('login');
     Route::post('/login', [AdminAuthController::class, 'store'])->name('login.store');
@@ -96,5 +106,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('wallpapers', WallpaperAdminController::class)->except(['show']);
         Route::post('wallpapers/{wallpaper}/publish', [WallpaperAdminController::class, 'publish'])->name('wallpapers.publish');
         Route::post('wallpapers/{wallpaper}/unpublish', [WallpaperAdminController::class, 'unpublish'])->name('wallpapers.unpublish');
+
+        Route::resource('ai-tools', AiToolAdminController::class)->except(['show']);
+        Route::post('ai-tools/{ai_tool}/publish', [AiToolAdminController::class, 'publish'])->name('ai-tools.publish');
+        Route::post('ai-tools/{ai_tool}/unpublish', [AiToolAdminController::class, 'unpublish'])->name('ai-tools.unpublish');
     });
 });

@@ -93,5 +93,22 @@
                 @endforelse
             </div>
         </section>
+
+        <section>
+            <div class="mb-4 flex items-center justify-between">
+                <h2 class="text-2xl font-bold">AI Fun Studio</h2>
+                <a href="{{ route('ai-tools.index') }}" class="text-sm font-medium text-violet-600 hover:underline">See all</a>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-3">
+                @forelse ($aiTools as $tool)
+                    <a href="{{ route('ai-tools.show', $tool) }}" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md">
+                        <h3 class="font-semibold">{{ $tool->title }}</h3>
+                        <p class="mt-1 text-sm text-slate-500">{{ $tool->description }}</p>
+                    </a>
+                @empty
+                    <p class="text-sm text-slate-500">No AI tools published yet.</p>
+                @endforelse
+            </div>
+        </section>
     </div>
 </x-layout>

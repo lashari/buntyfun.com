@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AiTool;
 use App\Models\BirthdayMessage;
 use App\Models\Game;
 use App\Models\NameEntry;
@@ -23,6 +24,7 @@ class SearchController extends Controller
             'names' => collect(),
             'urdu' => collect(),
             'wallpapers' => collect(),
+            'aiTools' => collect(),
         ];
 
         if ($q !== '') {
@@ -32,6 +34,7 @@ class SearchController extends Controller
             $results['names'] = NameEntry::where('status', 'published')->where('name_en', 'like', "%{$q}%")->take(5)->get();
             $results['urdu'] = UrduContent::where('status', 'published')->where('body', 'like', "%{$q}%")->take(5)->get();
             $results['wallpapers'] = Wallpaper::where('status', 'published')->where('title', 'like', "%{$q}%")->take(5)->get();
+            $results['aiTools'] = AiTool::where('status', 'published')->where('title', 'like', "%{$q}%")->take(5)->get();
         }
 
         return view('search.index', ['q' => $q, 'results' => $results]);

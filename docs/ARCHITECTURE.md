@@ -40,6 +40,38 @@ queue driver to Redis, add a worker process) — same path eDirect360 already do
 - `urdu_contents` — Urdu Entertainment (greetings, jokes, quotes, inspirational, love,
   friendship, festival; no poetry — copyright risk). Urdu birthday wishes reuse
   `birthday_messages` with `language='ur'` rather than a separate table.
+- `wallpapers` — real uploaded files (`storage/app/public/wallpapers`), not URLs to someone
+  else's hosting; `width`/`height` auto-detected from the file at upload time via `getimagesize()`.
+- `ai_tools` / `ai_usages` — AI Fun Studio's catalog and per-visitor daily usage counter.
+
+## AI Fun Studio
+
+`app/Services/Ai/AiProviderContract` is the abstraction the spec asks for; `GeminiProvider` and
+`OpenAiProvider` both implement it, but only one is *active* at a time via `AI_PROVIDER` in
+`.env` (default `gemini`) — per the spec's own "start with one provider" instruction, this is an
+abstraction ready for both, not two paid integrations running at once.
+
+- **Server-side only**: the browser POSTs raw user input to our own `/ai-fun/{tool}/generate`
+  endpoint; the provider call and its API key live entirely in `app/Services/Ai`, never in
+  Blade/JS. No key is ever sent to the browser.
+- **Rate limiting**: `throttle:6,1` (6/minute) on the route, plus a configurable daily cap
+  (`AI_DAILY_FREE_LIMIT`, default 10) per tool, keyed on a hashed IP (never stored raw) —
+  enforced in `AiFunController::remaining()`, not just suggested in the UI.
+  A per-IP cap is coarser than per-account (it's shared by anyone behind the same IP, e.g. an
+  office or a carrier NAT), accepted deliberately for now since there's no visitor account
+  system yet; moving to a per-account cap is natural once one exists.
+- **Error handling**: `AiGenerationException` messages are always safe to show a user; the real
+  reason (missing key, HTTP failure, empty response) is logged server-side via `Log::warning`/`Log::error`
+  and never reaches the response body.
+- **Not yet built, documented as a gap rather than silently skipped**: real abuse/content
+  moderation beyond length limits and a prompt-level tone instruction (no moderation API wired
+  up), and a premium-tier bypass of the daily cap (no visitor accounts or payments exist yet to
+  hang that off of).
+- **Needs a key to actually generate**: this environment has no `GEMINI_API_KEY`/`OPENAI_API_KEY`
+  and no network access to either provider's API from this sandbox. The integration is verified
+  with `Http::fake()` in `tests/Feature/AiFunStudioTest.php` (request shape, response parsing,
+  the daily-limit and not-configured paths) — that's the honest way to test this without a live
+  key, not a substitute for setting a real one wherever this actually serves users.
 
 ## Urdu / RTL
 

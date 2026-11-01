@@ -25,6 +25,7 @@
                 <a href="{{ route('name-entries.index') }}" class="hover:text-violet-600">Islamic Names</a>
                 <a href="{{ route('urdu-content.index') }}" class="hover:text-violet-600">اردو</a>
                 <a href="{{ route('wallpapers.index') }}" class="hover:text-violet-600">Wallpapers</a>
+                <a href="{{ route('ai-tools.index') }}" class="hover:text-violet-600">AI Fun</a>
             </nav>
             <form action="{{ route('search') }}" method="GET" class="flex items-center gap-2">
                 <input type="search" name="q" value="{{ request('q') }}" placeholder="Search BuntyFun"
@@ -48,6 +49,7 @@
                 <a href="{{ route('name-entries.index') }}" class="hover:text-violet-600">Islamic Names</a>
                 <a href="{{ route('urdu-content.index') }}" class="hover:text-violet-600">اردو</a>
                 <a href="{{ route('wallpapers.index') }}" class="hover:text-violet-600">Wallpapers</a>
+                <a href="{{ route('ai-tools.index') }}" class="hover:text-violet-600">AI Fun</a>
             </div>
             <p class="mt-4">&copy; {{ now()->year }} BuntyFun.com</p>
         </div>

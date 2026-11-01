@@ -9,7 +9,7 @@
         @elseif ($hasAny === 0)
             <p class="mt-4 text-slate-500">No results found.</p>
         @else
-            @foreach (['quizzes' => 'Quizzes', 'games' => 'Games', 'wishes' => 'Birthday Wishes', 'names' => 'Islamic Names', 'urdu' => 'اردو', 'wallpapers' => 'Wallpapers'] as $key => $label)
+            @foreach (['quizzes' => 'Quizzes', 'games' => 'Games', 'wishes' => 'Birthday Wishes', 'names' => 'Islamic Names', 'urdu' => 'اردو', 'wallpapers' => 'Wallpapers', 'aiTools' => 'AI Fun Studio'] as $key => $label)
                 @if ($results[$key]->isNotEmpty())
                     <h2 class="mt-6 text-lg font-semibold">{{ $label }}</h2>
                     <ul class="mt-2 space-y-2">
@@ -27,6 +27,8 @@
                                     <a href="{{ route('wallpapers.show', $item) }}" class="text-violet-600 hover:underline">{{ $item->title }}</a>
                                 @elseif ($key === 'names')
                                     <a href="{{ route('name-entries.show', $item) }}" class="text-violet-600 hover:underline">{{ $item->name_en }}</a>
+                                @elseif ($key === 'aiTools')
+                                    <a href="{{ route('ai-tools.show', $item) }}" class="text-violet-600 hover:underline">{{ $item->title }}</a>
                                 @endif
                             </li>
                         @endforeach

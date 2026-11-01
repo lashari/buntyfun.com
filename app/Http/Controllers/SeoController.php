@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AiTool;
 use App\Models\BirthdayMessage;
 use App\Models\Game;
 use App\Models\NameEntry;
@@ -22,6 +23,7 @@ class SeoController extends Controller
             ['loc' => route('name-entries.index'), 'changefreq' => 'weekly'],
             ['loc' => route('urdu-content.index'), 'changefreq' => 'weekly'],
             ['loc' => route('wallpapers.index'), 'changefreq' => 'weekly'],
+            ['loc' => route('ai-tools.index'), 'changefreq' => 'weekly'],
         ]);
 
         foreach (Quiz::where('status', 'published')->get() as $quiz) {
@@ -46,6 +48,10 @@ class SeoController extends Controller
 
         foreach (Wallpaper::where('status', 'published')->get() as $wallpaper) {
             $urls->push(['loc' => route('wallpapers.show', $wallpaper), 'changefreq' => 'yearly']);
+        }
+
+        foreach (AiTool::where('status', 'published')->get() as $tool) {
+            $urls->push(['loc' => route('ai-tools.show', $tool), 'changefreq' => 'monthly']);
         }
 
         $xml = view('seo.sitemap', ['urls' => $urls])->render();
