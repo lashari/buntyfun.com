@@ -84,10 +84,16 @@ a new, independently-rollback-able release:
 7. Run once, against the new release:
    ```bash
    php artisan migrate --force
+   php artisan db:seed --force
    php artisan config:cache
    php artisan route:cache
    php artisan view:cache
    ```
+   `db:seed` is required every deploy, not just the first — migrations only create empty
+   tables; content (Islamic names, birthday wishes, Urdu content, AI tools, categories, the
+   super_admin) only exists in the database because a seeder put it there. Every seeder uses
+   `updateOrCreate`, so running it again is always safe and never duplicates rows — skipping
+   it is what leaves tables empty, not running it twice.
 8. Confirm the site loads correctly before deleting any old release folder.
 
 Keep at least the previous two release folders on disk — they're what rollback uses.
