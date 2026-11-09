@@ -7,9 +7,12 @@
 
     # Canonical host for production: www -> apex, http -> https (one 301 hop).
     # Host-limited so local dev on other hostnames is unaffected.
+    # /.well-known/ stays reachable as-is so cPanel AutoSSL can renew the cert.
+    RewriteCond %{REQUEST_URI} !^/\.well-known/
     RewriteCond %{HTTP_HOST} ^www\.buntyfun\.com$ [NC]
     RewriteRule ^ https://buntyfun.com%{REQUEST_URI} [L,R=301]
 
+    RewriteCond %{REQUEST_URI} !^/\.well-known/
     RewriteCond %{HTTP_HOST} ^buntyfun\.com$ [NC]
     RewriteCond %{HTTPS} !=on
     RewriteRule ^ https://buntyfun.com%{REQUEST_URI} [L,R=301]
