@@ -5,6 +5,15 @@
 
     RewriteEngine On
 
+    # Canonical host for production: www -> apex, http -> https (one 301 hop).
+    # Host-limited so local dev on other hostnames is unaffected.
+    RewriteCond %{HTTP_HOST} ^www\.buntyfun\.com$ [NC]
+    RewriteRule ^ https://buntyfun.com%{REQUEST_URI} [L,R=301]
+
+    RewriteCond %{HTTP_HOST} ^buntyfun\.com$ [NC]
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^ https://buntyfun.com%{REQUEST_URI} [L,R=301]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
