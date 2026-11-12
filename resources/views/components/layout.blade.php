@@ -1,8 +1,9 @@
-@props(['dir' => 'ltr', 'lang' => 'en', 'ads' => true])
+{{-- title/description must be props: without them Blade drops the values every page passes, and all pages showed "BuntyFun" + the default description (fixed 12 Nov 2026). --}}
+@props(['dir' => 'ltr', 'lang' => 'en', 'ads' => true, 'title' => null, 'description' => null])
 <!DOCTYPE html>
 <html lang="{{ $lang }}" dir="{{ $dir }}">
-<head>
-    <meta charset="utf-8">
+<head><meta charset="utf-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? config('app.name') }}</title>
     <meta name="description" content="{{ $description ?? 'Play exciting games, discover fun quizzes, create personalized wishes and explore something new every day.' }}">

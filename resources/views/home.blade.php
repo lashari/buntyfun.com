@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout title="BuntyFun — Free Games, Quizzes, Birthday Wishes & AI Fun" description="Free browser games, fun quizzes, birthday wishes, Islamic baby names, Urdu poetry and AI fun tools. No sign-up, play in your browser.">
     <section class="bg-gradient-to-b from-violet-50 to-white px-4 py-16 text-center">
         <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Your Daily Dose of Fun.</h1>
         <p class="mx-auto mt-4 max-w-xl text-lg text-slate-600">
