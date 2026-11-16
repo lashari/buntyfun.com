@@ -1,4 +1,5 @@
-<x-layout :title="$name->name_en.' — Meaning — BuntyFun'" :description="Str::limit($name->meaning, 150)">
+<x-layout :title="$name->name_en.' — Meaning — BuntyFun'" :description="Str::limit($name->meaning, 150)"
+          :meta="$name->meta" :breadcrumbs="['Islamic Names' => route('name-entries.index'), $name->name_en => null]">
     <div class="mx-auto max-w-xl px-4 py-12">
         <h1 class="text-3xl font-bold">{{ $name->name_en }}</h1>
         @if ($name->name_ar)

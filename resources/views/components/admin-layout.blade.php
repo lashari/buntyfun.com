@@ -13,10 +13,15 @@
             <div class="border-b border-slate-200 px-4 py-4 text-lg font-bold text-violet-600">BuntyFun Admin</div>
             <nav class="flex flex-col gap-1 p-3 text-sm font-medium text-slate-600">
                 <a href="{{ route('admin.dashboard') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Dashboard</a>
+                <a href="{{ route('admin.ai-studio.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">AI Studio</a>
+                <a href="{{ route('admin.automation.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Automation</a>
+                <a href="{{ route('admin.automation.calendar') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Calendar</a>
+                <span class="mt-2 px-3 text-xs uppercase tracking-wide text-slate-400">Content</span>
                 <a href="{{ route('admin.quizzes.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Quizzes</a>
                 <a href="{{ route('admin.games.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Games</a>
                 <a href="{{ route('admin.birthday-messages.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Birthday Wishes</a>
                 <a href="{{ route('admin.name-entries.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Islamic Names</a>
+                <a href="{{ route('admin.messages.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Messages &amp; Quotes</a>
                 <a href="{{ route('admin.urdu-content.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Urdu Content</a>
                 <a href="{{ route('admin.wallpapers.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Wallpapers</a>
                 <a href="{{ route('admin.ai-tools.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">AI Tools</a>

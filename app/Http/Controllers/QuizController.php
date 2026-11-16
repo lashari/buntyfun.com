@@ -19,6 +19,7 @@ class QuizController extends Controller
     public function show(Quiz $quiz)
     {
         abort_unless($quiz->status === 'published', 404);
+        \App\Models\ContentView::track($quiz);
 
         $quiz->load('questions.answers');
 

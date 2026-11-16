@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 class AiToolAdminController extends Controller
 {
     use HandlesPublishing;
+    use \App\Http\Controllers\Admin\Concerns\SavesContentMeta;
 
     public function index()
     {
@@ -26,11 +27,12 @@ class AiToolAdminController extends Controller
     public function store(Request $request)
     {
         $data = $this->validated($request);
-        $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
+        $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['title']);
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $tool = AiTool::create($data);
         AuditLog::record($request->user(), 'created', 'ai_tool', $tool->id);
+        $this->saveMeta($request, $tool);
 
         return redirect()->route('admin.ai-tools.index')->with('status', 'Saved.');
     }
@@ -43,11 +45,12 @@ class AiToolAdminController extends Controller
     public function update(Request $request, AiTool $aiTool)
     {
         $data = $this->validated($request);
-        $data['slug'] = $data['slug'] ?: $aiTool->slug;
+        $data['slug'] = ($data['slug'] ?? null) ?: $aiTool->slug;
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $aiTool->update($data);
         AuditLog::record($request->user(), 'updated', 'ai_tool', $aiTool->id);
+        $this->saveMeta($request, $aiTool);
 
         return redirect()->route('admin.ai-tools.index')->with('status', 'Saved.');
     }

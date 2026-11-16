@@ -16,6 +16,12 @@ class AuditLog extends Model
         return $this->belongsTo(User::class);
     }
 
+    /** Automation (cron) actions: no human user. */
+    public static function recordSystem(string $action, string $entityType, int $entityId): self
+    {
+        return self::create(['user_id' => null, 'action' => 'auto:'.$action, 'entity_type' => $entityType, 'entity_id' => $entityId]);
+    }
+
     public static function record(User $user, string $action, string $entityType, int $entityId): self
     {
         return self::create([

@@ -34,6 +34,7 @@ class NameEntryController extends Controller
     public function show(NameEntry $nameEntry)
     {
         abort_unless($nameEntry->status === 'published', 404);
+        \App\Models\ContentView::track($nameEntry);
 
         $related = NameEntry::where('status', 'published')
             ->where('gender', $nameEntry->gender)

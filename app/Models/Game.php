@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Game extends Model
 {
+    use \App\Models\Concerns\HasContentMeta;
+
     protected $fillable = ['category_id', 'slug', 'title', 'config_json', 'status'];
 
     protected $casts = [

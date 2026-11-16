@@ -24,6 +24,8 @@
                 <option value="published" @selected($item->status === 'published')>Published</option>
             </select>
         </div>
+        @include('admin.partials.seo-fields', ['item' => $item])
+
 
         <button type="submit" class="rounded-lg bg-violet-600 px-5 py-2 font-semibold text-white hover:bg-violet-700">Save</button>
     </form>

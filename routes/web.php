@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AiKeyAdminController;
+use App\Http\Controllers\Admin\AiStudioController;
 use App\Http\Controllers\Admin\AiToolAdminController;
+use App\Http\Controllers\Admin\AutomationController;
+use App\Http\Controllers\Admin\MessageAdminController;
 use App\Http\Controllers\Admin\BirthdayMessageAdminController;
 use App\Http\Controllers\Admin\CategoryAdminController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -14,6 +18,7 @@ use App\Http\Controllers\AiFunController;
 use App\Http\Controllers\BirthdayMessageController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NameEntryController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\SearchController;
@@ -28,6 +33,7 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
+Route::get('/feed.xml', [SeoController::class, 'feed'])->name('feed');
 
 Route::post('/share-events', [ShareEventController::class, 'store'])->middleware('throttle:30,1')->name('share-events.store');
 
@@ -57,6 +63,11 @@ Route::prefix('islamic-names')->group(function () {
 Route::prefix('ur/entertainment')->group(function () {
     Route::get('/', [UrduContentController::class, 'index'])->name('urdu-content.index');
     Route::get('/{urduContent:slug}', [UrduContentController::class, 'show'])->name('urdu-content.show');
+});
+
+Route::prefix('messages')->group(function () {
+    Route::get('/', [MessageController::class, 'index'])->name('messages.index');
+    Route::get('/{message:slug}', [MessageController::class, 'show'])->name('messages.show');
 });
 
 Route::prefix('wallpapers')->group(function () {
@@ -106,6 +117,30 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('wallpapers', WallpaperAdminController::class)->except(['show']);
         Route::post('wallpapers/{wallpaper}/publish', [WallpaperAdminController::class, 'publish'])->name('wallpapers.publish');
         Route::post('wallpapers/{wallpaper}/unpublish', [WallpaperAdminController::class, 'unpublish'])->name('wallpapers.unpublish');
+
+        Route::resource('messages', MessageAdminController::class)->except(['show']);
+        Route::post('messages/{message}/publish', [MessageAdminController::class, 'publish'])->name('messages.publish');
+        Route::post('messages/{message}/unpublish', [MessageAdminController::class, 'unpublish'])->name('messages.unpublish');
+
+        Route::get('ai-studio', [AiStudioController::class, 'index'])->name('ai-studio.index');
+        Route::post('ai-studio/generate', [AiStudioController::class, 'generate'])->middleware('throttle:10,1')->name('ai-studio.generate');
+        Route::get('ai-studio/{draft}', [AiStudioController::class, 'show'])->name('ai-studio.show');
+        Route::put('ai-studio/{draft}', [AiStudioController::class, 'update'])->name('ai-studio.update');
+        Route::post('ai-studio/{draft}/approve', [AiStudioController::class, 'approve'])->name('ai-studio.approve');
+        Route::post('ai-studio/{draft}/reject', [AiStudioController::class, 'reject'])->name('ai-studio.reject');
+        Route::post('ai-studio/{draft}/regenerate', [AiStudioController::class, 'regenerate'])->middleware('throttle:10,1')->name('ai-studio.regenerate');
+
+        Route::get('automation', [AutomationController::class, 'index'])->name('automation.index');
+        Route::get('automation/calendar', [AutomationController::class, 'calendar'])->name('automation.calendar');
+        Route::get('automation/settings', [AutomationController::class, 'settings'])->name('automation.settings');
+        Route::put('automation/settings', [AutomationController::class, 'saveSettings'])->name('automation.settings.save');
+        Route::post('ai-keys', [AiKeyAdminController::class, 'store'])->middleware('throttle:10,1')->name('ai-keys.store');
+        Route::post('ai-keys/{key}/toggle', [AiKeyAdminController::class, 'toggle'])->name('ai-keys.toggle');
+        Route::post('ai-keys/{key}/test', [AiKeyAdminController::class, 'test'])->middleware('throttle:10,1')->name('ai-keys.test');
+        Route::delete('ai-keys/{key}', [AiKeyAdminController::class, 'destroy'])->name('ai-keys.destroy');
+        Route::get('automation/runs/{run}', [AutomationController::class, 'showRun'])->name('automation.runs.show');
+        Route::put('automation/{job}', [AutomationController::class, 'update'])->name('automation.update');
+        Route::post('automation/{job}/run', [AutomationController::class, 'run'])->middleware('throttle:10,1')->name('automation.run');
 
         Route::resource('ai-tools', AiToolAdminController::class)->except(['show']);
         Route::post('ai-tools/{ai_tool}/publish', [AiToolAdminController::class, 'publish'])->name('ai-tools.publish');

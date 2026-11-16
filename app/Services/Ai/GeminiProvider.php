@@ -15,20 +15,34 @@ class GeminiProvider implements AiProviderContract
 
     public function generate(string $prompt): string
     {
+        return $this->call($prompt, 300, 0.9, false)->text;
+    }
+
+    public function generateDetailed(string $prompt, int $maxTokens = 1500, float $temperature = 0.8): AiResult
+    {
+        return $this->call($prompt, $maxTokens, $temperature, true);
+    }
+
+    private function call(string $prompt, int $maxTokens, float $temperature, bool $json): AiResult
+    {
         if (! $this->apiKey) {
             throw AiGenerationException::notConfigured('Gemini');
         }
 
         try {
-            $response = Http::timeout(15)
-                ->post("https://generativelanguage.googleapis.com/v1beta/models/{$this->model}:generateContent?key={$this->apiKey}", [
+            $config = ['maxOutputTokens' => $maxTokens, 'temperature' => $temperature];
+            if ($json) {
+                $config['responseMimeType'] = 'application/json';
+            }
+
+            // Key in a header, not the URL, so it can never show up in a logged URL.
+            $response = Http::timeout($json ? 60 : 15)
+                ->withHeaders(['x-goog-api-key' => $this->apiKey])
+                ->post("https://generativelanguage.googleapis.com/v1beta/models/{$this->model}:generateContent", [
                     'contents' => [
                         ['parts' => [['text' => $prompt]]],
                     ],
-                    'generationConfig' => [
-                        'maxOutputTokens' => 300,
-                        'temperature' => 0.9,
-                    ],
+                    'generationConfig' => $config,
                 ]);
         } catch (Throwable $e) {
             Log::error('Gemini request failed', ['error' => $e->getMessage()]);
@@ -37,7 +51,7 @@ class GeminiProvider implements AiProviderContract
 
         if ($response->failed()) {
             Log::error('Gemini returned an error status', ['status' => $response->status()]);
-            throw AiGenerationException::requestFailed();
+            throw AiGenerationException::requestFailed($response->status());
         }
 
         $text = $response->json('candidates.0.content.parts.0.text');
@@ -46,6 +60,10 @@ class GeminiProvider implements AiProviderContract
             throw AiGenerationException::emptyResponse();
         }
 
-        return trim($text);
+        return new AiResult(
+            trim($text),
+            $response->json('usageMetadata.promptTokenCount'),
+            $response->json('usageMetadata.candidatesTokenCount'),
+        );
     }
 }

@@ -27,6 +27,7 @@ class WallpaperController extends Controller
     public function show(Wallpaper $wallpaper)
     {
         abort_unless($wallpaper->status === 'published', 404);
+        \App\Models\ContentView::track($wallpaper);
 
         return view('wallpapers.show', ['wallpaper' => $wallpaper]);
     }

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Storage;
 
 class Wallpaper extends Model
 {
+    use \App\Models\Concerns\HasContentMeta;
+
     protected $fillable = [
         'title', 'slug', 'category', 'orientation', 'width', 'height',
         'file_path', 'license', 'attribution', 'source_url', 'status',

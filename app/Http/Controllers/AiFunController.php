@@ -19,6 +19,7 @@ class AiFunController extends Controller
     public function show(AiTool $aiTool)
     {
         abort_unless($aiTool->status === 'published', 404);
+        \App\Models\ContentView::track($aiTool);
 
         return view('ai-fun.show', ['tool' => $aiTool, 'remaining' => $this->remaining($aiTool, request())]);
     }

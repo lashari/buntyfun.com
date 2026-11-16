@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 class GameAdminController extends Controller
 {
     use HandlesPublishing;
+    use \App\Http\Controllers\Admin\Concerns\SavesContentMeta;
 
     public function index()
     {
@@ -27,11 +28,12 @@ class GameAdminController extends Controller
     public function store(Request $request)
     {
         $data = $this->validated($request);
-        $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
+        $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['title']);
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $game = Game::create($data);
         AuditLog::record($request->user(), 'created', 'game', $game->id);
+        $this->saveMeta($request, $game);
 
         return redirect()->route('admin.games.index')->with('status', 'Game saved.');
     }
@@ -44,11 +46,12 @@ class GameAdminController extends Controller
     public function update(Request $request, Game $game)
     {
         $data = $this->validated($request);
-        $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
+        $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['title']);
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $game->update($data);
         AuditLog::record($request->user(), 'updated', 'game', $game->id);
+        $this->saveMeta($request, $game);
 
         return redirect()->route('admin.games.index')->with('status', 'Game saved.');
     }

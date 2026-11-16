@@ -63,6 +63,8 @@
             </label>
             <textarea name="questions_json" rows="12" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs">{{ old('questions_json', $existingQuestions->toJson(JSON_PRETTY_PRINT)) }}</textarea>
         </div>
+        @include('admin.partials.seo-fields', ['item' => $quiz])
+
 
         <button type="submit" class="rounded-lg bg-violet-600 px-5 py-2 font-semibold text-white hover:bg-violet-700">Save</button>
     </form>

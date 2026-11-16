@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Quiz extends Model
 {
+    use \App\Models\Concerns\HasContentMeta;
+
     protected $fillable = ['category_id', 'slug', 'title', 'language', 'status', 'published_at'];
 
     protected $casts = [
