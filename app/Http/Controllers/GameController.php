@@ -17,6 +17,7 @@ class GameController extends Controller
     public function show(Game $game)
     {
         abort_unless($game->status === 'published', 404);
+        \App\Models\ContentView::track($game);
 
         $view = 'games.play.'.str_replace('-', '_', $game->slug);
         abort_unless(view()->exists($view), 404);

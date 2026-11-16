@@ -1,5 +1,6 @@
 <x-layout :dir="$message->language === 'ur' ? 'rtl' : 'ltr'" :lang="$message->language"
-          :title="Str::headline($message->tone).' Birthday Wish for '.Str::headline($message->relationship).': '.Str::limit($message->body, 38).' — BuntyFun'" :description="Str::limit($message->body, 140).' Copy or share this birthday wish.'">
+          :title="Str::headline($message->tone).' Birthday Wish for '.Str::headline($message->relationship).': '.Str::limit($message->body, 38).' — BuntyFun'" :description="Str::limit($message->body, 140).' Copy or share this birthday wish.'"
+          :meta="$message->meta" :breadcrumbs="['Birthday Wishes' => route('birthday-messages.index'), Str::headline($message->relationship) => route('birthday-messages.index', ['relationship' => $message->relationship]), 'Wish' => null]">
     <div class="mx-auto max-w-xl px-4 py-12">
         <p class="text-xs uppercase tracking-wide text-slate-500">{{ Str::headline($message->relationship) }} · {{ Str::headline($message->tone) }}</p>
         <p class="mt-4 text-xl leading-relaxed">{{ $message->body }}</p>
@@ -29,6 +30,19 @@
                 Share on WhatsApp
             </a>
         </div>
+
+        @php
+            $related = \App\Models\BirthdayMessage::where('status', 'published')->where('relationship', $message->relationship)
+                ->whereKeyNot($message->id)->inRandomOrder()->limit(4)->get();
+        @endphp
+        @if ($related->isNotEmpty())
+            <h2 class="mt-12 text-lg font-bold">More wishes for {{ Str::lower(Str::headline($message->relationship)) }}</h2>
+            <div class="mt-3 space-y-3">
+                @foreach ($related as $r)
+                    <a href="{{ route('birthday-messages.show', $r) }}" class="block rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-700 hover:shadow" @if ($r->language === 'ur') dir="rtl" @endif>{{ Str::limit($r->body, 120) }}</a>
+                @endforeach
+            </div>
+        @endif
 
         <a href="{{ route('birthday-messages.index') }}" class="mt-8 block text-sm text-slate-500 hover:underline">More birthday wishes</a>
     </div>

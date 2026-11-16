@@ -26,6 +26,7 @@ class UrduContentController extends Controller
     public function show(UrduContent $urduContent)
     {
         abort_unless($urduContent->status === 'published', 404);
+        \App\Models\ContentView::track($urduContent);
 
         return view('urdu.show', ['item' => $urduContent]);
     }

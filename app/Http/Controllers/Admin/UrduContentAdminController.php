@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 class UrduContentAdminController extends Controller
 {
     use HandlesPublishing;
+    use \App\Http\Controllers\Admin\Concerns\SavesContentMeta;
 
     public function index()
     {
@@ -26,11 +27,12 @@ class UrduContentAdminController extends Controller
     public function store(Request $request)
     {
         $data = $this->validated($request);
-        $data['slug'] = $data['slug'] ?: Str::slug($data['category'].'-'.Str::random(6));
+        $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['category'].'-'.Str::random(6));
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $item = UrduContent::create($data);
         AuditLog::record($request->user(), 'created', 'urdu_content', $item->id);
+        $this->saveMeta($request, $item);
 
         return redirect()->route('admin.urdu-content.index')->with('status', 'Saved.');
     }
@@ -43,11 +45,12 @@ class UrduContentAdminController extends Controller
     public function update(Request $request, UrduContent $urduContent)
     {
         $data = $this->validated($request);
-        $data['slug'] = $data['slug'] ?: $urduContent->slug;
+        $data['slug'] = ($data['slug'] ?? null) ?: $urduContent->slug;
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $urduContent->update($data);
         AuditLog::record($request->user(), 'updated', 'urdu_content', $urduContent->id);
+        $this->saveMeta($request, $urduContent);
 
         return redirect()->route('admin.urdu-content.index')->with('status', 'Saved.');
     }

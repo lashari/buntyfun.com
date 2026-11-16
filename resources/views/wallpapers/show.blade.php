@@ -1,4 +1,5 @@
-<x-layout :title="$wallpaper->title.' — Wallpaper — BuntyFun'" :description="'Download '.$wallpaper->title.' free, '.$wallpaper->resolutionLabel().'.'">
+<x-layout :title="$wallpaper->title.' — Wallpaper — BuntyFun'" :description="'Download '.$wallpaper->title.' free, '.$wallpaper->resolutionLabel().'.'"
+          :meta="$wallpaper->meta" :og-image="$wallpaper->url()" :breadcrumbs="['Wallpapers' => route('wallpapers.index'), $wallpaper->title => null]">
     <div class="mx-auto max-w-3xl px-4 py-10">
         <img src="{{ $wallpaper->url() }}" alt="{{ $wallpaper->title }}" class="w-full rounded-xl border border-slate-200">
 

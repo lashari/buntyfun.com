@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 class NameEntryAdminController extends Controller
 {
     use HandlesPublishing;
+    use \App\Http\Controllers\Admin\Concerns\SavesContentMeta;
 
     public function index()
     {
@@ -26,11 +27,12 @@ class NameEntryAdminController extends Controller
     public function store(Request $request)
     {
         $data = $this->validated($request);
-        $data['slug'] = $data['slug'] ?: Str::slug($data['name_en']);
+        $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['name_en']);
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $name = NameEntry::create($data);
         AuditLog::record($request->user(), 'created', 'name_entry', $name->id);
+        $this->saveMeta($request, $name);
 
         return redirect()->route('admin.name-entries.index')->with('status', 'Saved.');
     }
@@ -43,11 +45,12 @@ class NameEntryAdminController extends Controller
     public function update(Request $request, NameEntry $nameEntry)
     {
         $data = $this->validated($request);
-        $data['slug'] = $data['slug'] ?: $nameEntry->slug;
+        $data['slug'] = ($data['slug'] ?? null) ?: $nameEntry->slug;
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $nameEntry->update($data);
         AuditLog::record($request->user(), 'updated', 'name_entry', $nameEntry->id);
+        $this->saveMeta($request, $nameEntry);
 
         return redirect()->route('admin.name-entries.index')->with('status', 'Saved.');
     }

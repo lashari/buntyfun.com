@@ -35,6 +35,7 @@ class BirthdayMessageController extends Controller
     public function show(BirthdayMessage $birthdayMessage)
     {
         abort_unless($birthdayMessage->status === 'published', 404);
+        \App\Models\ContentView::track($birthdayMessage);
 
         return view('birthday-messages.show', ['message' => $birthdayMessage]);
     }

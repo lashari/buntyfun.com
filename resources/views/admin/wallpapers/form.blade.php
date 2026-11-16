@@ -64,6 +64,8 @@
                 <option value="published" @selected($wallpaper->status === 'published')>Published</option>
             </select>
         </div>
+        @include('admin.partials.seo-fields', ['item' => $wallpaper])
+
 
         <button type="submit" class="rounded-lg bg-violet-600 px-5 py-2 font-semibold text-white hover:bg-violet-700">Save</button>
     </form>

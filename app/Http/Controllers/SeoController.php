@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AiTool;
 use App\Models\BirthdayMessage;
 use App\Models\Game;
+use App\Models\Message;
 use App\Models\NameEntry;
 use App\Models\Quiz;
 use App\Models\UrduContent;
@@ -24,33 +25,38 @@ class SeoController extends Controller
             ['loc' => route('urdu-content.index'), 'changefreq' => 'weekly'],
             ['loc' => route('wallpapers.index'), 'changefreq' => 'weekly'],
             ['loc' => route('ai-tools.index'), 'changefreq' => 'weekly'],
+            ['loc' => route('messages.index'), 'changefreq' => 'daily'],
         ]);
 
-        foreach (Quiz::where('status', 'published')->get() as $quiz) {
-            $urls->push(['loc' => route('quizzes.show', $quiz), 'changefreq' => 'monthly']);
+        foreach (Message::indexable()->get() as $message) {
+            $urls->push(['loc' => route('messages.show', $message), 'changefreq' => 'monthly', 'lastmod' => $message->updated_at]);
         }
 
-        foreach (Game::where('status', 'published')->get() as $game) {
+        foreach (Quiz::indexable()->get() as $quiz) {
+            $urls->push(['loc' => route('quizzes.show', $quiz), 'changefreq' => 'monthly', 'lastmod' => $quiz->updated_at]);
+        }
+
+        foreach (Game::indexable()->get() as $game) {
             $urls->push(['loc' => route('games.show', $game), 'changefreq' => 'monthly']);
         }
 
-        foreach (BirthdayMessage::where('status', 'published')->get() as $message) {
+        foreach (BirthdayMessage::indexable()->get() as $message) {
             $urls->push(['loc' => route('birthday-messages.show', $message), 'changefreq' => 'monthly']);
         }
 
-        foreach (NameEntry::where('status', 'published')->get() as $name) {
+        foreach (NameEntry::indexable()->get() as $name) {
             $urls->push(['loc' => route('name-entries.show', $name), 'changefreq' => 'yearly']);
         }
 
-        foreach (UrduContent::where('status', 'published')->get() as $item) {
+        foreach (UrduContent::indexable()->get() as $item) {
             $urls->push(['loc' => route('urdu-content.show', $item), 'changefreq' => 'monthly']);
         }
 
-        foreach (Wallpaper::where('status', 'published')->get() as $wallpaper) {
+        foreach (Wallpaper::indexable()->get() as $wallpaper) {
             $urls->push(['loc' => route('wallpapers.show', $wallpaper), 'changefreq' => 'yearly']);
         }
 
-        foreach (AiTool::where('status', 'published')->get() as $tool) {
+        foreach (AiTool::indexable()->get() as $tool) {
             $urls->push(['loc' => route('ai-tools.show', $tool), 'changefreq' => 'monthly']);
         }
 
@@ -64,9 +70,32 @@ class SeoController extends Controller
         $lines = [
             'User-agent: *',
             'Allow: /',
+            'Disallow: /admin',
+            'Disallow: /search',
             'Sitemap: '.route('sitemap'),
         ];
 
         return response(implode("\n", $lines), 200)->header('Content-Type', 'text/plain');
+    }
+
+    /** RSS 2.0: newest published wishes, messages, Urdu items, names and quizzes. */
+    public function feed(): Response
+    {
+        $items = collect()
+            ->merge(BirthdayMessage::indexable()->latest('updated_at')->limit(15)->get()->map(fn ($m) => [
+                'title' => ucwords(str_replace('_', ' ', $m->tone)).' birthday wish for '.str_replace('_', ' ', $m->relationship),
+                'link' => route('birthday-messages.show', $m), 'text' => $m->body, 'date' => $m->updated_at]))
+            ->merge(Message::indexable()->latest('updated_at')->limit(15)->get()->map(fn ($m) => [
+                'title' => $m->title ?: $m->categoryLabel(), 'link' => route('messages.show', $m), 'text' => $m->body, 'date' => $m->updated_at]))
+            ->merge(UrduContent::indexable()->latest('updated_at')->limit(10)->get()->map(fn ($m) => [
+                'title' => 'اردو: '.$m->category, 'link' => route('urdu-content.show', $m), 'text' => $m->body, 'date' => $m->updated_at]))
+            ->merge(NameEntry::indexable()->latest('updated_at')->limit(10)->get()->map(fn ($m) => [
+                'title' => $m->name_en.' — name meaning', 'link' => route('name-entries.show', $m), 'text' => $m->meaning, 'date' => $m->updated_at]))
+            ->merge(Quiz::indexable()->latest('updated_at')->limit(10)->get()->map(fn ($m) => [
+                'title' => $m->title, 'link' => route('quizzes.show', $m), 'text' => 'Take the quiz: '.$m->title, 'date' => $m->updated_at]))
+            ->sortByDesc('date')->take(30)->values();
+
+        return response(view('seo.feed', ['items' => $items])->render(), 200)
+            ->header('Content-Type', 'application/rss+xml; charset=UTF-8');
     }
 }

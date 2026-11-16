@@ -1,4 +1,5 @@
-<x-layout :title="$quiz->title.' — BuntyFun'" description="Take the quiz and share your result.">
+<x-layout :title="$quiz->title.' — BuntyFun'" description="Take the quiz and share your result."
+          :meta="$quiz->meta" :breadcrumbs="['Quizzes' => route('quizzes.index'), $quiz->title => null]">
     <div class="mx-auto max-w-2xl px-4 py-10">
         <h1 class="text-2xl font-bold">{{ $quiz->title }}</h1>
 

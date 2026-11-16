@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 class QuizAdminController extends Controller
 {
     use HandlesPublishing;
+    use \App\Http\Controllers\Admin\Concerns\SavesContentMeta;
 
     public function index()
     {
@@ -29,13 +30,14 @@ class QuizAdminController extends Controller
     public function store(Request $request)
     {
         $data = $this->validated($request);
-        $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
+        $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['title']);
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $quiz = Quiz::create($data);
         $this->syncQuestions($quiz, $request->input('questions_json'));
 
         AuditLog::record($request->user(), 'created', 'quiz', $quiz->id);
+        $this->saveMeta($request, $quiz);
 
         return redirect()->route('admin.quizzes.index')->with('status', 'Quiz saved.');
     }
@@ -50,13 +52,14 @@ class QuizAdminController extends Controller
     public function update(Request $request, Quiz $quiz)
     {
         $data = $this->validated($request);
-        $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
+        $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['title']);
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $quiz->update($data);
         $this->syncQuestions($quiz, $request->input('questions_json'));
 
         AuditLog::record($request->user(), 'updated', 'quiz', $quiz->id);
+        $this->saveMeta($request, $quiz);
 
         return redirect()->route('admin.quizzes.index')->with('status', 'Quiz saved.');
     }

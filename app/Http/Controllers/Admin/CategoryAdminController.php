@@ -25,7 +25,7 @@ class CategoryAdminController extends Controller
             'ads_enabled' => ['nullable', 'boolean'],
         ]);
 
-        $data['slug'] = $data['slug'] ?: Str::slug($data['name']);
+        $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['name']);
         $data['ads_enabled'] = $request->boolean('ads_enabled');
 
         Category::create($data);

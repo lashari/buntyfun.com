@@ -15,6 +15,7 @@ use Illuminate\Validation\Rule;
 class WallpaperAdminController extends Controller
 {
     use HandlesPublishing;
+    use \App\Http\Controllers\Admin\Concerns\SavesContentMeta;
 
     public function index()
     {
@@ -30,11 +31,12 @@ class WallpaperAdminController extends Controller
     {
         $data = $this->validated($request, requireImage: true);
         $data = $this->storeUpload($request, $data);
-        $data['slug'] = $data['slug'] ?: Str::slug($data['title']).'-'.Str::random(6);
+        $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['title']).'-'.Str::random(6);
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $wallpaper = Wallpaper::create($data);
         AuditLog::record($request->user(), 'created', 'wallpaper', $wallpaper->id);
+        $this->saveMeta($request, $wallpaper);
 
         return redirect()->route('admin.wallpapers.index')->with('status', 'Saved.');
     }
@@ -51,11 +53,12 @@ class WallpaperAdminController extends Controller
             $data = $this->storeUpload($request, $data);
             Storage::disk('public')->delete($wallpaper->file_path);
         }
-        $data['slug'] = $data['slug'] ?: $wallpaper->slug;
+        $data['slug'] = ($data['slug'] ?? null) ?: $wallpaper->slug;
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $wallpaper->update($data);
         AuditLog::record($request->user(), 'updated', 'wallpaper', $wallpaper->id);
+        $this->saveMeta($request, $wallpaper);
 
         return redirect()->route('admin.wallpapers.index')->with('status', 'Saved.');
     }

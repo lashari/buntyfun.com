@@ -1,4 +1,5 @@
-<x-layout dir="rtl" lang="ur" :title="Str::limit($item->body, 50).' — BuntyFun'" description="اردو میں پیغام شیئر کریں۔">
+<x-layout dir="rtl" lang="ur" :title="Str::limit($item->body, 50).' — BuntyFun'" description="اردو میں پیغام شیئر کریں۔"
+          :meta="$item->meta" :breadcrumbs="['اردو' => route('urdu-content.index'), $item->category => null]">
     <div class="mx-auto max-w-xl px-4 py-12">
         <p class="text-xs uppercase tracking-wide text-slate-500">{{ $item->category }}</p>
         <p class="mt-4 text-xl leading-relaxed">{{ $item->body }}</p>

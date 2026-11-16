@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 class BirthdayMessageAdminController extends Controller
 {
     use HandlesPublishing;
+    use \App\Http\Controllers\Admin\Concerns\SavesContentMeta;
 
     public function index()
     {
@@ -30,11 +31,12 @@ class BirthdayMessageAdminController extends Controller
     public function store(Request $request)
     {
         $data = $this->validated($request);
-        $data['slug'] = $data['slug'] ?: Str::slug($data['relationship'].'-'.$data['tone'].'-'.Str::random(6));
+        $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['relationship'].'-'.$data['tone'].'-'.Str::random(6));
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $message = BirthdayMessage::create($data);
         AuditLog::record($request->user(), 'created', 'birthday_message', $message->id);
+        $this->saveMeta($request, $message);
 
         return redirect()->route('admin.birthday-messages.index')->with('status', 'Saved.');
     }
@@ -50,11 +52,12 @@ class BirthdayMessageAdminController extends Controller
     public function update(Request $request, BirthdayMessage $birthdayMessage)
     {
         $data = $this->validated($request);
-        $data['slug'] = $data['slug'] ?: $birthdayMessage->slug;
+        $data['slug'] = ($data['slug'] ?? null) ?: $birthdayMessage->slug;
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $birthdayMessage->update($data);
         AuditLog::record($request->user(), 'updated', 'birthday_message', $birthdayMessage->id);
+        $this->saveMeta($request, $birthdayMessage);
 
         return redirect()->route('admin.birthday-messages.index')->with('status', 'Saved.');
     }

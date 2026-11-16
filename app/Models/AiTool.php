@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AiTool extends Model
 {
+    use \App\Models\Concerns\HasContentMeta;
+
     protected $fillable = ['slug', 'title', 'description', 'prompt_template', 'status'];
 
     public function usages(): HasMany
