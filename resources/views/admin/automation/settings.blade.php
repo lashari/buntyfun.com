@@ -89,6 +89,14 @@
                 <input type="number" name="drafts_per_day" min="0" max="30" value="{{ $values['drafts_per_day'] }}" class="mt-1 w-28 rounded-lg border border-slate-300 px-3 py-2">
             </div>
             <div>
+                <label class="inline-flex items-center gap-2 text-sm font-medium">
+                    <input type="hidden" name="auto_publish" value="0">
+                    <input type="checkbox" name="auto_publish" value="1" @checked($values['auto_publish']) class="rounded border-slate-300">
+                    Auto-publish drafts that pass every check
+                </label>
+                <p class="text-xs text-slate-500">The daily job publishes a birthday wish, message or Urdu draft at once when all its quality checks are green. A draft with any failed check, and every name meaning, still waits in AI Studio.</p>
+            </div>
+            <div>
                 <label class="block text-sm font-medium">Category priority (0 = off, 10 = most)</label>
                 <p class="text-xs text-slate-500">The daily job splits drafts by these weights, nudged toward the sections visitors actually opened in the last 28 days.</p>
                 <div class="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">

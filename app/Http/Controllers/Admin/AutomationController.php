@@ -91,6 +91,7 @@ class AutomationController extends Controller
             'ai_price_output_per_m' => ['required', 'numeric', 'min:0', 'max:100'],
             'approved_name_references' => ['nullable', 'string', 'max:3000'],
             'alert_email' => ['nullable', 'email'],
+            'auto_publish' => ['nullable', 'boolean'],
         ]);
 
         Setting::put('drafts_per_day', (int) $data['drafts_per_day']);
@@ -100,6 +101,7 @@ class AutomationController extends Controller
         Setting::put('ai_price_output_per_m', (float) $data['ai_price_output_per_m']);
         Setting::put('approved_name_references', collect(preg_split('/\R/', (string) ($data['approved_name_references'] ?? '')))->map('trim')->filter()->values()->all());
         Setting::put('alert_email', (string) ($data['alert_email'] ?? ''));
+        Setting::put('auto_publish', $request->boolean('auto_publish'));
         AuditLog::record($request->user(), 'settings_updated', 'settings', 0);
 
         return back()->with('status', 'Settings saved.');
@@ -112,7 +114,11 @@ class AutomationController extends Controller
         $published = AuditLog::whereIn('action', ['published', 'auto:published_scheduled', 'approved_ai_draft:now'])
             ->where('created_at', '>=', now()->subDays(14))->latest()->get();
 
+        $social = \App\Models\SocialPost::with('account')->whereIn('status', ['approved', 'draft'])
+            ->whereNotNull('scheduled_at')->where('scheduled_at', '>', now()->subDay())->orderBy('scheduled_at')->get();
+
         return view('admin.automation.calendar', [
+            'social' => $social->groupBy(fn ($p) => $p->scheduled_at->format('Y-m-d')),
             'scheduled' => $scheduled->groupBy(fn ($m) => $m->publish_at->format('Y-m-d')),
             'published' => $published->groupBy(fn ($a) => $a->created_at->format('Y-m-d')),
         ]);

@@ -10,6 +10,9 @@
         <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs">{{ $draft->status }}</span>
         @if ($draft->quality_score !== null)<span class="rounded-full bg-violet-100 px-2 py-0.5 text-xs text-violet-700">score {{ $draft->quality_score }}</span>@endif
         @if ($draft->target_id)<span class="text-xs text-slate-500">→ {{ $draft->target_type }} #{{ $draft->target_id }}</span>@endif
+        @if ($draft->status === 'approved' && $draft->target_id)
+            <a href="{{ route('admin.social.create', ['type' => $draft->target_type, 'id' => $draft->target_id]) }}" class="rounded-lg bg-violet-600 px-3 py-1 text-xs font-semibold text-white">Create social post</a>
+        @endif
     </div>
 
     @if ($draft->status === 'failed')

@@ -41,6 +41,15 @@ return [
         'client_id' => env('ADSENSE_CLIENT_ID'),
     ],
 
+    // Meta (Facebook Page + Instagram) publishing. App ID and login configuration ID are
+    // public identifiers; the app secret lives only in the server .env.
+    'meta' => [
+        'app_id' => env('META_APP_ID', '2532222677188710'),
+        'app_secret' => env('META_APP_SECRET'),
+        'config_id' => env('META_LOGIN_CONFIG_ID', '1909608247125001'),
+        'graph_version' => env('META_GRAPH_VERSION', 'v27.0'),
+    ],
+
     'ga4' => [
         'measurement_id' => env('GA4_MEASUREMENT_ID'),
     ],

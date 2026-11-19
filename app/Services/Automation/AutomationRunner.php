@@ -19,6 +19,7 @@ class AutomationRunner
         'health_report' => Tasks\HealthReportTask::class,
         'broken_links' => Tasks\BrokenLinksTask::class,
         'content_review' => Tasks\ContentReviewTask::class,
+        'social_publish' => Tasks\SocialPublishTask::class,
     ];
 
     /** Called by cron every 5 minutes. Returns the runs it made. */

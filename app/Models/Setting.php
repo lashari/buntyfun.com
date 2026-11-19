@@ -36,6 +36,10 @@ class Setting extends Model
         'approved_name_references' => [],
         // Failure alerts by email (only if mail is configured on the server).
         'alert_email' => '',
+        // Auto-publish (19 Nov 2026): the daily job publishes a draft at once when
+        // EVERY quality check passed (blocking and non-blocking). Name meanings
+        // never auto-publish: they need a person to verify the reference.
+        'auto_publish' => false,
     ];
 
     public static function get(string $key): mixed
