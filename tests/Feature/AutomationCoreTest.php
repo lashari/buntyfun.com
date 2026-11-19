@@ -231,6 +231,49 @@ class AutomationCoreTest extends TestCase
         $this->assertStringContainsString('budget', $run->message);
     }
 
+    public function test_auto_publish_publishes_only_fully_green_drafts(): void
+    {
+        $this->admin();
+        $this->fakeGemini($this->goodMessage());
+        Setting::put('auto_publish', true);
+        Setting::put('drafts_per_day', 2);
+        Setting::put('type_weights', ['birthday' => 0, 'message' => 1, 'urdu' => 0, 'name' => 0]);
+        $job = AutomationJob::where('key', 'generate_drafts')->first();
+
+        $run = app(AutomationRunner::class)->run($job, 'test');
+
+        $this->assertSame('success', $run->status, $run->message);
+        // first draft is all green -> published; the identical second one is a duplicate -> waits
+        $this->assertSame(1, Message::where('status', 'published')->count());
+        $this->assertSame(1, AiDraft::where('status', 'approved')->count());
+        $this->assertSame(1, AiDraft::where('status', 'generated')->count());
+        $this->assertStringContainsString('auto-published 1', $run->message);
+    }
+
+    public function test_auto_publish_off_by_default_and_never_for_names(): void
+    {
+        $this->admin();
+        $this->fakeGemini($this->goodMessage());
+        Setting::put('drafts_per_day', 1);
+        Setting::put('type_weights', ['birthday' => 0, 'message' => 1, 'urdu' => 0, 'name' => 0]);
+        $job = AutomationJob::where('key', 'generate_drafts')->first();
+        app(AutomationRunner::class)->run($job, 'test');
+        $this->assertSame(0, Message::count());
+
+        $this->assertNotContains('name', \App\Services\Automation\Tasks\GenerateDraftsTask::AUTO_TYPES);
+    }
+
+    public function test_super_admin_can_switch_auto_publish_on_and_off(): void
+    {
+        $admin = $this->admin();
+        $base = ['drafts_per_day' => 6, 'type_weights' => ['birthday' => 3, 'message' => 3, 'urdu' => 1, 'name' => 0],
+                 'ai_monthly_budget_usd' => 5, 'ai_price_input_per_m' => 0.1, 'ai_price_output_per_m' => 0.4];
+        $this->actingAs($admin)->put(route('admin.automation.settings.save'), $base + ['auto_publish' => '1'])->assertRedirect();
+        $this->assertTrue((bool) Setting::get('auto_publish'));
+        $this->actingAs($admin)->put(route('admin.automation.settings.save'), $base + ['auto_publish' => '0'])->assertRedirect();
+        $this->assertFalse((bool) Setting::get('auto_publish'));
+    }
+
     public function test_run_due_schedules_new_jobs_instead_of_firing_on_deploy(): void
     {
         $runs = app(AutomationRunner::class)->runDue();

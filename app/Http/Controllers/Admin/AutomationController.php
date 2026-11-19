@@ -91,6 +91,7 @@ class AutomationController extends Controller
             'ai_price_output_per_m' => ['required', 'numeric', 'min:0', 'max:100'],
             'approved_name_references' => ['nullable', 'string', 'max:3000'],
             'alert_email' => ['nullable', 'email'],
+            'auto_publish' => ['nullable', 'boolean'],
         ]);
 
         Setting::put('drafts_per_day', (int) $data['drafts_per_day']);
@@ -100,6 +101,7 @@ class AutomationController extends Controller
         Setting::put('ai_price_output_per_m', (float) $data['ai_price_output_per_m']);
         Setting::put('approved_name_references', collect(preg_split('/\R/', (string) ($data['approved_name_references'] ?? '')))->map('trim')->filter()->values()->all());
         Setting::put('alert_email', (string) ($data['alert_email'] ?? ''));
+        Setting::put('auto_publish', $request->boolean('auto_publish'));
         AuditLog::record($request->user(), 'settings_updated', 'settings', 0);
 
         return back()->with('status', 'Settings saved.');

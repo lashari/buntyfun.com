@@ -25,7 +25,7 @@ cron (every minute) → schedule:run → automation:run-due (every 5 min, locked
 
 | Rule | Where |
 | --- | --- |
-| AI output is always a draft; only a person publishes | `DraftApprover` |
+| AI output is a draft; a person publishes it — unless the super admin turned on **Auto-publish** (Settings): then a birthday/message/Urdu draft with EVERY check green is published by the daily job; names never | `DraftApprover`, `GenerateDraftsTask::autoPublish()` |
 | Editors can only send drafts to review; admins publish/schedule | `DraftApprover`, `HandlesPublishing` |
 | A draft with a failed blocking check cannot be approved | `AiDraft::hasBlockingFailure()` |
 | Islamic names: meaning must be verified by a person against an **approved reference** (Settings) | `NameTemplate::extraChecks()` |
