@@ -71,10 +71,28 @@ The Automation page shows a yellow banner when no job has run for 20 minutes (= 
 | `GA4_MEASUREMENT_ID`, `ADSENSE_CLIENT_ID` | unchanged |
 | `MAIL_*` | optional, for failure alert emails |
 
+## Social publishing (Facebook Page + Instagram)
+
+Admin → **Social**. Official Meta Graph API only (no browser automation).
+
+- Meta app **BuntyFun Publisher** (ID 2532222677188710), Facebook Login for Business configuration
+  `1909608247125001`, redirect URI `https://buntyfun.com/admin/social/meta/callback`. The app stays in
+  Development mode: it only needs to work for its own admins (posting to our own Page), so no App Review.
+- `.env`: `META_APP_SECRET=` (App settings → Basic → App secret). App ID / config ID have defaults.
+- Super admin clicks **Connect Facebook & Instagram** → Facebook's own dialog → the server swaps the code
+  for a long-lived user token and stores each Page token (does not expire) **encrypted**; the linked
+  Instagram business account uses the same Page token. Tokens never pass through the browser or logs.
+- Posts: editors save drafts, admins approve/schedule; `social_publish` job (every 5 min) posts approved
+  ones. Claim `approved → publishing` makes double posting impossible. Temporary errors retry every
+  15 min (3 tries); permission/token errors fail at once and flag the account.
+- Instagram needs an image (upload or URL; JPG/PNG, ≥ 320 px). Facebook can be a link post.
+- Every link gets `utm_source=<platform>&utm_medium=social&utm_campaign=bf_social&utm_content=post<id>`;
+  clicks show in GA4 traffic acquisition. Post permalinks are stored.
+- "Worth posting" lists content by real views + 5× shares in the last 30 days.
+
 ## Not built yet (needs credentials first)
 
-- **Social auto-posting**: needs a Meta developer app (Page + Instagram publishing permissions,
-  Meta app review) and a Pinterest app. Drafts already carry a social caption + image brief.
+- **Pinterest auto-posting**: needs a Pinterest app.
 - **GA4 / Search Console weekly report inside BuntyFun admin**: needs a Google service account
   with read access to both properties. (DueClix's daily report already reads BuntyFun's GSC.)
 - **Ad placement manager / AdSense**: after policy readiness; condolence exclusion is in place.

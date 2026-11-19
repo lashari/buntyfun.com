@@ -112,7 +112,11 @@ class AutomationController extends Controller
         $published = AuditLog::whereIn('action', ['published', 'auto:published_scheduled', 'approved_ai_draft:now'])
             ->where('created_at', '>=', now()->subDays(14))->latest()->get();
 
+        $social = \App\Models\SocialPost::with('account')->whereIn('status', ['approved', 'draft'])
+            ->whereNotNull('scheduled_at')->where('scheduled_at', '>', now()->subDay())->orderBy('scheduled_at')->get();
+
         return view('admin.automation.calendar', [
+            'social' => $social->groupBy(fn ($p) => $p->scheduled_at->format('Y-m-d')),
             'scheduled' => $scheduled->groupBy(fn ($m) => $m->publish_at->format('Y-m-d')),
             'published' => $published->groupBy(fn ($a) => $a->created_at->format('Y-m-d')),
         ]);

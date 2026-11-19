@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\GameAdminController;
 use App\Http\Controllers\Admin\NameEntryAdminController;
 use App\Http\Controllers\Admin\QuizAdminController;
+use App\Http\Controllers\Admin\SocialAdminController;
 use App\Http\Controllers\Admin\UrduContentAdminController;
 use App\Http\Controllers\Admin\WallpaperAdminController;
 use App\Http\Controllers\AiFunController;
@@ -134,6 +135,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('automation/calendar', [AutomationController::class, 'calendar'])->name('automation.calendar');
         Route::get('automation/settings', [AutomationController::class, 'settings'])->name('automation.settings');
         Route::put('automation/settings', [AutomationController::class, 'saveSettings'])->name('automation.settings.save');
+        Route::get('social', [SocialAdminController::class, 'index'])->name('social.index');
+        Route::get('social/create', [SocialAdminController::class, 'create'])->name('social.create');
+        Route::post('social', [SocialAdminController::class, 'store'])->name('social.store');
+        Route::get('social/meta/connect', [SocialAdminController::class, 'connect'])->name('social.meta.connect');
+        Route::get('social/meta/callback', [SocialAdminController::class, 'callback'])->name('social.meta.callback');
+        Route::delete('social/accounts/{account}', [SocialAdminController::class, 'disconnect'])->name('social.accounts.disconnect');
+        Route::post('social/{post}/approve', [SocialAdminController::class, 'approve'])->name('social.approve');
+        Route::post('social/{post}/publish-now', [SocialAdminController::class, 'publishNow'])->middleware('throttle:10,1')->name('social.publish-now');
+        Route::post('social/{post}/cancel', [SocialAdminController::class, 'cancel'])->name('social.cancel');
+        Route::post('social/{post}/retry', [SocialAdminController::class, 'retry'])->name('social.retry');
+
         Route::post('ai-keys', [AiKeyAdminController::class, 'store'])->middleware('throttle:10,1')->name('ai-keys.store');
         Route::post('ai-keys/{key}/toggle', [AiKeyAdminController::class, 'toggle'])->name('ai-keys.toggle');
         Route::post('ai-keys/{key}/test', [AiKeyAdminController::class, 'test'])->middleware('throttle:10,1')->name('ai-keys.test');

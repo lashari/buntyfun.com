@@ -42,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
             'game' => \App\Models\Game::class,
             'wallpaper' => \App\Models\Wallpaper::class,
             'ai_tool' => \App\Models\AiTool::class,
+            'social_post' => \App\Models\SocialPost::class,
         ]);
     }
 }
