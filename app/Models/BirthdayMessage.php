@@ -21,6 +21,14 @@ class BirthdayMessage extends Model
             ->sort()->values()->all();
     }
 
+    /** /birthday-wishes/urdu is only worth indexing once it holds a real collection. */
+    public const URDU_PAGE_MIN = 10;
+
+    public static function urduPageIndexable(): bool
+    {
+        return static::where('status', 'published')->where('language', 'ur')->count() >= self::URDU_PAGE_MIN;
+    }
+
     public static function relationshipSlug(string $relationship): string
     {
         return str_replace('_', '-', $relationship);

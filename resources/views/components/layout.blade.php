@@ -1,11 +1,12 @@
 {{-- title/description must be props: without them Blade drops the values every page passes, and all pages showed "BuntyFun" + the default description (fixed 12 Nov 2026). --}}
 @props(['dir' => 'ltr', 'lang' => 'en', 'ads' => true, 'title' => null, 'description' => null,
-         'meta' => null, 'breadcrumbs' => [], 'ogType' => 'website', 'ogImage' => null, 'noindex' => false, 'schema' => []])
+         'meta' => null, 'breadcrumbs' => [], 'ogType' => 'website', 'ogImage' => null, 'noindex' => false, 'schema' => [], 'urduFont' => false])
 @php
     // Per-item SEO overrides (content_meta) win over the page defaults.
     $pageTitle = $meta?->seo_title ? $meta->seo_title.' — BuntyFun' : ($title ?? config('app.name'));
     $pageDesc = $meta?->seo_description ?: ($description ?? 'Play exciting games, discover fun quizzes, create personalized wishes and explore something new every day.');
-    $pageImage = $meta?->og_image ?: $ogImage;
+    // Fallback share image so every link preview shows the brand (logo set 20 Nov 2026).
+    $pageImage = $meta?->og_image ?: ($ogImage ?: asset('images/brand/og-default.png'));
     $isNoindex = $noindex || ($meta?->noindex ?? false);
     // No ads on pages we ask search engines not to index (thin, private, utility pages).
     $showAds = $ads && ! $isNoindex;
@@ -49,6 +50,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $pageTitle }}</title>
     <meta name="description" content="{{ $pageDesc }}">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="48x48">
+    <link rel="icon" href="{{ asset('images/brand/icon.svg') }}" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="{{ asset('images/brand/apple-touch-icon.png') }}">
+    <meta name="theme-color" content="#0B2D5B">
     <link rel="canonical" href="{{ url()->current() }}">
     @if ($isNoindex)
         <meta name="robots" content="noindex, follow">
@@ -67,7 +72,7 @@
     @foreach ($ld as $block)
         <script type="application/ld+json">{!! json_encode($block, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
     @endforeach
-    @if ($dir === 'rtl')
+    @if ($dir === 'rtl' || $urduFont)
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=noto-nastaliq-urdu" rel="stylesheet">
     @endif
@@ -98,7 +103,10 @@
 <body class="min-h-screen bg-slate-50 text-slate-900 antialiased {{ $dir === 'rtl' ? 'font-urdu' : '' }}">
     <header class="border-b border-slate-200 bg-white" x-data="{ open: false }">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4">
-            <a href="{{ route('home') }}" class="text-xl font-bold text-violet-600">BuntyFun</a>
+            <a href="{{ route('home') }}" class="shrink-0" aria-label="BuntyFun home">
+                <img src="{{ asset('images/brand/buntyfun-logo.svg') }}" alt="BuntyFun" width="170" height="36" class="hidden h-9 w-auto sm:block">
+                <img src="{{ asset('images/brand/buntyfun-mark.svg') }}" alt="BuntyFun" width="47" height="36" class="h-9 w-auto sm:hidden">
+            </a>
             <nav class="hidden items-center gap-6 text-sm font-medium text-slate-600 lg:flex" aria-label="Main">
                 @foreach ($links as [$href, $label])
                     <a href="{{ $href }}" class="hover:text-violet-600">{{ $label }}</a>

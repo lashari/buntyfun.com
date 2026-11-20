@@ -39,6 +39,9 @@ class SeoController extends Controller
             $urls->push(['loc' => route('wallpapers.index'), 'changefreq' => 'weekly']);
         }
 
+        if (BirthdayMessage::urduPageIndexable()) {
+            $urls->push(['loc' => route('birthday-messages.urdu'), 'changefreq' => 'weekly']);
+        }
         foreach (BirthdayMessage::hubRelationships() as $relationship) {
             $urls->push(['loc' => route('birthday-messages.relationship', BirthdayMessage::relationshipSlug($relationship)), 'changefreq' => 'weekly']);
         }
