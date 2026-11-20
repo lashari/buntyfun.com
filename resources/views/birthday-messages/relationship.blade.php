@@ -59,6 +59,7 @@
                 </div>
             </section>
         @endif
-        <p class="mt-8 text-sm text-slate-500">Want something more tailored? Try the <a href="{{ route('ai-tools.index') }}" class="text-violet-700 underline">AI birthday message generator</a>.</p>
+        <p class="mt-8 text-sm text-slate-500">Prefer Urdu? See all <a href="{{ route('birthday-messages.urdu') }}" class="text-violet-700 underline">birthday wishes in Urdu</a>.</p>
+        <p class="mt-2 text-sm text-slate-500">Want something more tailored? Try the <a href="{{ route('ai-tools.index') }}" class="text-violet-700 underline">AI birthday message generator</a>.</p>
     </div>
 </x-layout>

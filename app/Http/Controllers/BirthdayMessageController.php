@@ -48,6 +48,17 @@ class BirthdayMessageController extends Controller
         return view('birthday-messages.relationship', compact('key', 'guide', 'wishes', 'others'));
     }
 
+    /** Indexable page of every published Urdu wish, grouped by who it is for. */
+    public function urdu()
+    {
+        $wishes = BirthdayMessage::where('status', 'published')->where('language', 'ur')
+            ->orderBy('relationship')->orderBy('tone')->orderBy('id')->get()->groupBy('relationship');
+        $order = array_keys(\App\Content\BirthdayGuides::ALL);
+        $wishes = $wishes->sortBy(fn ($items, $r) => array_search($r, $order, true) === false ? 99 : array_search($r, $order, true));
+
+        return view('birthday-messages.urdu', ['wishes' => $wishes, 'count' => $wishes->flatten()->count(), 'indexable' => BirthdayMessage::urduPageIndexable()]);
+    }
+
     public function show(BirthdayMessage $birthdayMessage)
     {
         abort_unless($birthdayMessage->status === 'published', 404);

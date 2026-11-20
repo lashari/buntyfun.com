@@ -62,6 +62,7 @@ Route::prefix('games')->group(function () {
 
 Route::prefix('birthday-wishes')->group(function () {
     Route::get('/', [BirthdayMessageController::class, 'index'])->name('birthday-messages.index');
+    Route::get('/urdu', [BirthdayMessageController::class, 'urdu'])->name('birthday-messages.urdu');
     Route::get('/for/{relationship}', [BirthdayMessageController::class, 'relationship'])
         ->where('relationship', '[a-z-]+')->name('birthday-messages.relationship');
     Route::get('/{birthdayMessage:slug}', [BirthdayMessageController::class, 'show'])->name('birthday-messages.show');
