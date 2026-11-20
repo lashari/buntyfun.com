@@ -120,14 +120,14 @@ class AdsenseReadinessTest extends TestCase
         $this->category('quizzes');
         $this->seed(QuizLibrarySeeder::class);
         $this->seed(QuizLibrarySeeder::class);
-        $this->assertSame(3, Quiz::count());
+        $this->assertSame(count(\App\Content\QuizLibrary::QUIZZES), Quiz::count());
 
         $quiz = Quiz::where('slug', 'solar-system-quiz')->with('questions.answers')->first();
         $this->assertCount(10, $quiz->questions);
         $this->get(route('quizzes.show', $quiz))->assertOk()->assertSee($quiz->intro)->assertDontSee('noindex', false);
 
-        // answer everything with the first option
-        $answers = $quiz->questions->mapWithKeys(fn ($q) => [$q->id => $q->answers->first()->id])->all();
+        // answer everything wrong
+        $answers = $quiz->questions->mapWithKeys(fn ($q) => [$q->id => $q->answers->firstWhere('is_correct', false)->id])->all();
         $res = $this->post(route('quizzes.submit', $quiz), ['answers' => $answers]);
         $res->assertRedirect();
         $this->get($res->headers->get('Location'))->assertOk()

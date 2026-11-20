@@ -90,14 +90,25 @@ class QuizAdminController extends Controller
 
     private function validated(Request $request): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'category_id' => ['required', 'exists:categories,id'],
             'title' => ['required', 'string', 'max:255'],
             'intro' => ['nullable', 'string', 'max:2000'],
+            'difficulty' => ['nullable', 'in:'.implode(',', array_keys(Quiz::DIFFICULTIES))],
+            'sources' => ['nullable', 'string', 'max:2000'],
+            'reviewed_at' => ['nullable', 'date'],
+            'outcomes_json' => ['nullable', 'json'],
             'slug' => ['nullable', 'string', 'max:255'],
             'language' => ['required', 'in:en,ur'],
             'status' => ['required', 'in:draft,in_review,published'],
         ]);
+
+        // outcomes_json: [{min: 0..1, label, text}] for score-based (personality) quizzes.
+        $outcomes = json_decode($data['outcomes_json'] ?? '', true);
+        $data['outcomes'] = is_array($outcomes) && $outcomes ? array_values(array_filter($outcomes, fn ($o) => is_array($o) && isset($o['label']))) : null;
+        unset($data['outcomes_json']);
+
+        return $data;
     }
 
     /**

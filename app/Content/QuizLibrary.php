@@ -5,7 +5,7 @@ namespace App\Content;
 /**
  * Original trivia quizzes with an explanation for every answer. Facts are standard
  * reference-book facts (NASA/IAU for space, national government sources for capitals,
- * standard anatomy texts for the body). Answers: [label, is_correct].
+ * standard anatomy texts for the body). Answers: [label, is_correct]; personality quizzes (type personality) use [label, score] plus outcomes.
  * Loaded by QuizLibrarySeeder (insert-only) and by the generated SQL in deploy packs.
  */
 class QuizLibrary
@@ -15,6 +15,10 @@ class QuizLibrary
             'slug' => 'solar-system-quiz',
             'title' => 'Solar System Quiz: 10 Questions About Our Planets',
             'intro' => 'Ten questions about the Sun, the planets and the Moon, from easy to tricky. After you finish you will see the right answer and a short explanation for every question, so it works as a quick refresher for students and curious adults alike.',
+            'difficulty' => 'easy',
+            'reviewed' => '2026-11-20',
+            'sources' => 'NASA Solar System Exploration: https://science.nasa.gov/solar-system/
+NASA, Pluto and its reclassification as a dwarf planet (IAU, 2006): https://science.nasa.gov/dwarf-planets/pluto/',
             'questions' => [
                 ['Which planet is closest to the Sun?', [['Venus', false], ['Mercury', true], ['Mars', false], ['Earth', false]],
                     'Mercury orbits closest to the Sun, at an average distance of about 58 million km. It is also the smallest of the eight planets.'],
@@ -42,6 +46,10 @@ class QuizLibrary
             'slug' => 'world-capitals-quiz',
             'title' => 'World Capitals Quiz: Can You Beat the Biggest-City Trap?',
             'intro' => 'In many countries the capital is not the largest or best-known city. These ten questions test exactly that. You will see the answers and a short note about each capital at the end.',
+            'difficulty' => 'medium',
+            'reviewed' => '2026-11-20',
+            'sources' => 'CIA World Factbook, country capitals: https://www.cia.gov/the-world-factbook/
+Encyclopaedia Britannica country articles: https://www.britannica.com/',
             'questions' => [
                 ['What is the capital of Australia?', [['Sydney', false], ['Melbourne', false], ['Canberra', true], ['Perth', false]],
                     'Canberra. It was chosen as a compromise between rivals Sydney and Melbourne and was built as a planned capital.'],
@@ -69,6 +77,10 @@ class QuizLibrary
             'slug' => 'human-body-quiz',
             'title' => 'Human Body Quiz: 10 Questions on How You Work',
             'intro' => 'Ten questions about bones, organs, blood and the senses. This is general-knowledge trivia, not medical advice. At the end you will see every correct answer with a one-line explanation.',
+            'difficulty' => 'medium',
+            'reviewed' => '2026-11-20',
+            'sources' => 'MedlinePlus (U.S. National Library of Medicine): https://medlineplus.gov/
+Encyclopaedia Britannica, human body: https://www.britannica.com/science/human-body',
             'questions' => [
                 ['How many bones does a typical adult human have?', [['106', false], ['206', true], ['306', false], ['406', false]],
                     '206. Babies are born with around 300 bones and cartilage pieces, many of which fuse together as they grow.'],
@@ -92,5 +104,237 @@ class QuizLibrary
                     'Between 60 and 100 beats per minute is the usual range for adults at rest. Fit athletes are often lower.'],
             ],
         ],
+        [
+            'slug' => 'pakistan-general-knowledge-quiz',
+            'title' => 'Pakistan General Knowledge Quiz: 10 Questions',
+            'intro' => 'Ten questions on Pakistan\'s history, geography, languages and national symbols, the kind that come up in school tests and family quiz nights. Every answer is explained at the end, with the date or place behind it.',
+            'difficulty' => 'medium',
+            'reviewed' => '2026-11-20',
+            'sources' => "Government of Pakistan, national symbols and history: https://pakistan.gov.pk/\nEncyclopaedia Britannica, Pakistan: https://www.britannica.com/place/Pakistan",
+            'questions' => [
+                ['In which year did Pakistan gain independence?', [['1945', false], ['1947', true], ['1956', false], ['1971', false]],
+                    'Pakistan became independent on 14 August 1947. 1956 is the year of the first constitution, when Pakistan became an Islamic Republic.'],
+                ['What is the national language of Pakistan?', [['Punjabi', false], ['Sindhi', false], ['Urdu', true], ['Pashto', false]],
+                    'Urdu is the national language and English is also an official language. Punjabi is the most widely spoken first language.'],
+                ['What is the highest mountain in Pakistan?', [['Nanga Parbat', false], ['K2', true], ['Tirich Mir', false], ['Rakaposhi', false]],
+                    'K2, in the Karakoram range in Gilgit-Baltistan, is 8,611 m high, the second-highest mountain in the world after Everest.'],
+                ['Who wrote the words of Pakistan\'s national anthem?', [['Allama Muhammad Iqbal', false], ['Faiz Ahmed Faiz', false], ['Hafeez Jalandhari', true], ['Ahmed Faraz', false]],
+                    'Hafeez Jalandhari wrote the lyrics. The music was composed by Ahmed Ghulamali Chagla, and the anthem was officially adopted in 1954.'],
+                ['Which is the longest river in Pakistan?', [['Jhelum', false], ['Chenab', false], ['Indus', true], ['Ravi', false]],
+                    'The Indus flows the whole length of the country, from the northern mountains to the Arabian Sea near Karachi.'],
+                ['Who was Pakistan\'s first Governor-General?', [['Liaquat Ali Khan', false], ['Muhammad Ali Jinnah', true], ['Khawaja Nazimuddin', false], ['Iskander Mirza', false]],
+                    'Quaid-e-Azam Muhammad Ali Jinnah was the first Governor-General. Liaquat Ali Khan was the first Prime Minister.'],
+                ['What is the national animal of Pakistan?', [['Snow leopard', false], ['Markhor', true], ['Lion', false], ['Ibex', false]],
+                    'The markhor, a wild goat with long spiral horns, lives in the mountains of the north and west.'],
+                ['In which city is the Badshahi Mosque?', [['Karachi', false], ['Islamabad', false], ['Lahore', true], ['Multan', false]],
+                    'The Badshahi Mosque in Lahore was built by the Mughal emperor Aurangzeb and completed in 1673.'],
+                ['In which year was the Lahore Resolution (Pakistan Resolution) passed?', [['1930', false], ['1940', true], ['1947', false], ['1956', false]],
+                    'It was passed on 23 March 1940 in Lahore. Minar-e-Pakistan stands near the site, and 23 March is celebrated as Pakistan Day.'],
+                ['Which province is the largest by area?', [['Punjab', false], ['Sindh', false], ['Balochistan', true], ['Khyber Pakhtunkhwa', false]],
+                    'Balochistan covers about 44% of Pakistan\'s land area. Punjab is the largest province by population.'],
+            ],
+        ],
+        [
+            'slug' => 'islamic-history-quiz',
+            'title' => 'Islamic History Quiz: 10 Questions on the Early Years',
+            'intro' => 'Ten questions on well-established events from the life of the Prophet Muhammad ﷺ and the early Muslim community: places, dates and the people involved. The explanations add a little background to each answer. It is a beginner-friendly quiz for students and families.',
+            'difficulty' => 'easy',
+            'reviewed' => '2026-11-20',
+            'sources' => "Safiur Rahman Mubarakpuri, Ar-Raheeq Al-Makhtum (The Sealed Nectar), a widely used biography of the Prophet ﷺ\nEncyclopaedia Britannica, Muhammad: https://www.britannica.com/biography/Muhammad",
+            'questions' => [
+                ['In which city was the Prophet Muhammad ﷺ born?', [['Madinah', false], ['Makkah', true], ['Taif', false], ['Jerusalem', false]],
+                    'He was born in Makkah, around 570 CE, into the Banu Hashim clan of the Quraysh tribe.'],
+                ['In which cave did the first revelation come to the Prophet ﷺ?', [['Cave Thawr', false], ['Cave Hira', true], ['Cave of Uhud', false], ['Cave of Badr', false]],
+                    'The first verses were revealed in Cave Hira on Jabal al-Nour near Makkah. Cave Thawr is where he sheltered with Abu Bakr during the Hijrah.'],
+                ['In which year (CE) did the Hijrah from Makkah to Madinah take place?', [['570', false], ['610', false], ['622', true], ['632', false]],
+                    'The Hijrah was in 622 CE, and the Islamic (Hijri) calendar counts its years from it. 610 is the year of the first revelation and 632 the year the Prophet ﷺ passed away.'],
+                ['Who was the first caliph after the Prophet ﷺ?', [['Umar ibn al-Khattab', false], ['Abu Bakr as-Siddiq', true], ['Uthman ibn Affan', false], ['Ali ibn Abi Talib', false]],
+                    'Abu Bakr as-Siddiq was the first caliph, followed by Umar, Uthman and Ali.'],
+                ['How many surahs (chapters) are in the Quran?', [['100', false], ['110', false], ['114', true], ['120', false]],
+                    'The Quran has 114 surahs. The first is Al-Fatihah and the last is An-Nas.'],
+                ['In which Hijri year was the Battle of Badr?', [['1 AH', false], ['2 AH', true], ['3 AH', false], ['5 AH', false]],
+                    'Badr was fought in Ramadan, 2 AH (624 CE). The Battle of Uhud followed in 3 AH.'],
+                ['Who was the first muezzin, chosen to call the adhan?', [['Bilal ibn Rabah', true], ['Zayd ibn Harithah', false], ['Salman al-Farisi', false], ['Anas ibn Malik', false]],
+                    'Bilal ibn Rabah was chosen for his strong, beautiful voice. He had been freed from slavery by Abu Bakr.'],
+                ['Ramadan is which month of the Islamic calendar?', [['7th', false], ['8th', false], ['9th', true], ['10th', false]],
+                    'Ramadan is the 9th month. The 10th month, Shawwal, begins with Eid al-Fitr.'],
+                ['Before the qiblah was changed to the Kaaba, Muslims faced which city in prayer?', [['Madinah', false], ['Jerusalem', true], ['Damascus', false], ['Taif', false]],
+                    'Muslims first faced Bayt al-Maqdis in Jerusalem. The qiblah was changed to the Kaaba in Makkah in 2 AH.'],
+                ['Which caliph had standard copies of the Quran made and sent to the main cities?', [['Abu Bakr as-Siddiq', false], ['Umar ibn al-Khattab', false], ['Uthman ibn Affan', true], ['Ali ibn Abi Talib', false]],
+                    'Uthman ibn Affan had standard copies made from the compilation first gathered under Abu Bakr, and sent them to the main cities.'],
+            ],
+        ],
+        [
+            'slug' => 'cricket-quiz',
+            'title' => 'Cricket Quiz: 10 Questions on Rules, Records and World Cups',
+            'intro' => 'Ten questions mixing cricket basics with famous moments, including Pakistan\'s two World Cup wins. Good for new fans and a quick test for old ones. Every answer comes with a short explanation.',
+            'difficulty' => 'medium',
+            'reviewed' => '2026-11-20',
+            'sources' => "ICC, history and tournament records: https://www.icc-cricket.com/\nMCC, Laws of Cricket: https://www.lords.org/mcc/the-laws-of-cricket",
+            'questions' => [
+                ['How many legal balls are there in an over?', [['4', false], ['5', false], ['6', true], ['8', false]],
+                    'Six. Wides and no-balls do not count, so an over can take more than six deliveries. Some countries once used 8-ball overs.'],
+                ['What does LBW stand for?', [['Long ball wide', false], ['Leg before wicket', true], ['Last batter walking', false], ['Leg bye wide', false]],
+                    'Leg before wicket: the batter is out if the ball would have hit the stumps but hit their body instead, within the rules on where it pitched and struck.'],
+                ['How long is a cricket pitch, from stumps to stumps?', [['18 yards', false], ['20 yards', false], ['22 yards', true], ['25 yards', false]],
+                    '22 yards, or about 20.12 metres, between the two sets of stumps.'],
+                ['Which team won the first men\'s Cricket World Cup in 1975?', [['England', false], ['Australia', false], ['West Indies', true], ['India', false]],
+                    'West Indies, captained by Clive Lloyd, beat Australia in the final at Lord\'s. They won again in 1979.'],
+                ['In which year did Pakistan win the Cricket World Cup?', [['1987', false], ['1992', true], ['1996', false], ['1999', false]],
+                    'Pakistan, led by Imran Khan, beat England in the final at the Melbourne Cricket Ground in March 1992.'],
+                ['In which year did Pakistan win the ICC T20 World Cup?', [['2007', false], ['2009', true], ['2012', false], ['2022', false]],
+                    'Pakistan, captained by Younis Khan, beat Sri Lanka at Lord\'s in 2009. They were runners-up in 2007 and 2022.'],
+                ['What is a "duck" in cricket?', [['Bowling a wide', false], ['Getting out without scoring', true], ['A catch near the ground', false], ['A six over the bowler\'s head', false]],
+                    'A batter who is out for zero has made a duck. Out first ball is a "golden duck".'],
+                ['What do you call 100 runs scored by one batter in an innings?', [['A ton or century', true], ['A hat-trick', false], ['A maiden', false], ['A double', false]],
+                    'A century, often called a ton. A maiden is an over with no runs conceded, and a hat-trick is three wickets in three balls.'],
+                ['Which bowler is officially credited with the fastest delivery in international cricket, 161.3 km/h?', [['Brett Lee', false], ['Shaun Tait', false], ['Shoaib Akhtar', true], ['Mitchell Starc', false]],
+                    'Shoaib Akhtar bowled it against England at the 2003 World Cup. It is still the fastest officially recorded delivery.'],
+                ['Which bowler is the only one to take 800 Test wickets?', [['Shane Warne', false], ['Muttiah Muralitharan', true], ['James Anderson', false], ['Anil Kumble', false]],
+                    'Sri Lanka\'s Muttiah Muralitharan took exactly 800, his last with his final ball in Test cricket in 2010. Shane Warne is second with 708.'],
+            ],
+        ],
+        [
+            'slug' => 'world-flags-quiz',
+            'title' => 'World Flags Quiz: Guess the Country From the Clues',
+            'intro' => 'Ten questions about flags from around the world: their colours, symbols and a few unusual shapes. No pictures needed, just the description. The explanations tell you what each symbol means.',
+            'difficulty' => 'easy',
+            'reviewed' => '2026-11-20',
+            'sources' => "CIA World Factbook, flag descriptions: https://www.cia.gov/the-world-factbook/\nEncyclopaedia Britannica, flags of the world: https://www.britannica.com/topic/flag-of-Pakistan",
+            'questions' => [
+                ['Which country\'s flag has a red maple leaf in the centre?', [['Canada', true], ['Switzerland', false], ['Austria', false], ['Denmark', false]],
+                    'Canada adopted the maple leaf flag in 1965. The maple leaf has long been a Canadian symbol.'],
+                ['A white flag with a red circle in the middle belongs to which country?', [['China', false], ['Japan', true], ['South Korea', false], ['Bangladesh', false]],
+                    'Japan. The circle stands for the sun. Bangladesh\'s flag also has a red circle, but on a green background.'],
+                ['On Pakistan\'s flag, what does the white stripe represent?', [['Peace only', false], ['Religious minorities', true], ['The mountains', false], ['The rivers', false]],
+                    'The white stripe stands for religious minorities and the green for the Muslim majority. The crescent stands for progress and the star for light and knowledge.'],
+                ['Which country\'s national flag is not a rectangle or square?', [['Bhutan', false], ['Nepal', true], ['Sri Lanka', false], ['Qatar', false]],
+                    'Nepal\'s flag is two stacked triangles (pennants). It is the only non-rectangular national flag.'],
+                ['Which country has a green cedar tree on its flag?', [['Lebanon', true], ['Cyprus', false], ['Jordan', false], ['Tunisia', false]],
+                    'Lebanon. The cedar is a symbol of the country and appears between two red stripes.'],
+                ['How many stars are on the flag of the United States?', [['13', false], ['48', false], ['50', true], ['52', false]],
+                    'Fifty stars, one for each state. The 13 stripes stand for the original colonies.'],
+                ['The UK\'s Union Flag combines crosses representing which three?', [['England, Wales and Scotland', false], ['England, Scotland and Ireland', true], ['Wales, Scotland and Ireland', false], ['England, Wales and Ireland', false]],
+                    'It combines the crosses of St George (England), St Andrew (Scotland) and St Patrick (Ireland). Wales is not represented.'],
+                ['Which country\'s flag has a blue wheel with 24 spokes?', [['Sri Lanka', false], ['India', true], ['Nepal', false], ['Bangladesh', false]],
+                    'India. The wheel is the Ashoka Chakra, sitting on the white band between saffron and green.'],
+                ['Which flag shows the Shahada in white Arabic script on green, above a sword?', [['Pakistan', false], ['Saudi Arabia', true], ['Iran', false], ['Afghanistan', false]],
+                    'Saudi Arabia. Because it carries the Shahada, the flag is traditionally never flown at half-mast.'],
+                ['Which two countries have square national flags?', [['Switzerland and Vatican City', true], ['Nepal and Bhutan', false], ['Denmark and Norway', false], ['Japan and Palau', false]],
+                    'Switzerland (white cross on red) and Vatican City (yellow and white) are the only two square national flags.'],
+            ],
+        ],
+        [
+            'slug' => 'science-quiz-for-kids',
+            'title' => 'Science Quiz for Kids: 10 Easy Questions',
+            'intro' => 'A gentle science quiz for children aged about 8 to 12, covering plants, animals, space and everyday materials. Parents can read the explanations aloud afterwards: each one is a single simple fact to remember.',
+            'difficulty' => 'easy',
+            'reviewed' => '2026-11-20',
+            'sources' => "NASA Space Place: https://spaceplace.nasa.gov/\nEncyclopaedia Britannica Kids: https://kids.britannica.com/",
+            'questions' => [
+                ['Which gas do plants take in from the air to make their food?', [['Oxygen', false], ['Carbon dioxide', true], ['Nitrogen', false], ['Helium', false]],
+                    'Plants take in carbon dioxide and, using sunlight and water, make sugar for food. This is called photosynthesis, and it gives off oxygen.'],
+                ['At what temperature does water boil at sea level?', [['50 °C', false], ['90 °C', false], ['100 °C', true], ['120 °C', false]],
+                    '100 °C. High up on mountains water boils at a lower temperature because the air pressure is lower.'],
+                ['What is the closest star to Earth?', [['The Moon', false], ['The Sun', true], ['Polaris (the North Star)', false], ['Sirius', false]],
+                    'The Sun is a star! The next closest is Proxima Centauri, more than four light-years away. The Moon is not a star.'],
+                ['How many legs does a spider have?', [['6', false], ['8', true], ['10', false], ['12', false]],
+                    'Spiders have 8 legs. Insects, like ants and bees, have 6, which is why spiders are not insects.'],
+                ['What is the hardest natural material?', [['Gold', false], ['Iron', false], ['Diamond', true], ['Glass', false]],
+                    'Diamond, which is made of carbon. It is so hard that diamond tools are used to cut stone.'],
+                ['What force makes a ball fall back to the ground?', [['Magnetism', false], ['Gravity', true], ['Friction', false], ['Wind', false]],
+                    'Gravity pulls everything toward the Earth. It also keeps the Moon going around the Earth.'],
+                ['H₂O is the chemical name for what?', [['Salt', false], ['Water', true], ['Sugar', false], ['Air', false]],
+                    'Water: each molecule has two hydrogen atoms (H₂) and one oxygen atom (O).'],
+                ['Which of these animals is a mammal?', [['Shark', false], ['Whale', true], ['Salmon', false], ['Octopus', false]],
+                    'Whales are mammals. They breathe air and feed their babies milk. Sharks and salmon are fish.'],
+                ['What do bees make from the nectar of flowers?', [['Wax only', false], ['Honey', true], ['Milk', false], ['Silk', false]],
+                    'Honey. Bees also carry pollen between flowers, which helps plants make seeds and fruit.'],
+                ['Which state of matter keeps its own shape?', [['Solid', true], ['Liquid', false], ['Gas', false], ['Steam', false]],
+                    'Solids, like ice or wood, keep their shape. Liquids take the shape of their container and gases spread out to fill it.'],
+            ],
+        ],
+        [
+            'slug' => 'english-vocabulary-quiz',
+            'title' => 'English Vocabulary Quiz: 10 Words, Spellings and Idioms',
+            'intro' => 'Ten questions on word meanings, spelling, idioms and common mix-ups such as there, their and they\'re. Useful practice for students and anyone learning English. Each answer is explained with a short example.',
+            'difficulty' => 'medium',
+            'reviewed' => '2026-11-20',
+            'sources' => "Oxford Learner's Dictionaries: https://www.oxfordlearnersdictionaries.com/\nCambridge Dictionary: https://dictionary.cambridge.org/",
+            'questions' => [
+                ['What does "benevolent" mean?', [['Angry and rude', false], ['Kind and generous', true], ['Very rich', false], ['Easily scared', false]],
+                    '"Benevolent" means kind and wanting to help others. Example: "A benevolent neighbour paid for the school books."'],
+                ['Which word is the opposite of "ancient"?', [['Old', false], ['Historic', false], ['Modern', true], ['Ruined', false]],
+                    '"Ancient" means very old, so the opposite is "modern". Example: "ancient ruins" and "a modern building".'],
+                ['Which word means the same as "rapid"?', [['Slow', false], ['Fast', true], ['Careful', false], ['Loud', false]],
+                    '"Rapid" means fast or quick. Example: "rapid growth".'],
+                ['Which spelling is correct?', [['Neccessary', false], ['Necessery', false], ['Necessary', true], ['Necesary', false]],
+                    '"Necessary": one c and a double s. A memory trick: one collar, two sleeves.'],
+                ['What does "ephemeral" mean?', [['Lasting a very short time', true], ['Very large', false], ['Full of light', false], ['Hard to explain', false]],
+                    'Something "ephemeral" lasts only a short time. Example: "Fame on social media can be ephemeral."'],
+                ['Which of these words is a noun?', [['Happy', false], ['Happily', false], ['Happiness', true], ['Happen', false]],
+                    '"Happiness" is a noun (a thing or feeling). "Happy" is an adjective, "happily" an adverb, and "happen" a verb.'],
+                ['What does the idiom "break the ice" mean?', [['Cause an argument', false], ['Start a conversation in an awkward situation', true], ['Make a mistake', false], ['Cool something down', false]],
+                    'To "break the ice" is to say or do something that helps people relax and start talking. Example: "A joke broke the ice at the meeting."'],
+                ['What is the plural of "child"?', [['Childs', false], ['Childes', false], ['Children', true], ['Childrens', false]],
+                    '"Children" is an irregular plural. "Childrens" is never correct; use "children\'s" for possession.'],
+                ['Choose the correct word: "___ going to the market after lunch."', [['There', false], ['Their', false], ['They\'re', true], ['Theyre', false]],
+                    '"They\'re" is short for "they are". "There" is a place and "their" means belonging to them.'],
+                ['What does "meticulous" mean?', [['Very careful about every detail', true], ['Always late', false], ['Very noisy', false], ['Quick and careless', false]],
+                    'A "meticulous" person pays close attention to detail. Example: "She kept meticulous notes."'],
+            ],
+        ],
+        [
+            'slug' => 'how-well-do-you-know-your-best-friend',
+            'type' => 'personality',
+            'title' => 'How Well Do You Know Your Best Friend? 10-Question Friendship Quiz',
+            'intro' => 'A light-hearted self-check: ten questions about the little things that close friends usually know about each other. Answer honestly. There are no wrong answers, just a picture of how well you know your friend today. Then send the link to your friend and see how well they know you. It is just for fun, not a scientific test.',
+            'difficulty' => 'easy',
+            'reviewed' => '2026-11-20',
+            'sources' => null,
+            'outcomes' => [
+                ['min' => 0.8, 'label' => 'Best Friends Forever', 'text' => 'You know the details most people never notice: their comfort food, their fears, the exact thing that cheers them up. Friendships like this are built on years of paying attention. Tell them how much you value them; even close friends like hearing it.'],
+                ['min' => 0.55, 'label' => 'Close Friends', 'text' => 'You know your friend well, and there are still a few gaps, often about their bigger goals or worries. Next time you meet, ask one of the questions you were unsure about. It makes a good conversation, not a test.'],
+                ['min' => 0.3, 'label' => 'Good Friends', 'text' => 'You share good times, but some of the personal things have not come up yet. That is normal. Many friendships stay at the "fun" level until someone asks a deeper question. Try asking about their plans or what stresses them out.'],
+                ['min' => 0, 'label' => 'Still Getting to Know Each Other', 'text' => 'Your friendship has plenty of room to grow. Every close friendship starts here. Spend some unhurried time together, without phones, and ask about their family, dreams and favourite things. Then take this quiz again in a few months.'],
+            ],
+            'questions' => [
+                ['Do you know your best friend\'s go-to comfort food?', [['Yes, and exactly how they like it', 3], ['I think so', 2], ['I would have to guess', 1], ['No idea', 0]], null],
+                ['Could you name their birthday without checking your phone?', [['Yes, the exact date', 3], ['I know the month', 2], ['Roughly the season', 1], ['I would need to check', 0]], null],
+                ['Do you know what makes them laugh the hardest?', [['Yes, I could make them laugh right now', 3], ['Mostly', 2], ['Sometimes I get it right', 1], ['Not really', 0]], null],
+                ['Do you know their biggest fear or worry?', [['Yes, they have told me', 3], ['I have a good idea', 2], ['I can only guess', 1], ['No', 0]], null],
+                ['Can you tell when they are upset before they say anything?', [['Almost always', 3], ['Usually', 2], ['Sometimes', 1], ['Rarely', 0]], null],
+                ['Do you know their dream job or biggest life goal?', [['Yes, we have talked about it', 3], ['I think I know', 2], ['Only vaguely', 1], ['No idea', 0]], null],
+                ['Do you know how they like to spend a free day?', [['Yes, exactly', 3], ['Mostly', 2], ['I have a rough idea', 1], ['Not sure', 0]], null],
+                ['Could you name the people in their family they are closest to?', [['Yes, by name', 3], ['Most of them', 2], ['One or two', 1], ['No', 0]], null],
+                ['Do you know their biggest pet peeve?', [['Yes, and I avoid doing it', 3], ['I think so', 2], ['I could guess', 1], ['No idea', 0]], null],
+                ['After a bad day, do you know what would cheer them up?', [['Yes, I know exactly what to do', 3], ['Usually', 2], ['I would try something', 1], ['I would have to ask', 0]], null],
+            ],
+        ],
     ];
+
+    /**
+     * Display order of a question's options, so the right answer is not always in the same place.
+     * Options that all start with a number are sorted smallest first; others get a fixed shuffle seeded by
+     * the question text, so the order is the same on every run (seeder, SQL pack, tests).
+     * Personality quizzes keep their written order (most to least).
+     */
+    public static function orderedAnswers(string $prompt, array $answers, bool $personality = false): array
+    {
+        if ($personality) {
+            return $answers;
+        }
+        // Options that all start with a number (years, counts, distances) read best smallest first.
+        $size = fn ($label) => preg_match('/^([\d.,]+)\s*(million)?/u', $label, $m)
+            ? (float) str_replace(',', '', $m[1]) * (empty($m[2]) ? 1 : 1e6) : null;
+        if (! in_array(null, array_map(fn ($a) => $size($a[0]), $answers), true)) {
+            usort($answers, fn ($a, $b) => $size($a[0]) <=> $size($b[0]));
+
+            return $answers;
+        }
+        $seed = crc32($prompt);
+        usort($answers, fn ($a, $b) => crc32($seed.$a[0]) <=> crc32($seed.$b[0]));
+
+        return $answers;
+    }
 }

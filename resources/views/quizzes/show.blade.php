@@ -1,14 +1,25 @@
-@php $isTrivia = $quiz->questions->flatMap->answers->contains(fn ($a) => ! is_null($a->is_correct)); @endphp
-<x-layout :title="$quiz->title.' — Free Online Quiz | BuntyFun'" :description="$quiz->intro ? Str::limit($quiz->intro, 150) : 'Take the '.$quiz->title.' — '.$quiz->questions->count().' questions, free, no sign-up.'"
+@php
+    $isTrivia = $quiz->isTrivia();
+    $count = $quiz->questions->count();
+    $minutes = max(1, (int) ceil($count * 20 / 60));
+@endphp
+<x-layout :title="$quiz->title.' | BuntyFun'" :description="$quiz->intro ? Str::limit($quiz->intro, 150) : 'Take the '.$quiz->title.' — '.$quiz->questions->count().' questions, free, no sign-up.'"
           :meta="$quiz->meta" :noindex="$quiz->questions->count() < 5" :breadcrumbs="['Quizzes' => route('quizzes.index'), $quiz->title => null]">
     <div class="mx-auto max-w-2xl px-4 py-10">
         <h1 class="text-2xl font-bold">{{ $quiz->title }}</h1>
         @if ($quiz->intro)
             <p class="mt-3 leading-relaxed text-slate-700">{{ $quiz->intro }}</p>
         @endif
-        <p class="mt-3 text-sm text-slate-500">
-            {{ $quiz->questions->count() }} questions · one answer each · @if ($isTrivia) your score and an explanation for every answer at the end @else for fun, not a scientific test @endif
-        </p>
+        <ul class="mt-4 flex flex-wrap gap-2 text-xs font-medium">
+            <li class="rounded-full bg-violet-50 px-3 py-1 text-violet-700">{{ $count }} questions</li>
+            <li class="rounded-full bg-slate-100 px-3 py-1 text-slate-600">About {{ $minutes }} min</li>
+            @if ($quiz->difficulty)<li class="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{{ \App\Models\Quiz::DIFFICULTIES[$quiz->difficulty] ?? ucfirst($quiz->difficulty) }}</li>@endif
+            <li class="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{{ $isTrivia ? 'Score + every answer explained' : 'Just for fun, not a scientific test' }}</li>
+        </ul>
+        @if ($quiz->reviewed_at)
+            <p class="mt-2 text-xs text-slate-500">{{ $isTrivia ? 'Facts checked' : 'Last reviewed' }} {{ $quiz->reviewed_at->format('M j, Y') }} · <a href="{{ route('pages.editorial') }}" class="underline">How we check quizzes</a></p>
+        @endif
+
 
         <form method="POST" action="{{ route('quizzes.submit', $quiz) }}"
               x-data="{
@@ -54,5 +65,7 @@
                 </button>
             </div>
         </form>
+
+        @include('quizzes.partials.sources')
     </div>
 </x-layout>

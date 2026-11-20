@@ -37,6 +37,32 @@
             <textarea name="intro" rows="3" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">{{ old('intro', $quiz->intro) }}</textarea>
         </div>
 
+        <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+                <label class="block text-sm font-medium text-slate-700">Difficulty</label>
+                <select name="difficulty" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
+                    <option value="">—</option>
+                    @foreach (\App\Models\Quiz::DIFFICULTIES as $key => $label)
+                        <option value="{{ $key }}" @selected(old('difficulty', $quiz->difficulty) === $key)>{{ $label }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700">Facts checked on (shown on the quiz)</label>
+                <input type="date" name="reviewed_at" value="{{ old('reviewed_at', $quiz->reviewed_at?->format('Y-m-d')) }}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-slate-700">Sources (one per line; links are clickable on the quiz)</label>
+            <textarea name="sources" rows="3" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">{{ old('sources', $quiz->sources) }}</textarea>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-slate-700">Result types for score-based quizzes (JSON: [{"min": 0.8, "label": "...", "text": "..."}], highest min wins; leave empty for trivia)</label>
+            <textarea name="outcomes_json" rows="5" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs">{{ old('outcomes_json', $quiz->outcomes ? json_encode($quiz->outcomes, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : '') }}</textarea>
+        </div>
+
         <div>
             <label class="block text-sm font-medium text-slate-700">Slug (optional — derived from title if blank)</label>
             <input type="text" name="slug" value="{{ old('slug', $quiz->slug) }}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
