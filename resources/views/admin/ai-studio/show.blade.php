@@ -8,10 +8,10 @@
     <div class="mt-2 flex flex-wrap items-center gap-3">
         <h1 class="text-2xl font-bold">{{ $template->label() }} draft #{{ $draft->id }}</h1>
         <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs">{{ $draft->status }}</span>
-        @if ($draft->quality_score !== null)<span class="rounded-full bg-violet-100 px-2 py-0.5 text-xs text-violet-700">score {{ $draft->quality_score }}</span>@endif
+        @if ($draft->quality_score !== null)<span class="rounded-full bg-brand-100 px-2 py-0.5 text-xs text-navy-600">score {{ $draft->quality_score }}</span>@endif
         @if ($draft->target_id)<span class="text-xs text-slate-500">→ {{ $draft->target_type }} #{{ $draft->target_id }}</span>@endif
         @if ($draft->status === 'approved' && $draft->target_id)
-            <a href="{{ route('admin.social.create', ['type' => $draft->target_type, 'id' => $draft->target_id]) }}" class="rounded-lg bg-violet-600 px-3 py-1 text-xs font-semibold text-white">Create social post</a>
+            <a href="{{ route('admin.social.create', ['type' => $draft->target_type, 'id' => $draft->target_id]) }}" class="rounded-lg bg-brand-600 px-3 py-1 text-xs font-semibold text-white">Create social post</a>
         @endif
     </div>
 
@@ -61,7 +61,7 @@
                 @if (! empty($p['image_brief']))<p class="mt-1 text-xs text-slate-500">Image brief: {{ $p['image_brief'] }}</p>@endif
             </div>
             @if ($editable)
-                <button type="submit" class="rounded-lg border border-violet-600 px-4 py-2 text-sm font-semibold text-violet-700 hover:bg-violet-50">Save edits + re-check</button>
+                <button type="submit" class="rounded-lg border border-brand-600 px-4 py-2 text-sm font-semibold text-navy-600 hover:bg-brand-50">Save edits + re-check</button>
             @endif
         </form>
 
@@ -89,7 +89,7 @@
                                 <button class="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">Approve + publish now</button></form>
                             <form method="POST" action="{{ route('admin.ai-studio.approve', $draft) }}" class="flex gap-2">@csrf<input type="hidden" name="mode" value="schedule">
                                 <input type="datetime-local" name="publish_at" required class="min-w-0 flex-1 rounded-lg border border-slate-300 px-2 py-1 text-sm">
-                                <button class="rounded-lg bg-violet-600 px-3 py-1 text-sm font-semibold text-white">Schedule</button></form>
+                                <button class="rounded-lg bg-brand-600 px-3 py-1 text-sm font-semibold text-white">Schedule</button></form>
                         @endif
                         <form method="POST" action="{{ route('admin.ai-studio.approve', $draft) }}">@csrf<input type="hidden" name="mode" value="review">
                             <button class="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm hover:bg-slate-50">Approve as "in review" (no date)</button></form>

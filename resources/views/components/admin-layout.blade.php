@@ -10,25 +10,25 @@
 <body class="min-h-screen bg-slate-100 text-slate-900 antialiased">
     <div class="flex min-h-screen">
         <aside class="w-56 shrink-0 border-r border-slate-200 bg-white">
-            <div class="border-b border-slate-200 px-4 py-4 text-lg font-bold text-violet-600">BuntyFun Admin</div>
+            <div class="border-b border-slate-200 px-4 py-4 text-lg font-bold text-navy-600">BuntyFun Admin</div>
             <nav class="flex flex-col gap-1 p-3 text-sm font-medium text-slate-600">
-                <a href="{{ route('admin.dashboard') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Dashboard</a>
-                <a href="{{ route('admin.ai-studio.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">AI Studio</a>
-                <a href="{{ route('admin.automation.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Automation</a>
-                <a href="{{ route('admin.automation.calendar') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Calendar</a>
-                <a href="{{ route('admin.social.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Social</a>
+                <a href="{{ route('admin.dashboard') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Dashboard</a>
+                <a href="{{ route('admin.ai-studio.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">AI Studio</a>
+                <a href="{{ route('admin.automation.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Automation</a>
+                <a href="{{ route('admin.automation.calendar') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Calendar</a>
+                <a href="{{ route('admin.social.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Social</a>
                 <span class="mt-2 px-3 text-xs uppercase tracking-wide text-slate-400">Content</span>
-                <a href="{{ route('admin.quizzes.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Quizzes</a>
-                <a href="{{ route('admin.games.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Games</a>
-                <a href="{{ route('admin.birthday-messages.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Birthday Wishes</a>
-                <a href="{{ route('admin.name-entries.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Islamic Names</a>
-                <a href="{{ route('admin.messages.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Messages &amp; Quotes</a>
-                <a href="{{ route('admin.urdu-content.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Urdu Content</a>
-                <a href="{{ route('admin.wallpapers.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Wallpapers</a>
-                <a href="{{ route('admin.ai-tools.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">AI Tools</a>
+                <a href="{{ route('admin.quizzes.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Quizzes</a>
+                <a href="{{ route('admin.games.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Games</a>
+                <a href="{{ route('admin.birthday-messages.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Birthday Wishes</a>
+                <a href="{{ route('admin.name-entries.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Islamic Names</a>
+                <a href="{{ route('admin.messages.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Messages &amp; Quotes</a>
+                <a href="{{ route('admin.urdu-content.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Urdu Content</a>
+                <a href="{{ route('admin.wallpapers.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Wallpapers</a>
+                <a href="{{ route('admin.ai-tools.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">AI Tools</a>
                 @auth
                     @if (auth()->user()->isSuperAdmin())
-                        <a href="{{ route('admin.categories.index') }}" class="rounded px-3 py-2 hover:bg-violet-50 hover:text-violet-700">Categories</a>
+                        <a href="{{ route('admin.categories.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Categories</a>
                     @endif
                 @endauth
             </nav>

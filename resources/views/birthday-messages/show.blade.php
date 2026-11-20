@@ -21,7 +21,7 @@
                      setTimeout(() => this.copied = false, 2000);
                  },
              }">
-            <button type="button" @click="copy()" class="rounded-full bg-violet-600 px-5 py-2 font-semibold text-white hover:bg-violet-700">
+            <button type="button" @click="copy()" class="rounded-full bg-brand-600 px-5 py-2 font-semibold text-white hover:bg-brand-700">
                 <span x-show="!copied">Copy message</span>
                 <span x-show="copied" x-cloak>Copied!</span>
             </button>
@@ -45,6 +45,6 @@
             </div>
         @endif
 
-        <a href="{{ $hub }}" class="mt-8 block text-sm font-medium text-violet-700 hover:underline">All birthday wishes for {{ Str::lower(Str::headline($message->relationship)) }}, with tips</a>
+        <a href="{{ $hub }}" class="mt-8 block text-sm font-medium text-navy-600 hover:underline">All birthday wishes for {{ Str::lower(Str::headline($message->relationship)) }}, with tips</a>
     </div>
 </x-layout>

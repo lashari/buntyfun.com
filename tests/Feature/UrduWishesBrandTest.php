@@ -50,9 +50,17 @@ class UrduWishesBrandTest extends TestCase
         $this->get('/')->assertOk()
             ->assertSee('images/brand/buntyfun-logo.svg', false)
             ->assertSee('images/brand/apple-touch-icon.png', false)
-            ->assertSee('images/brand/og-default.png', false);
-        foreach (['images/brand/buntyfun-logo.svg', 'images/brand/buntyfun-mark.svg', 'images/brand/icon.svg', 'images/brand/og-default.png', 'images/brand/apple-touch-icon.png', 'favicon.ico'] as $f) {
+            ->assertSee('images/brand/og-default.jpg', false);
+        foreach (['images/brand/buntyfun-logo.svg', 'images/brand/buntyfun-mark.svg', 'images/brand/icon.svg', 'images/brand/og-default.jpg', 'images/brand/apple-touch-icon.png', 'favicon.ico'] as $f) {
             $this->assertFileExists(public_path($f));
         }
+    }
+
+    public function test_brand_theme_hero_banner_and_no_violet_left(): void
+    {
+        $this->get('/')->assertOk()->assertSee('images/banners/hero-bg.webp', false)->assertSee('fonts.bunny.net/css?family=poppins', false)
+            ->assertSee('buntyfun-logo-dark.svg', false)->assertDontSee('violet', false);
+        $this->get('/about')->assertOk()->assertSee('images/banners/buntyfun-banner.webp', false);
+        $this->assertFileExists(public_path('images/banners/hero-bg.webp'));
     }
 }

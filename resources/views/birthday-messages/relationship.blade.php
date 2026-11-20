@@ -35,7 +35,7 @@
             </section>
         @endforeach
 
-        <section class="mt-12 rounded-xl bg-violet-50 p-6 prose-page">
+        <section class="mt-12 rounded-xl bg-brand-50 p-6 prose-page">
             <h2 class="!mt-0">How to make it personal</h2>
             <ul>
                 @foreach ($guide['tips'] as $tip)
@@ -54,12 +54,12 @@
                 <div class="mt-3 flex flex-wrap gap-2">
                     @foreach ($others as $r)
                         <a href="{{ route('birthday-messages.relationship', \App\Models\BirthdayMessage::relationshipSlug($r)) }}"
-                           class="rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm hover:border-violet-300">{{ \App\Content\BirthdayGuides::for($r)['label'] }}</a>
+                           class="rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm hover:border-brand-300">{{ \App\Content\BirthdayGuides::for($r)['label'] }}</a>
                     @endforeach
                 </div>
             </section>
         @endif
-        <p class="mt-8 text-sm text-slate-500">Prefer Urdu? See all <a href="{{ route('birthday-messages.urdu') }}" class="text-violet-700 underline">birthday wishes in Urdu</a>.</p>
-        <p class="mt-2 text-sm text-slate-500">Want something more tailored? Try the <a href="{{ route('ai-tools.index') }}" class="text-violet-700 underline">AI birthday message generator</a>.</p>
+        <p class="mt-8 text-sm text-slate-500">Prefer Urdu? See all <a href="{{ route('birthday-messages.urdu') }}" class="text-navy-600 underline">birthday wishes in Urdu</a>.</p>
+        <p class="mt-2 text-sm text-slate-500">Want something more tailored? Try the <a href="{{ route('ai-tools.index') }}" class="text-navy-600 underline">AI birthday message generator</a>.</p>
     </div>
 </x-layout>

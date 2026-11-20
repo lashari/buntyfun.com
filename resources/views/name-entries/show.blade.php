@@ -1,7 +1,7 @@
 @php
     // source_ref is free text like 'Wikipedia, "Ahmad": https://…' (sometimes several, separated by ';').
     // Escape it, then turn each URL into a link.
-    $sourceHtml = preg_replace('~https?://[^\s;,<]+~', '<a href="$0" rel="noopener nofollow" target="_blank" class="text-violet-700 underline">$0</a>', e((string) $name->source_ref));
+    $sourceHtml = preg_replace('~https?://[^\s;,<]+~', '<a href="$0" rel="noopener nofollow" target="_blank" class="text-navy-600 underline">$0</a>', e((string) $name->source_ref));
     $genderLabel = ['male' => 'Boy', 'female' => 'Girl', 'unisex' => 'Boy or girl'][$name->gender] ?? Str::headline($name->gender);
 @endphp
 <x-layout :title="$name->name_en.' Name Meaning ('.$genderLabel.') — Arabic & Urdu Spelling | BuntyFun'"

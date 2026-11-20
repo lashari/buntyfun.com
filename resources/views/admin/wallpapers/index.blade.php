@@ -1,7 +1,7 @@
 <x-admin-layout title="Wallpapers">
     <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold">Wallpapers</h1>
-        <a href="{{ route('admin.wallpapers.create') }}" class="rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700">Upload Wallpaper</a>
+        <a href="{{ route('admin.wallpapers.create') }}" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">Upload Wallpaper</a>
     </div>
 
     <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -15,7 +15,7 @@
                         {{ Str::headline($wallpaper->status) }}
                     </span>
                     <div class="mt-2 flex items-center gap-3 text-sm">
-                        <a href="{{ route('admin.wallpapers.edit', $wallpaper) }}" class="text-violet-600 hover:underline">Edit</a>
+                        <a href="{{ route('admin.wallpapers.edit', $wallpaper) }}" class="text-navy-600 hover:underline">Edit</a>
                         @if (auth()->user()->canPublish())
                             @if ($wallpaper->status === 'published')
                                 <form method="POST" action="{{ route('admin.wallpapers.unpublish', $wallpaper) }}">

@@ -20,7 +20,7 @@
 <x-layout :title="$quiz->title.' — Result — BuntyFun'" description="See your quiz result." :noindex="true" :ads="false">
     <div class="mx-auto max-w-2xl px-4 py-12">
         <div class="text-center">
-            <p class="text-sm font-medium text-violet-600">{{ $quiz->title }}</p>
+            <p class="text-sm font-medium text-navy-600">{{ $quiz->title }}</p>
             <h1 class="mt-2 text-3xl font-extrabold">{{ $result->outcome_label }}</h1>
             @if ($outcomeText)
                 <p class="mx-auto mt-3 max-w-xl leading-relaxed text-slate-600">{{ $outcomeText }}</p>

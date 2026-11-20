@@ -16,13 +16,13 @@
                 <option value="female" @selected(request('gender') === 'female')>Girls</option>
                 <option value="unisex" @selected(request('gender') === 'unisex')>Unisex</option>
             </select>
-            <button type="submit" class="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700">Search</button>
+            <button type="submit" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">Search</button>
         </form>
 
         <div class="mt-4 flex flex-wrap gap-1 text-sm">
             @foreach (range('A', 'Z') as $letter)
                 <a href="{{ route('name-entries.index', array_merge(request()->except('letter', 'page'), ['letter' => $letter])) }}"
-                   class="rounded px-2 py-1 {{ request('letter') === $letter ? 'bg-violet-600 text-white' : 'text-slate-500 hover:bg-slate-100' }}">
+                   class="rounded px-2 py-1 {{ request('letter') === $letter ? 'bg-brand-600 text-white' : 'text-slate-500 hover:bg-slate-100' }}">
                     {{ $letter }}
                 </a>
             @endforeach

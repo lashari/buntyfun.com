@@ -4,7 +4,7 @@
             <h1 class="text-2xl font-bold">Social Media Manager</h1>
             <p class="mt-1 text-sm text-slate-500">Facebook Page + Instagram through Meta's official API. Every post needs an admin's approval before it goes out.</p>
         </div>
-        <a href="{{ route('admin.social.create') }}" class="rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700">New post</a>
+        <a href="{{ route('admin.social.create') }}" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">New post</a>
     </div>
 
     <div class="mt-6 rounded-xl border border-slate-200 bg-white p-4">
@@ -45,7 +45,7 @@
 
     <div class="mt-6 flex flex-wrap gap-2 text-sm">
         @foreach (['open' => 'Open', 'published' => 'Published', 'cancelled' => 'Cancelled', 'all' => 'All'] as $s => $l)
-            <a href="{{ route('admin.social.index', ['status' => $s]) }}" class="rounded-full border px-3 py-1 {{ $status === $s ? 'border-violet-600 bg-violet-600 text-white' : 'border-slate-300 text-slate-600' }}">{{ $l }}</a>
+            <a href="{{ route('admin.social.index', ['status' => $s]) }}" class="rounded-full border px-3 py-1 {{ $status === $s ? 'border-brand-600 bg-brand-600 text-white' : 'border-slate-300 text-slate-600' }}">{{ $l }}</a>
         @endforeach
     </div>
 
@@ -72,7 +72,7 @@
                     </td>
                     <td class="px-3 py-2">
                         <span class="rounded-full px-2 py-0.5 text-xs {{ ['published' => 'bg-emerald-100 text-emerald-700', 'failed' => 'bg-red-100 text-red-700', 'approved' => 'bg-sky-100 text-sky-700', 'draft' => 'bg-amber-100 text-amber-800'][$p->status] ?? 'bg-slate-100 text-slate-600' }}">{{ $p->status }}</span>
-                        @if ($p->permalink)<a href="{{ $p->permalink }}" target="_blank" rel="noopener" class="ml-1 text-xs text-violet-700 hover:underline">view</a>@endif
+                        @if ($p->permalink)<a href="{{ $p->permalink }}" target="_blank" rel="noopener" class="ml-1 text-xs text-navy-600 hover:underline">view</a>@endif
                     </td>
                     <td class="px-3 py-2 whitespace-nowrap text-right text-xs">
                         @if (auth()->user()->canPublish())
@@ -80,10 +80,10 @@
                                 <form method="POST" action="{{ route('admin.social.approve', $p) }}" class="inline">@csrf<button class="text-emerald-700 hover:underline">Approve</button></form>
                             @endif
                             @if (in_array($p->status, ['draft', 'approved']))
-                                <form method="POST" action="{{ route('admin.social.publish-now', $p) }}" class="ml-2 inline">@csrf<button class="text-violet-700 hover:underline">Post now</button></form>
+                                <form method="POST" action="{{ route('admin.social.publish-now', $p) }}" class="ml-2 inline">@csrf<button class="text-navy-600 hover:underline">Post now</button></form>
                             @endif
                             @if ($p->status === 'failed')
-                                <form method="POST" action="{{ route('admin.social.retry', $p) }}" class="inline">@csrf<button class="text-violet-700 hover:underline">Retry</button></form>
+                                <form method="POST" action="{{ route('admin.social.retry', $p) }}" class="inline">@csrf<button class="text-navy-600 hover:underline">Retry</button></form>
                             @endif
                         @endif
                         @if (in_array($p->status, ['draft', 'approved', 'failed']))
@@ -105,7 +105,7 @@
                 <tr>
                     <td class="px-3 py-2">{{ $t['title'] }} <span class="text-xs text-slate-400">{{ $t['type'] }}</span></td>
                     <td class="px-3 py-2 text-xs text-slate-500">{{ $t['views'] }} views · {{ $t['shares'] }} shares · posted {{ $t['posted'] }}×</td>
-                    <td class="px-3 py-2 text-right"><a href="{{ route('admin.social.create', ['type' => $t['type'], 'id' => $t['id']]) }}" class="text-xs text-violet-700 hover:underline">Create post</a></td>
+                    <td class="px-3 py-2 text-right"><a href="{{ route('admin.social.create', ['type' => $t['type'], 'id' => $t['id']]) }}" class="text-xs text-navy-600 hover:underline">Create post</a></td>
                 </tr>
             @empty
                 <tr><td class="px-3 py-4 text-slate-500">No view data yet. It fills up as visitors open pages.</td></tr>

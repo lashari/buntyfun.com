@@ -49,7 +49,7 @@
                         </td>
                         <td class="whitespace-nowrap text-right">
                             @if ($canEdit)
-                                <form method="POST" action="{{ route('admin.ai-keys.test', $k) }}" class="inline">@csrf<button class="text-violet-700 hover:underline">Test</button></form>
+                                <form method="POST" action="{{ route('admin.ai-keys.test', $k) }}" class="inline">@csrf<button class="text-navy-600 hover:underline">Test</button></form>
                                 <form method="POST" action="{{ route('admin.ai-keys.toggle', $k) }}" class="ml-2 inline">@csrf<button class="text-slate-600 hover:underline">{{ $k->enabled ? 'Turn off' : 'Turn on' }}</button></form>
                                 <form method="POST" action="{{ route('admin.ai-keys.destroy', $k) }}" class="ml-2 inline" onsubmit="return confirm('Delete key {{ $k->label }}? This cannot be undone.')">@csrf @method('DELETE')<button class="text-red-600 hover:underline">Delete</button></form>
                             @endif
@@ -75,7 +75,7 @@
                     <input type="password" name="api_key" required autocomplete="new-password" placeholder="paste key" class="mt-1 block w-full rounded-lg border border-slate-300 px-2 py-2 font-mono text-sm"></label>
                 <label class="text-xs text-slate-500">Priority
                     <input type="number" name="priority" min="1" max="99" value="10" class="mt-1 block w-16 rounded-lg border border-slate-300 px-2 py-2 text-sm"></label>
-                <button class="rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700">Add key</button>
+                <button class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">Add key</button>
             </form>
         @else
             <p class="mt-3 text-xs text-slate-500">Only a super admin can add or change keys.</p>
@@ -127,7 +127,7 @@
             </div>
         </fieldset>
         @if ($canEdit)
-            <button class="rounded-lg bg-violet-600 px-5 py-2 font-semibold text-white hover:bg-violet-700">Save settings</button>
+            <button class="rounded-lg bg-brand-600 px-5 py-2 font-semibold text-white hover:bg-brand-700">Save settings</button>
         @else
             <p class="text-sm text-slate-500">Only a super admin can change settings.</p>
         @endif

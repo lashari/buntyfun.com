@@ -45,7 +45,7 @@
 
         <div class="flex gap-3">
             @if (auth()->user()->canPublish())
-                <button name="action" value="approve" class="rounded-lg bg-violet-600 px-5 py-2 font-semibold text-white hover:bg-violet-700">Approve &amp; schedule</button>
+                <button name="action" value="approve" class="rounded-lg bg-brand-600 px-5 py-2 font-semibold text-white hover:bg-brand-700">Approve &amp; schedule</button>
             @endif
             <button name="action" value="draft" class="rounded-lg border border-slate-300 px-5 py-2 hover:bg-slate-50">Save draft for approval</button>
         </div>

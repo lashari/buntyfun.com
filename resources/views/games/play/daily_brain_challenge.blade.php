@@ -43,7 +43,7 @@
         <div class="mt-6 grid gap-3">
             @foreach ($question['options'] as $i => $option)
                 <button type="button" @click="selected === null && (selected = {{ $i }})"
-                        :class="selected === null ? 'border-slate-200 hover:border-violet-300' : (
+                        :class="selected === null ? 'border-slate-200 hover:border-brand-300' : (
                             {{ $i }} === correct ? 'border-emerald-500 bg-emerald-50' : (selected === {{ $i }} ? 'border-red-400 bg-red-50' : 'border-slate-200 opacity-60')
                         )"
                         class="rounded-lg border px-4 py-3 text-left">
@@ -52,7 +52,7 @@
             @endforeach
         </div>
 
-        <p class="mt-4 font-semibold text-violet-600" x-show="selected !== null" x-cloak>
+        <p class="mt-4 font-semibold text-navy-600" x-show="selected !== null" x-cloak>
             <span x-text="selected === correct ? 'Correct! Come back tomorrow for a new one.' : 'Not quite — come back tomorrow for a new one.'"></span>
         </p>
         <p class="mt-2 text-sm text-slate-600" x-show="selected !== null" x-cloak>{{ $question['why'] }}</p>
