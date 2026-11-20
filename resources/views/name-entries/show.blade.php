@@ -1,24 +1,49 @@
-<x-layout :title="$name->name_en.' — Meaning — BuntyFun'" :description="Str::limit($name->meaning, 150)"
+@php
+    // source_ref is free text like 'Wikipedia, "Ahmad": https://…' (sometimes several, separated by ';').
+    // Escape it, then turn each URL into a link.
+    $sourceHtml = preg_replace('~https?://[^\s;,<]+~', '<a href="$0" rel="noopener nofollow" target="_blank" class="text-violet-700 underline">$0</a>', e((string) $name->source_ref));
+    $genderLabel = ['male' => 'Boy', 'female' => 'Girl', 'unisex' => 'Boy or girl'][$name->gender] ?? Str::headline($name->gender);
+@endphp
+<x-layout :title="$name->name_en.' Name Meaning ('.$genderLabel.') — Arabic & Urdu Spelling | BuntyFun'"
+          :description="$name->name_en.($name->name_ar ? ' ('.$name->name_ar.')' : '').': '.Str::limit($name->meaning, 120).' Source cited.'"
           :meta="$name->meta" :breadcrumbs="['Islamic Names' => route('name-entries.index'), $name->name_en => null]">
     <div class="mx-auto max-w-xl px-4 py-12">
         <h1 class="text-3xl font-bold">{{ $name->name_en }}</h1>
-        @if ($name->name_ar)
-            <p class="mt-1 text-2xl text-slate-600" dir="rtl">{{ $name->name_ar }}</p>
-        @endif
-        <p class="mt-4 text-xs uppercase tracking-wide text-slate-500">
-            {{ Str::headline($name->gender) }} @if ($name->origin) · {{ $name->origin }} @endif
-        </p>
-        <p class="mt-4 text-lg leading-relaxed">{{ $name->meaning }}</p>
+        <p class="mt-1 text-slate-500">Name meaning and spelling</p>
 
-        <p class="mt-6 text-xs text-slate-500">Source: {{ $name->source_ref }}</p>
+        <dl class="mt-6 grid grid-cols-[auto_1fr] gap-x-6 gap-y-3 rounded-xl border border-slate-200 bg-white p-5 text-sm">
+            @if ($name->name_ar)
+                <dt class="text-slate-500">Arabic</dt><dd class="text-2xl" dir="rtl" lang="ar">{{ $name->name_ar }}</dd>
+            @endif
+            @if ($name->name_ur)
+                <dt class="text-slate-500">Urdu</dt><dd class="font-urdu text-xl" dir="rtl" lang="ur">{{ $name->name_ur }}</dd>
+            @endif
+            <dt class="text-slate-500">English spelling</dt><dd>{{ $name->name_en }}</dd>
+            <dt class="text-slate-500">Gender</dt><dd>{{ $genderLabel }}</dd>
+            @if ($name->origin)
+                <dt class="text-slate-500">Origin</dt><dd>{{ $name->origin }}</dd>
+            @endif
+        </dl>
+
+        <h2 class="mt-8 text-lg font-bold">Meaning of {{ $name->name_en }}</h2>
+        <p class="mt-2 text-lg leading-relaxed">{{ $name->meaning }}</p>
+
+        <p class="mt-6 text-sm text-slate-600">
+            Source:
+            {!! $sourceHtml !!}
+        </p>
+        <p class="mt-4 rounded-lg bg-slate-100 p-4 text-xs leading-relaxed text-slate-600">
+            English spellings of Arabic names vary (for example Mohammed / Muhammad, Hussein / Husain); the Arabic spelling above is the reference form. Meanings describe the word's linguistic root and are not a religious ruling. Spotted an error? <a href="{{ route('pages.contact') }}" class="underline">Tell us</a>. How we check names: <a href="{{ route('pages.editorial') }}" class="underline">editorial policy</a>.
+        </p>
 
         @if ($related->isNotEmpty())
             <div class="mt-10">
-                <h2 class="text-lg font-semibold">Related names</h2>
+                <h2 class="text-lg font-semibold">More {{ Str::lower($genderLabel) }} names</h2>
                 <div class="mt-3 grid grid-cols-2 gap-3">
                     @foreach ($related as $r)
                         <a href="{{ route('name-entries.show', $r) }}" class="rounded-lg border border-slate-200 bg-white p-3 text-sm hover:shadow-sm">
-                            {{ $r->name_en }}
+                            <span class="font-medium">{{ $r->name_en }}</span>
+                            <span class="block text-xs text-slate-500">{{ Str::limit($r->meaning, 50) }}</span>
                         </a>
                     @endforeach
                 </div>

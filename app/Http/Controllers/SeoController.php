@@ -23,16 +23,38 @@ class SeoController extends Controller
             ['loc' => route('birthday-messages.index'), 'changefreq' => 'weekly'],
             ['loc' => route('name-entries.index'), 'changefreq' => 'weekly'],
             ['loc' => route('urdu-content.index'), 'changefreq' => 'weekly'],
-            ['loc' => route('wallpapers.index'), 'changefreq' => 'weekly'],
             ['loc' => route('ai-tools.index'), 'changefreq' => 'weekly'],
-            ['loc' => route('messages.index'), 'changefreq' => 'daily'],
+            ['loc' => route('pages.about'), 'changefreq' => 'yearly'],
+            ['loc' => route('pages.contact'), 'changefreq' => 'yearly'],
+            ['loc' => route('pages.privacy'), 'changefreq' => 'yearly'],
+            ['loc' => route('pages.terms'), 'changefreq' => 'yearly'],
+            ['loc' => route('pages.editorial'), 'changefreq' => 'yearly'],
         ]);
 
-        foreach (Message::indexable()->get() as $message) {
-            $urls->push(['loc' => route('messages.show', $message), 'changefreq' => 'monthly', 'lastmod' => $message->updated_at]);
+        // Empty sections are noindex until something is published — keep them out of the sitemap too.
+        if (Message::indexable()->exists()) {
+            $urls->push(['loc' => route('messages.index'), 'changefreq' => 'daily']);
+        }
+        if (Wallpaper::indexable()->exists()) {
+            $urls->push(['loc' => route('wallpapers.index'), 'changefreq' => 'weekly']);
         }
 
-        foreach (Quiz::indexable()->get() as $quiz) {
+        foreach (BirthdayMessage::hubRelationships() as $relationship) {
+            $urls->push(['loc' => route('birthday-messages.relationship', BirthdayMessage::relationshipSlug($relationship)), 'changefreq' => 'weekly']);
+        }
+
+        // Single wishes / Urdu lines / messages are one short text each: noindex by default
+        // (config site.index_single_snippets), so they are not listed here either.
+        $snippets = config('site.index_single_snippets');
+
+        if ($snippets) {
+            foreach (Message::indexable()->get() as $message) {
+                $urls->push(['loc' => route('messages.show', $message), 'changefreq' => 'monthly', 'lastmod' => $message->updated_at]);
+            }
+        }
+
+        // Quizzes under 5 questions are noindex on the page itself (too thin to rank or carry ads).
+        foreach (Quiz::indexable()->has('questions', '>=', 5)->get() as $quiz) {
             $urls->push(['loc' => route('quizzes.show', $quiz), 'changefreq' => 'monthly', 'lastmod' => $quiz->updated_at]);
         }
 
@@ -40,16 +62,20 @@ class SeoController extends Controller
             $urls->push(['loc' => route('games.show', $game), 'changefreq' => 'monthly']);
         }
 
-        foreach (BirthdayMessage::indexable()->get() as $message) {
-            $urls->push(['loc' => route('birthday-messages.show', $message), 'changefreq' => 'monthly']);
+        if ($snippets) {
+            foreach (BirthdayMessage::indexable()->get() as $message) {
+                $urls->push(['loc' => route('birthday-messages.show', $message), 'changefreq' => 'monthly']);
+            }
         }
 
         foreach (NameEntry::indexable()->get() as $name) {
             $urls->push(['loc' => route('name-entries.show', $name), 'changefreq' => 'yearly']);
         }
 
-        foreach (UrduContent::indexable()->get() as $item) {
-            $urls->push(['loc' => route('urdu-content.show', $item), 'changefreq' => 'monthly']);
+        if ($snippets) {
+            foreach (UrduContent::indexable()->get() as $item) {
+                $urls->push(['loc' => route('urdu-content.show', $item), 'changefreq' => 'monthly']);
+            }
         }
 
         foreach (Wallpaper::indexable()->get() as $wallpaper) {

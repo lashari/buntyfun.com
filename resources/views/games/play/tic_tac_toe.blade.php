@@ -1,4 +1,4 @@
-<x-layout :title="$game->title.' — BuntyFun'" description="Play Tic-Tac-Toe free in your browser.">
+<x-layout :title="$game->title.' — Play Free Online, Rules & Tips | BuntyFun'" :breadcrumbs="['Games' => route('games.index'), $game->title => null]" :description="(\App\Content\GameGuides::for($game->slug)['summary'] ?? 'Play Tic-Tac-Toe free in your browser.').' Free, no sign-up, with rules and tips.'">
     <div class="mx-auto max-w-sm px-4 py-10 text-center"
          x-data="{
              board: Array(9).fill(null),
@@ -44,4 +44,5 @@
         </button>
         <a href="{{ route('games.index') }}" class="mt-4 block text-sm text-slate-500 hover:underline">More games</a>
     </div>
+    @include('games.partials.guide')
 </x-layout>

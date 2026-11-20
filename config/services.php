@@ -38,7 +38,8 @@ return [
     // Both blank by default — never show ads before AdSense approval, never load
     // analytics against an unconfigured property. Blank = no-op, not a crash.
     'adsense' => [
-        'client_id' => env('ADSENSE_CLIENT_ID'),
+        'client_id' => env('ADSENSE_CLIENT_ID'),        // ca-pub-XXXXXXXXXXXXXXXX, from the AdSense account only
+        'slot_id' => env('ADSENSE_SLOT_ID'),            // numeric display ad unit id; empty = Auto ads only
     ],
 
     // Meta (Facebook Page + Instagram) publishing. App ID and login configuration ID are

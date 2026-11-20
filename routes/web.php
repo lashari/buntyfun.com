@@ -21,6 +21,7 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NameEntryController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SeoController;
@@ -35,6 +36,14 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
 Route::get('/feed.xml', [SeoController::class, 'feed'])->name('feed');
+Route::get('/ads.txt', [PageController::class, 'adsTxt'])->name('ads-txt');
+
+Route::get('/about', [PageController::class, 'about'])->name('pages.about');
+Route::get('/contact', [PageController::class, 'contact'])->name('pages.contact');
+Route::get('/privacy-policy', [PageController::class, 'privacy'])->name('pages.privacy');
+Route::get('/terms', [PageController::class, 'terms'])->name('pages.terms');
+Route::get('/editorial-policy', [PageController::class, 'editorial'])->name('pages.editorial');
+Route::redirect('/privacy', '/privacy-policy', 301);
 
 Route::post('/share-events', [ShareEventController::class, 'store'])->middleware('throttle:30,1')->name('share-events.store');
 
@@ -53,6 +62,8 @@ Route::prefix('games')->group(function () {
 
 Route::prefix('birthday-wishes')->group(function () {
     Route::get('/', [BirthdayMessageController::class, 'index'])->name('birthday-messages.index');
+    Route::get('/for/{relationship}', [BirthdayMessageController::class, 'relationship'])
+        ->where('relationship', '[a-z-]+')->name('birthday-messages.relationship');
     Route::get('/{birthdayMessage:slug}', [BirthdayMessageController::class, 'show'])->name('birthday-messages.show');
 });
 

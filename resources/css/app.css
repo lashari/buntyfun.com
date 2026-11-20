@@ -17,3 +17,15 @@
 .font-urdu {
     font-family: 'Noto Nastaliq Urdu', 'Noto Naskh Arabic', serif;
 }
+
+/* Long-form text (About, Privacy, game guides, hub intros). No typography plugin installed. */
+.prose-page { line-height: 1.75; color: var(--color-slate-700); }
+.prose-page h2 { margin-top: 2rem; font-size: 1.25rem; font-weight: 700; color: var(--color-slate-900); }
+.prose-page h3 { margin-top: 1.5rem; font-size: 1.05rem; font-weight: 600; color: var(--color-slate-900); }
+.prose-page p, .prose-page ul, .prose-page ol { margin-top: 0.75rem; }
+.prose-page ul { list-style: disc; padding-left: 1.25rem; }
+.prose-page ol { list-style: decimal; padding-left: 1.25rem; }
+.prose-page li { margin-top: 0.25rem; }
+.prose-page a { color: var(--color-violet-700); text-decoration: underline; }
+.prose-page table { margin-top: 1rem; width: 100%; font-size: 0.875rem; border-collapse: collapse; }
+.prose-page th, .prose-page td { border: 1px solid var(--color-slate-200); padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }

@@ -1,7 +1,8 @@
-<x-layout :title="$game->title.' — BuntyFun'" description="Unscramble the word — free browser word game.">
+<x-layout :title="$game->title.' — Play Free Online, Rules & Tips | BuntyFun'" :breadcrumbs="['Games' => route('games.index'), $game->title => null]" :description="(\App\Content\GameGuides::for($game->slug)['summary'] ?? 'Unscramble the word — free browser word game.').' Free, no sign-up, with rules and tips.'">
     <div class="mx-auto max-w-md px-4 py-10 text-center"
          x-data="{
-             words: ['laravel', 'puzzle', 'sunshine', 'birthday', 'friend', 'wisdom', 'journey', 'rainbow', 'victory', 'melody'],
+             words: ['puzzle', 'sunshine', 'birthday', 'friend', 'wisdom', 'journey', 'rainbow', 'victory', 'melody', 'garden', 'planet', 'thunder', 'blanket', 'kitchen', 'holiday', 'monsoon', 'mango', 'cricket', 'library', 'picnic'],
+             order: [],
              round: 0,
              totalRounds: 5,
              word: '',
@@ -15,8 +16,9 @@
                  return arr.join('');
              },
              start() {
-                 const pool = [...this.words].sort(() => Math.random() - 0.5);
-                 this.word = pool[this.round % pool.length];
+                 // Shuffle once per game so the five rounds never repeat a word.
+                 if (this.round === 0) this.order = [...this.words].sort(() => Math.random() - 0.5);
+                 this.word = this.order[this.round % this.order.length];
                  this.scrambled = this.scramble(this.word);
                  this.guess = '';
                  this.message = '';
@@ -53,4 +55,5 @@
         <button type="button" @click="round = 0; score = 0; start()" class="mt-6 text-sm text-slate-500 hover:underline">Play again</button>
         <a href="{{ route('games.index') }}" class="mt-2 block text-sm text-slate-500 hover:underline">More games</a>
     </div>
+    @include('games.partials.guide')
 </x-layout>

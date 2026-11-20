@@ -93,6 +93,7 @@ class QuizAdminController extends Controller
         return $request->validate([
             'category_id' => ['required', 'exists:categories,id'],
             'title' => ['required', 'string', 'max:255'],
+            'intro' => ['nullable', 'string', 'max:2000'],
             'slug' => ['nullable', 'string', 'max:255'],
             'language' => ['required', 'in:en,ur'],
             'status' => ['required', 'in:draft,in_review,published'],
@@ -100,7 +101,7 @@ class QuizAdminController extends Controller
     }
 
     /**
-     * questions_json: [{prompt, answers: [{label, is_correct?, score_value?}]}]
+     * questions_json: [{prompt, explanation?, answers: [{label, is_correct?, score_value?}]}]
      * Simplest way to manage a variable number of questions/answers without a
      * separate nested-resource CRUD for Release 1 scope.
      */
@@ -124,6 +125,7 @@ class QuizAdminController extends Controller
             $createdQuestion = $quiz->questions()->create([
                 'position' => $position + 1,
                 'prompt' => $question['prompt'] ?? '',
+                'explanation' => $question['explanation'] ?? null,
             ]);
 
             foreach (($question['answers'] ?? []) as $answerPosition => $answer) {

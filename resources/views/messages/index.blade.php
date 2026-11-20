@@ -3,7 +3,8 @@
 @endphp
 <x-layout :title="$label.' — BuntyFun'" :description="$category ? 'Original '.Str::lower($label).' you can copy or share on WhatsApp.' : 'Original good morning, Eid, congratulations, friendship and motivational messages to copy and share.'"
           :breadcrumbs="$category ? ['Messages' => route('messages.index'), $label => null] : ['Messages' => null]"
-          :ads="! $category || (\App\Models\Message::CATEGORIES[$category][1] ?? true)">
+          :ads="! $category || (\App\Models\Message::CATEGORIES[$category][1] ?? true)"
+          :noindex="! \App\Models\Message::indexable()->exists() || request()->has('page')">
     <div class="mx-auto max-w-6xl px-4 py-10">
         <h1 class="text-3xl font-bold">{{ $label }}</h1>
 
