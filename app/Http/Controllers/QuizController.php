@@ -11,7 +11,7 @@ class QuizController extends Controller
 {
     public function index()
     {
-        $quizzes = Quiz::where('status', 'published')->latest()->paginate(12);
+        $quizzes = Quiz::where('status', 'published')->withCount('questions')->latest('published_at')->paginate(12);
 
         return view('quizzes.index', ['quizzes' => $quizzes]);
     }
@@ -38,7 +38,7 @@ class QuizController extends Controller
         ]);
 
         $submittedAnswerIds = $data['answers'];
-        $isTrivia = $quiz->questions->flatMap->answers->contains(fn ($a) => ! is_null($a->is_correct));
+        $isTrivia = $quiz->isTrivia();
 
         if ($isTrivia) {
             $correct = 0;
@@ -61,11 +61,12 @@ class QuizController extends Controller
                 $maxScore += $question->answers->max('score_value') ?? 0;
             }
             $percentage = $maxScore > 0 ? $score / $maxScore : 0;
-            $outcomeLabel = match (true) {
+            $outcomeLabel = $quiz->outcomeFor($percentage)['label'] ?? match (true) {
                 $percentage >= 0.75 => 'Best Friends Forever',
                 $percentage >= 0.4 => 'Good Friends',
                 default => 'Still Getting to Know Each Other',
             };
+
         }
 
         $result = QuizResult::create([

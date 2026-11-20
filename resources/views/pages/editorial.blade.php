@@ -22,7 +22,9 @@
 
         <h2>Quizzes and games</h2>
         <ul>
-            <li>Trivia answers are checked against common reference works; each question shows a short explanation after you finish.</li>
+            <li>Quizzes are written by hand, not generated automatically. Every trivia answer is checked against the reference works listed under &ldquo;Sources&rdquo; on that quiz, and the date of the last check is shown at the top.</li>
+            <li>Each trivia question has one right answer and a short explanation shown after you finish. The position of the right answer varies, so guessing the same letter does not work.</li>
+            <li>We avoid facts that change often (such as current records that are still being chased) and, on religious topics, stick to widely agreed events and dates.</li>
             <li>Personality-style quizzes are for fun only and are not psychological tests.</li>
             <li>Games run entirely in your browser. Their rules and scoring are explained on each game page.</li>
         </ul>

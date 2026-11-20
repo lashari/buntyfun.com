@@ -19,29 +19,34 @@ class DemoContentSeeder extends Seeder
         $games = Category::where('slug', 'games')->firstOrFail();
         $quizzes = Category::where('slug', 'quizzes')->firstOrFail();
 
-        $quiz = Quiz::updateOrCreate(
-            ['slug' => 'how-well-do-you-know-your-best-friend'],
-            [
-                'category_id' => $quizzes->id,
-                'title' => 'How Well Do You Know Your Best Friend?',
-                'language' => 'en',
-                'status' => 'in_review',
-            ]
-        );
+        // The old 2-question demo quiz is replaced by the full friendship quiz in QuizLibrarySeeder;
+        // only create the stub on an empty database, never overwrite the real one.
+        if (! Quiz::where('slug', 'how-well-do-you-know-your-best-friend')->exists()) {
+            $quiz = Quiz::updateOrCreate(
+                ['slug' => 'how-well-do-you-know-your-best-friend'],
+                [
+                    'category_id' => $quizzes->id,
+                    'title' => 'How Well Do You Know Your Best Friend?',
+                    'language' => 'en',
+                    'status' => 'in_review',
+                ]
+            );
 
-        $q1 = $quiz->questions()->updateOrCreate(
-            ['position' => 1],
-            ['prompt' => "What's their go-to comfort food?"]
-        );
-        $q1->answers()->updateOrCreate(['position' => 1], ['label' => 'Pizza', 'score_value' => 1]);
-        $q1->answers()->updateOrCreate(['position' => 2], ['label' => 'Ice cream', 'score_value' => 2]);
+            $q1 = $quiz->questions()->updateOrCreate(
+                ['position' => 1],
+                ['prompt' => "What's their go-to comfort food?"]
+            );
+            $q1->answers()->updateOrCreate(['position' => 1], ['label' => 'Pizza', 'score_value' => 1]);
+            $q1->answers()->updateOrCreate(['position' => 2], ['label' => 'Ice cream', 'score_value' => 2]);
 
-        $q2 = $quiz->questions()->updateOrCreate(
-            ['position' => 2],
-            ['prompt' => 'Which trip would they pick?']
-        );
-        $q2->answers()->updateOrCreate(['position' => 1], ['label' => 'Beach', 'score_value' => 1]);
-        $q2->answers()->updateOrCreate(['position' => 2], ['label' => 'Mountains', 'score_value' => 2]);
+            $q2 = $quiz->questions()->updateOrCreate(
+                ['position' => 2],
+                ['prompt' => 'Which trip would they pick?']
+            );
+            $q2->answers()->updateOrCreate(['position' => 1], ['label' => 'Beach', 'score_value' => 1]);
+            $q2->answers()->updateOrCreate(['position' => 2], ['label' => 'Mountains', 'score_value' => 2]);
+
+        }
 
         // Games are self-contained client-side mechanics, not editorial prose — safe to
         // publish directly, unlike the content types below that need a human sign-off.
