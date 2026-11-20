@@ -36,6 +36,6 @@
         @include('admin.partials.seo-fields', ['item' => $tool])
 
 
-        <button type="submit" class="rounded-lg bg-violet-600 px-5 py-2 font-semibold text-white hover:bg-violet-700">Save</button>
+        <button type="submit" class="rounded-lg bg-brand-600 px-5 py-2 font-semibold text-white hover:bg-brand-700">Save</button>
     </form>
 </x-admin-layout>

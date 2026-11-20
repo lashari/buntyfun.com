@@ -24,8 +24,8 @@
          }">
         <h1 class="text-2xl font-bold">{{ $game->title }}</h1>
         <p class="mt-2 text-sm text-slate-500" x-show="!winner">Turn: <span x-text="turn"></span></p>
-        <p class="mt-2 font-semibold text-violet-600" x-show="winner === 'draw'" x-cloak>It's a draw!</p>
-        <p class="mt-2 font-semibold text-violet-600" x-show="winner && winner !== 'draw'" x-cloak>
+        <p class="mt-2 font-semibold text-navy-600" x-show="winner === 'draw'" x-cloak>It's a draw!</p>
+        <p class="mt-2 font-semibold text-navy-600" x-show="winner && winner !== 'draw'" x-cloak>
             <span x-text="winner"></span> wins!
         </p>
 
@@ -39,7 +39,7 @@
             </template>
         </div>
 
-        <button type="button" @click="reset()" class="mt-6 rounded-full bg-violet-600 px-6 py-2 font-semibold text-white hover:bg-violet-700">
+        <button type="button" @click="reset()" class="mt-6 rounded-full bg-brand-600 px-6 py-2 font-semibold text-white hover:bg-brand-700">
             New Game
         </button>
         <a href="{{ route('games.index') }}" class="mt-4 block text-sm text-slate-500 hover:underline">More games</a>

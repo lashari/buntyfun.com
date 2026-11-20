@@ -32,14 +32,14 @@
                 @foreach ([1, 2, 3] as $n)<option>{{ $n }}</option>@endforeach
             </select>
         </div>
-        <button type="submit" class="rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700" onclick="this.disabled=true;this.innerText='Writing…';this.form.submit()">Generate</button>
+        <button type="submit" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700" onclick="this.disabled=true;this.innerText='Writing…';this.form.submit()">Generate</button>
         <p class="text-xs text-slate-400">Picks the emptiest topics automatically. Takes ~10 s per draft.</p>
     </form>
 
     <div class="mt-6 flex flex-wrap gap-2 text-sm">
         @foreach (['generated' => 'Waiting', 'approved' => 'Approved', 'rejected' => 'Rejected', 'failed' => 'Failed', 'all' => 'All'] as $s => $label)
             <a href="{{ route('admin.ai-studio.index', ['status' => $s, 'type' => $type]) }}"
-               class="rounded-full border px-3 py-1 {{ $status === $s ? 'border-violet-600 bg-violet-600 text-white' : 'border-slate-300 text-slate-600' }}">
+               class="rounded-full border px-3 py-1 {{ $status === $s ? 'border-brand-600 bg-brand-600 text-white' : 'border-slate-300 text-slate-600' }}">
                 {{ $label }} @if ($s !== 'all')({{ $counts[$s] ?? 0 }})@endif
             </a>
         @endforeach
@@ -53,7 +53,7 @@
             @forelse ($drafts as $d)
                 <tr class="hover:bg-slate-50">
                     <td class="px-4 py-2">
-                        <a href="{{ route('admin.ai-studio.show', $d) }}" class="text-violet-700 hover:underline">
+                        <a href="{{ route('admin.ai-studio.show', $d) }}" class="text-navy-600 hover:underline">
                             {{ Str::limit($d->payload['title'] ?? $d->payload['name_en'] ?? $d->payload['body'] ?? $d->error ?? '—', 80) }}
                         </a>
                         <div class="text-xs text-slate-400">{{ collect($d->params)->map(fn ($v, $k) => is_array($v) ? null : "$k: $v")->filter()->implode(' · ') }}</div>

@@ -16,19 +16,19 @@
                         @foreach ($results[$key] as $item)
                             <li>
                                 @if ($key === 'quizzes')
-                                    <a href="{{ route('quizzes.show', $item) }}" class="text-violet-600 hover:underline">{{ $item->title }}</a>
+                                    <a href="{{ route('quizzes.show', $item) }}" class="text-navy-600 hover:underline">{{ $item->title }}</a>
                                 @elseif ($key === 'games')
-                                    <a href="{{ route('games.show', $item) }}" class="text-violet-600 hover:underline">{{ $item->title }}</a>
+                                    <a href="{{ route('games.show', $item) }}" class="text-navy-600 hover:underline">{{ $item->title }}</a>
                                 @elseif ($key === 'wishes')
-                                    <a href="{{ route('birthday-messages.show', $item) }}" class="text-violet-600 hover:underline">{{ Str::limit($item->body, 80) }}</a>
+                                    <a href="{{ route('birthday-messages.show', $item) }}" class="text-navy-600 hover:underline">{{ Str::limit($item->body, 80) }}</a>
                                 @elseif ($key === 'urdu')
-                                    <a href="{{ route('urdu-content.show', $item) }}" class="text-violet-600 hover:underline" dir="rtl">{{ Str::limit($item->body, 80) }}</a>
+                                    <a href="{{ route('urdu-content.show', $item) }}" class="text-navy-600 hover:underline" dir="rtl">{{ Str::limit($item->body, 80) }}</a>
                                 @elseif ($key === 'wallpapers')
-                                    <a href="{{ route('wallpapers.show', $item) }}" class="text-violet-600 hover:underline">{{ $item->title }}</a>
+                                    <a href="{{ route('wallpapers.show', $item) }}" class="text-navy-600 hover:underline">{{ $item->title }}</a>
                                 @elseif ($key === 'names')
-                                    <a href="{{ route('name-entries.show', $item) }}" class="text-violet-600 hover:underline">{{ $item->name_en }}</a>
+                                    <a href="{{ route('name-entries.show', $item) }}" class="text-navy-600 hover:underline">{{ $item->name_en }}</a>
                                 @elseif ($key === 'aiTools')
-                                    <a href="{{ route('ai-tools.show', $item) }}" class="text-violet-600 hover:underline">{{ $item->title }}</a>
+                                    <a href="{{ route('ai-tools.show', $item) }}" class="text-navy-600 hover:underline">{{ $item->title }}</a>
                                 @endif
                             </li>
                         @endforeach

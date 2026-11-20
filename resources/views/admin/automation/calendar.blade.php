@@ -31,7 +31,7 @@
                     </ul>
                 </div>
             @empty
-                <p class="mt-3 text-sm text-slate-500">No social posts scheduled. <a href="{{ route('admin.social.create') }}" class="text-violet-700 hover:underline">New post</a></p>
+                <p class="mt-3 text-sm text-slate-500">No social posts scheduled. <a href="{{ route('admin.social.create') }}" class="text-navy-600 hover:underline">New post</a></p>
             @endforelse
         </div>
         <div>

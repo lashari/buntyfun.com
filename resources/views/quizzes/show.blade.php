@@ -11,7 +11,7 @@
             <p class="mt-3 leading-relaxed text-slate-700">{{ $quiz->intro }}</p>
         @endif
         <ul class="mt-4 flex flex-wrap gap-2 text-xs font-medium">
-            <li class="rounded-full bg-violet-50 px-3 py-1 text-violet-700">{{ $count }} questions</li>
+            <li class="rounded-full bg-brand-50 px-3 py-1 text-navy-600">{{ $count }} questions</li>
             <li class="rounded-full bg-slate-100 px-3 py-1 text-slate-600">About {{ $minutes }} min</li>
             @if ($quiz->difficulty)<li class="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{{ \App\Models\Quiz::DIFFICULTIES[$quiz->difficulty] ?? ucfirst($quiz->difficulty) }}</li>@endif
             <li class="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{{ $isTrivia ? 'Score + every answer explained' : 'Just for fun, not a scientific test' }}</li>
@@ -36,7 +36,7 @@
             @csrf
 
             <div class="h-2 w-full rounded-full bg-slate-200">
-                <div class="h-2 rounded-full bg-violet-600 transition-all" :style="`width: ${((step + 1) / total) * 100}%`"></div>
+                <div class="h-2 rounded-full bg-brand-600 transition-all" :style="`width: ${((step + 1) / total) * 100}%`"></div>
             </div>
             <p class="mt-2 text-sm text-slate-500" x-text="`Question ${step + 1} of ${total}`"></p>
 
@@ -47,7 +47,7 @@
                         @foreach ($question->answers as $answer)
                             <button type="button"
                                     @click="select({{ $question->id }}, {{ $answer->id }})"
-                                    :class="answers[{{ $question->id }}] === {{ $answer->id }} ? 'border-violet-600 bg-violet-50' : 'border-slate-200 hover:border-violet-300'"
+                                    :class="answers[{{ $question->id }}] === {{ $answer->id }} ? 'border-brand-600 bg-brand-50' : 'border-slate-200 hover:border-brand-300'"
                                     class="rounded-lg border px-4 py-3 text-left">
                                 {{ $answer->label }}
                             </button>
@@ -60,7 +60,7 @@
             <div class="mt-6 flex items-center justify-between">
                 <button type="button" x-show="step > 0" @click="step--" x-cloak class="text-sm text-slate-500 hover:underline">Back</button>
                 <button type="submit" x-show="step === total - 1 && answers[{{ $quiz->questions->last()?->id }}]" x-cloak
-                        class="rounded-full bg-violet-600 px-6 py-2 font-semibold text-white hover:bg-violet-700">
+                        class="rounded-full bg-brand-600 px-6 py-2 font-semibold text-white hover:bg-brand-700">
                     See Results
                 </button>
             </div>

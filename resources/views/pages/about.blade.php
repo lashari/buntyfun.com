@@ -2,7 +2,10 @@
 <x-layout title="About BuntyFun — What We Make and How" description="What BuntyFun is, who it is for, how our wishes, names, games, quizzes and AI tools are made, and how to reach us."
           :breadcrumbs="['About' => null]" :ads="false">
     <article class="mx-auto max-w-2xl px-4 py-10 prose-page">
-        <h1 class="text-3xl font-bold text-slate-900">About BuntyFun</h1>
+        <h1 class="text-3xl font-bold">About BuntyFun</h1>
+        <img src="{{ asset('images/banners/buntyfun-banner.webp') }}" width="1024" height="439" loading="eager"
+             alt="BuntyFun: your daily dose of fun — games and quizzes, fun generators, birthday wishes and daily discoveries"
+             class="mt-6 w-full rounded-2xl shadow-sm ring-1 ring-slate-200">
         <p>BuntyFun is a free, light-hearted website for everyday moments: a birthday wish you can copy in a few seconds, a short message for Eid or a friend, the meaning of an Islamic name, a quick browser game or quiz, and a few small AI tools for jokes, captions and greetings. Everything works in the browser on a phone or a computer, with no app and no account.</p>
         @if ($operator)
             <p>BuntyFun is run by {{ $operator }}.</p>

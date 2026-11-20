@@ -10,9 +10,9 @@
 
         @if ($categories->isNotEmpty())
             <div class="mt-4 flex flex-wrap gap-2 text-sm">
-                <a href="{{ route('messages.index') }}" class="rounded-full border px-3 py-1 {{ $category ? 'border-slate-300 text-slate-600' : 'border-violet-600 bg-violet-600 text-white' }}">All</a>
+                <a href="{{ route('messages.index') }}" class="rounded-full border px-3 py-1 {{ $category ? 'border-slate-300 text-slate-600' : 'border-brand-600 bg-brand-600 text-white' }}">All</a>
                 @foreach ($categories as $key => $name)
-                    <a href="{{ route('messages.index', ['category' => $key]) }}" class="rounded-full border px-3 py-1 {{ $category === $key ? 'border-violet-600 bg-violet-600 text-white' : 'border-slate-300 text-slate-600 hover:border-violet-400' }}">{{ $name }}</a>
+                    <a href="{{ route('messages.index', ['category' => $key]) }}" class="rounded-full border px-3 py-1 {{ $category === $key ? 'border-brand-600 bg-brand-600 text-white' : 'border-slate-300 text-slate-600 hover:border-brand-400' }}">{{ $name }}</a>
                 @endforeach
             </div>
         @endif

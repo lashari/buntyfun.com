@@ -49,7 +49,7 @@
             </template>
         </div>
 
-        <button type="button" @click="setup()" class="mt-6 rounded-full bg-violet-600 px-6 py-2 font-semibold text-white hover:bg-violet-700">
+        <button type="button" @click="setup()" class="mt-6 rounded-full bg-brand-600 px-6 py-2 font-semibold text-white hover:bg-brand-700">
             New Game
         </button>
         <a href="{{ route('games.index') }}" class="mt-4 block text-sm text-slate-500 hover:underline">More games</a>

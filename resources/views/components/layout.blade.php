@@ -6,7 +6,7 @@
     $pageTitle = $meta?->seo_title ? $meta->seo_title.' — BuntyFun' : ($title ?? config('app.name'));
     $pageDesc = $meta?->seo_description ?: ($description ?? 'Play exciting games, discover fun quizzes, create personalized wishes and explore something new every day.');
     // Fallback share image so every link preview shows the brand (logo set 20 Nov 2026).
-    $pageImage = $meta?->og_image ?: ($ogImage ?: asset('images/brand/og-default.png'));
+    $pageImage = $meta?->og_image ?: ($ogImage ?: asset('images/brand/og-default.jpg'));
     $isNoindex = $noindex || ($meta?->noindex ?? false);
     // No ads on pages we ask search engines not to index (thin, private, utility pages).
     $showAds = $ads && ! $isNoindex;
@@ -72,6 +72,8 @@
     @foreach ($ld as $block)
         <script type="application/ld+json">{!! json_encode($block, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
     @endforeach
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=poppins:400,500,600,700,800&display=swap" rel="stylesheet">
     @if ($dir === 'rtl' || $urduFont)
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=noto-nastaliq-urdu" rel="stylesheet">
@@ -100,24 +102,24 @@
     @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-900 antialiased {{ $dir === 'rtl' ? 'font-urdu' : '' }}">
-    <header class="border-b border-slate-200 bg-white" x-data="{ open: false }">
+<body class="min-h-screen bg-cream text-slate-800 antialiased {{ $dir === 'rtl' ? 'font-urdu' : '' }}">
+    <header class="sticky top-0 z-30 border-b border-brand-100 bg-white/95 backdrop-blur" x-data="{ open: false }">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4">
             <a href="{{ route('home') }}" class="shrink-0" aria-label="BuntyFun home">
                 <img src="{{ asset('images/brand/buntyfun-logo.svg') }}" alt="BuntyFun" width="170" height="36" class="hidden h-9 w-auto sm:block">
                 <img src="{{ asset('images/brand/buntyfun-mark.svg') }}" alt="BuntyFun" width="47" height="36" class="h-9 w-auto sm:hidden">
             </a>
-            <nav class="hidden items-center gap-6 text-sm font-medium text-slate-600 lg:flex" aria-label="Main">
+            <nav class="hidden items-center gap-5 text-sm font-semibold text-navy-700 lg:flex" aria-label="Main">
                 @foreach ($links as [$href, $label])
-                    <a href="{{ $href }}" class="hover:text-violet-600">{{ $label }}</a>
+                    <a href="{{ $href }}" class="hover:text-navy-600">{{ $label }}</a>
                 @endforeach
             </nav>
             <div class="flex items-center gap-2">
                 <form action="{{ route('search') }}" method="GET" class="flex items-center gap-2" role="search">
                     <label for="site-search" class="sr-only">Search BuntyFun</label>
                     <input id="site-search" type="search" name="q" value="{{ request('q') }}" placeholder="Search"
-                           class="w-28 rounded-full border border-slate-300 px-3 py-1.5 text-sm focus:border-violet-500 focus:outline-none sm:w-44">
-                    <button type="submit" class="rounded-full bg-violet-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-700">Go</button>
+                           class="w-28 rounded-full border border-navy-100 bg-navy-50/60 px-3 py-1.5 text-sm focus:border-brand-500 focus:bg-white focus:outline-none sm:w-44">
+                    <button type="submit" class="rounded-full bg-brand-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-700">Go</button>
                 </form>
                 <button type="button" @click="open = !open" :aria-expanded="open.toString()" aria-controls="mobile-menu"
                         class="rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm font-medium text-slate-700 lg:hidden">
@@ -127,9 +129,9 @@
         </div>
         <nav id="mobile-menu" x-show="open" x-cloak class="border-t border-slate-200 lg:hidden" aria-label="Main mobile">
             <div class="mx-auto grid max-w-6xl grid-cols-2 gap-1 px-4 py-3 text-sm font-medium text-slate-700">
-                <a href="{{ route('home') }}" class="rounded-lg px-3 py-2 hover:bg-violet-50">Home</a>
+                <a href="{{ route('home') }}" class="rounded-lg px-3 py-2 hover:bg-brand-50">Home</a>
                 @foreach ($links as [$href, $label])
-                    <a href="{{ $href }}" class="rounded-lg px-3 py-2 hover:bg-violet-50">{{ $label }}</a>
+                    <a href="{{ $href }}" class="rounded-lg px-3 py-2 hover:bg-brand-50">{{ $label }}</a>
                 @endforeach
             </div>
         </nav>
@@ -138,10 +140,10 @@
     <main>
         @if ($breadcrumbs)
             <nav aria-label="Breadcrumb" class="mx-auto max-w-6xl px-4 pt-4 text-xs text-slate-500">
-                <a href="{{ route('home') }}" class="hover:text-violet-600">Home</a>
+                <a href="{{ route('home') }}" class="hover:text-navy-600">Home</a>
                 @foreach ($breadcrumbs as $label => $url)
                     <span class="mx-1">›</span>
-                    @if ($url && ! $loop->last)<a href="{{ $url }}" class="hover:text-violet-600">{{ $label }}</a>@else<span class="text-slate-700">{{ $label }}</span>@endif
+                    @if ($url && ! $loop->last)<a href="{{ $url }}" class="hover:text-navy-600">{{ $label }}</a>@else<span class="text-slate-700">{{ $label }}</span>@endif
                 @endforeach
             </nav>
         @endif
@@ -163,27 +165,32 @@
 
     <x-ad-slot :enabled="$showAds" />
 
-    <footer class="mt-16 border-t border-slate-200 bg-white">
-        <div class="mx-auto max-w-6xl px-4 py-8 text-sm text-slate-500">
+    <footer class="mt-16 bg-navy-700 text-navy-100">
+        <div class="h-1.5 bg-gradient-to-r from-brand-500 via-sun-400 to-sea-500"></div>
+        <div class="mx-auto max-w-6xl px-4 py-10 text-sm">
+            <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+                <img src="{{ asset('images/brand/buntyfun-logo-dark.svg') }}" alt="BuntyFun" width="170" height="36" class="h-9 w-auto" loading="lazy">
+                <p class="font-semibold tracking-wide text-white">Play <span class="text-brand-400">•</span> Discover <span class="text-brand-400">•</span> Celebrate <span class="text-brand-400">•</span> Enjoy</p>
+            </div>
             <div class="flex flex-wrap gap-x-4 gap-y-2">
-                <a href="{{ route('home') }}" class="hover:text-violet-600">Home</a>
+                <a href="{{ route('home') }}" class="hover:text-navy-600">Home</a>
                 @foreach ($links as [$href, $label])
-                    <a href="{{ $href }}" class="hover:text-violet-600">{{ $label }}</a>
+                    <a href="{{ $href }}" class="hover:text-navy-600">{{ $label }}</a>
                 @endforeach
             </div>
             <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
-                <a href="{{ route('pages.about') }}" class="hover:text-violet-600">About</a>
-                <a href="{{ route('pages.contact') }}" class="hover:text-violet-600">Contact</a>
-                <a href="{{ route('pages.privacy') }}" class="hover:text-violet-600">Privacy Policy</a>
-                <a href="{{ route('pages.terms') }}" class="hover:text-violet-600">Terms of Use</a>
-                <a href="{{ route('pages.editorial') }}" class="hover:text-violet-600">Editorial Policy</a>
+                <a href="{{ route('pages.about') }}" class="hover:text-navy-600">About</a>
+                <a href="{{ route('pages.contact') }}" class="hover:text-navy-600">Contact</a>
+                <a href="{{ route('pages.privacy') }}" class="hover:text-navy-600">Privacy Policy</a>
+                <a href="{{ route('pages.terms') }}" class="hover:text-navy-600">Terms of Use</a>
+                <a href="{{ route('pages.editorial') }}" class="hover:text-navy-600">Editorial Policy</a>
                 @if (config('services.adsense.client_id'))
                     {{-- Re-opens the Google consent message (shown only once the AdSense message is live). --}}
-                    <button type="button" class="hover:text-violet-600"
+                    <button type="button" class="hover:text-navy-600"
                             onclick="window.googlefc = window.googlefc || {}; googlefc.callbackQueue = googlefc.callbackQueue || []; googlefc.callbackQueue.push(function () { googlefc.showRevocationMessage(); });">Privacy settings</button>
                 @endif
             </div>
-            <p class="mt-4">&copy; {{ now()->year }} BuntyFun.com</p>
+            <p class="mt-6 text-navy-200">&copy; {{ now()->year }} BuntyFun.com</p>
         </div>
     </footer>
 </body>

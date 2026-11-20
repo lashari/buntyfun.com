@@ -18,7 +18,7 @@
                  },
                  copy() { navigator.clipboard.writeText(this.text); this.copied = true; this.track('copy_link'); setTimeout(() => this.copied = false, 2000); },
              }">
-            <button type="button" @click="copy()" class="rounded-full bg-violet-600 px-5 py-2 font-semibold text-white hover:bg-violet-700">
+            <button type="button" @click="copy()" class="rounded-full bg-brand-600 px-5 py-2 font-semibold text-white hover:bg-brand-700">
                 <span x-show="!copied">Copy message</span>
                 <span x-show="copied" x-cloak>Copied!</span>
             </button>

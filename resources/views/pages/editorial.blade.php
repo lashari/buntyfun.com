@@ -1,7 +1,7 @@
 <x-layout title="Editorial Policy — How BuntyFun Content Is Written and Checked" description="How BuntyFun writes, checks, sources and corrects wishes, Islamic name meanings, quizzes, games and AI tool output."
           :breadcrumbs="['Editorial policy' => null]" :ads="false">
     <article class="mx-auto max-w-2xl px-4 py-10 prose-page">
-        <h1 class="text-3xl font-bold text-slate-900">Editorial policy</h1>
+        <h1 class="text-3xl font-bold">Editorial policy</h1>
         <p>This page explains how content on BuntyFun is produced and what you can rely on it for.</p>
 
         <h2>Wishes, messages and Urdu content</h2>

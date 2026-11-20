@@ -8,7 +8,7 @@
                 <h1 class="text-xl font-bold">{{ $wallpaper->title }}</h1>
                 <p class="text-sm text-slate-500">{{ Str::headline($wallpaper->category) }} · {{ $wallpaper->resolutionLabel() }} · {{ Str::headline($wallpaper->orientation) }}</p>
             </div>
-            <a href="{{ route('wallpapers.download', $wallpaper) }}" class="rounded-full bg-violet-600 px-5 py-2 font-semibold text-white hover:bg-violet-700">
+            <a href="{{ route('wallpapers.download', $wallpaper) }}" class="rounded-full bg-brand-600 px-5 py-2 font-semibold text-white hover:bg-brand-700">
                 Download
             </a>
         </div>

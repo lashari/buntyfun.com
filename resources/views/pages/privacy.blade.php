@@ -6,7 +6,7 @@
 <x-layout title="Privacy Policy — BuntyFun" description="What BuntyFun collects, which cookies Google Analytics and Google AdSense use, how consent works, and how to contact us about your data."
           :breadcrumbs="['Privacy policy' => null]" :ads="false">
     <article class="mx-auto max-w-2xl px-4 py-10 prose-page">
-        <h1 class="text-3xl font-bold text-slate-900">Privacy policy</h1>
+        <h1 class="text-3xl font-bold">Privacy policy</h1>
         <p class="text-sm text-slate-500">Last updated: {{ $updated }}</p>
         <p>This policy explains what information BuntyFun.com ("BuntyFun", "we") collects when you use the site, why, and the choices you have. @if ($operator) BuntyFun is operated by {{ $operator }}. @endif</p>
 

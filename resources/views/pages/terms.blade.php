@@ -6,7 +6,7 @@
 <x-layout title="Terms of Use — BuntyFun" description="The rules for using BuntyFun: personal use of wishes and messages, AI tool limits, acceptable use, disclaimers and contact."
           :breadcrumbs="['Terms of use' => null]" :ads="false">
     <article class="mx-auto max-w-2xl px-4 py-10 prose-page">
-        <h1 class="text-3xl font-bold text-slate-900">Terms of use</h1>
+        <h1 class="text-3xl font-bold">Terms of use</h1>
         <p class="text-sm text-slate-500">Last updated: {{ $updated }}</p>
         <p>By using BuntyFun.com you agree to these terms. If you do not agree, please do not use the site. @if ($operator) BuntyFun is operated by {{ $operator }}. @endif</p>
 

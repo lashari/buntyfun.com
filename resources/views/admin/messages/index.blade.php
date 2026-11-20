@@ -1,7 +1,7 @@
 <x-admin-layout title="Messages & Quotes">
     <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold">Messages &amp; Quotes</h1>
-        <a href="{{ route('admin.messages.create') }}" class="rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700">New Message</a>
+        <a href="{{ route('admin.messages.create') }}" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">New Message</a>
     </div>
     <form method="GET" class="mt-4">
         <select name="category" onchange="this.form.submit()" class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
@@ -27,7 +27,7 @@
                         <span class="rounded-full px-2 py-0.5 text-xs {{ $item->status === 'published' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600' }}">{{ Str::headline($item->status) }}</span>
                     </td>
                     <td class="px-4 py-2 text-right whitespace-nowrap">
-                        <a href="{{ route('admin.messages.edit', $item) }}" class="text-violet-600 hover:underline">Edit</a>
+                        <a href="{{ route('admin.messages.edit', $item) }}" class="text-navy-600 hover:underline">Edit</a>
                         @if (auth()->user()->canPublish())
                             <form method="POST" action="{{ route($item->status === 'published' ? 'admin.messages.unpublish' : 'admin.messages.publish', $item) }}" class="inline">
                                 @csrf

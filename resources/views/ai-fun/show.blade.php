@@ -39,11 +39,11 @@
 
         <form @submit.prevent="generate()" class="mt-6">
             <textarea x-model="input" rows="2" maxlength="300" placeholder="Type something to get started…"
-                      class="w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-violet-500 focus:outline-none"></textarea>
+                      class="w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-brand-500 focus:outline-none"></textarea>
             <div class="mt-3 flex items-center justify-between">
                 <p class="text-xs text-slate-500" x-text="`${remaining} free generation${remaining === 1 ? '' : 's'} left today`"></p>
                 <button type="submit" :disabled="loading || remaining <= 0"
-                        class="rounded-full bg-violet-600 px-6 py-2 font-semibold text-white hover:bg-violet-700 disabled:opacity-50">
+                        class="rounded-full bg-brand-600 px-6 py-2 font-semibold text-white hover:bg-brand-700 disabled:opacity-50">
                     <span x-show="!loading">Generate</span>
                     <span x-show="loading" x-cloak>Generating…</span>
                 </button>
@@ -72,7 +72,7 @@
                 <h3>Ideas to try</h3>
                 <ul>
                     @foreach ($guide['examples'] as $ex)
-                        <li><button type="button" class="text-violet-700 underline" @click="input = @js($ex); $el.closest('[x-data]').scrollIntoView({ behavior: 'smooth' })">{{ $ex }}</button></li>
+                        <li><button type="button" class="text-navy-600 underline" @click="input = @js($ex); $el.closest('[x-data]').scrollIntoView({ behavior: 'smooth' })">{{ $ex }}</button></li>
                     @endforeach
                 </ul>
                 <h3>Good for</h3>

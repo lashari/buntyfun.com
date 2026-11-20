@@ -61,7 +61,7 @@
                         </select>
                         <input type="time" name="run_at" value="{{ $job->run_at }}" class="rounded border border-slate-300 px-2 py-1" title="Time (daily/weekly)">
                         <label class="text-xs text-slate-500">retries <input type="number" name="max_retries" min="0" max="10" value="{{ $job->max_retries }}" class="w-14 rounded border border-slate-300 px-1 py-1"></label>
-                        <button class="rounded bg-violet-600 px-3 py-1 font-semibold text-white">Save</button>
+                        <button class="rounded bg-brand-600 px-3 py-1 font-semibold text-white">Save</button>
                         <button type="submit" form="run-{{ $job->key }}" class="rounded border border-slate-300 px-3 py-1 hover:bg-slate-50">Run now</button>
                     </div>
                 </div>
@@ -87,7 +87,7 @@
         <tbody class="divide-y divide-slate-100">
             @forelse ($runs as $r)
                 <tr>
-                    <td class="px-3 py-2 text-xs"><a href="{{ route('admin.automation.runs.show', $r) }}" class="text-violet-700 hover:underline">{{ $r->started_at->format('m-d-Y H:i') }}</a></td>
+                    <td class="px-3 py-2 text-xs"><a href="{{ route('admin.automation.runs.show', $r) }}" class="text-navy-600 hover:underline">{{ $r->started_at->format('m-d-Y H:i') }}</a></td>
                     <td class="px-3 py-2">{{ $r->job_key }}</td>
                     <td class="px-3 py-2 text-xs text-slate-500">{{ $r->triggered_by }}</td>
                     <td class="px-3 py-2 {{ $r->status === 'failed' ? 'text-red-700' : '' }}">{{ $r->status }}</td>

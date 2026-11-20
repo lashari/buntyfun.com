@@ -8,7 +8,7 @@
                     <h2 class="font-semibold">{{ $quiz->title }}</h2>
                     @if ($quiz->intro)<p class="mt-1 text-sm text-slate-600">{{ Str::limit($quiz->intro, 110) }}</p>@endif
                     <p class="mt-3 flex flex-wrap gap-2 text-xs text-slate-500">
-                        <span class="rounded-full bg-violet-50 px-2 py-0.5 text-violet-700">{{ $quiz->questions_count ?? $quiz->questions()->count() }} questions</span>
+                        <span class="rounded-full bg-brand-50 px-2 py-0.5 text-navy-600">{{ $quiz->questions_count ?? $quiz->questions()->count() }} questions</span>
                         @if ($quiz->difficulty)<span class="rounded-full bg-slate-100 px-2 py-0.5">{{ \App\Models\Quiz::DIFFICULTIES[$quiz->difficulty] ?? ucfirst($quiz->difficulty) }}</span>@endif
                     </p>
                 </a>

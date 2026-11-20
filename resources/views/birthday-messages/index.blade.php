@@ -9,7 +9,7 @@
                 <a href="{{ route('birthday-messages.urdu') }}" class="rounded-full border border-orange-200 bg-orange-50 px-4 py-1.5 text-sm font-medium text-orange-700 hover:bg-orange-100">In Urdu · <span class="font-urdu">اردو میں</span></a>
                 @foreach ($hubs as $r)
                     <a href="{{ route('birthday-messages.relationship', \App\Models\BirthdayMessage::relationshipSlug($r)) }}"
-                       class="rounded-full border border-violet-200 bg-white px-4 py-1.5 text-sm font-medium text-violet-700 hover:bg-violet-50">For {{ \App\Content\BirthdayGuides::for($r)['label'] }}</a>
+                       class="rounded-full border border-brand-200 bg-white px-4 py-1.5 text-sm font-medium text-navy-600 hover:bg-brand-50">For {{ \App\Content\BirthdayGuides::for($r)['label'] }}</a>
                 @endforeach
             </div>
         @endif

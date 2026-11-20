@@ -17,7 +17,7 @@
 
         <nav class="mt-6 flex flex-wrap gap-2" aria-label="Jump to">
             @foreach ($wishes as $relationship => $items)
-                <a href="#{{ \App\Models\BirthdayMessage::relationshipSlug($relationship) }}" class="rounded-full border border-slate-200 bg-white px-3 py-1 text-sm hover:border-violet-300">
+                <a href="#{{ \App\Models\BirthdayMessage::relationshipSlug($relationship) }}" class="rounded-full border border-slate-200 bg-white px-3 py-1 text-sm hover:border-brand-300">
                     {{ \App\Content\BirthdayGuides::for($relationship)['label'] ?? Str::headline($relationship) }}
                     <span class="font-urdu" lang="ur">· {{ $forLabel[$relationship] ?? '' }}</span>
                 </a>
@@ -46,14 +46,14 @@
                     @endforeach
                 </div>
                 @if (\App\Content\BirthdayGuides::for($relationship) && in_array($relationship, \App\Models\BirthdayMessage::hubRelationships(), true))
-                    <p class="mt-3 text-sm"><a href="{{ route('birthday-messages.relationship', \App\Models\BirthdayMessage::relationshipSlug($relationship)) }}" class="text-violet-700 underline">More wishes and tips for your {{ Str::lower(\App\Content\BirthdayGuides::for($relationship)['label']) }}</a></p>
+                    <p class="mt-3 text-sm"><a href="{{ route('birthday-messages.relationship', \App\Models\BirthdayMessage::relationshipSlug($relationship)) }}" class="text-navy-600 underline">More wishes and tips for your {{ Str::lower(\App\Content\BirthdayGuides::for($relationship)['label']) }}</a></p>
                 @endif
             </section>
         @empty
             <p class="mt-8 text-slate-500">Urdu wishes are coming soon.</p>
         @endforelse
 
-        <section class="mt-12 rounded-xl bg-violet-50 p-6 prose-page">
+        <section class="mt-12 rounded-xl bg-brand-50 p-6 prose-page">
             <h2 class="!mt-0">Tips for sending a birthday wish in Urdu</h2>
             <ul>
                 <li>Start with the person's name or how you address them at home: Ammi, Abbu, Baji, Bhai Jaan. It makes a copied line sound like you.</li>
@@ -62,6 +62,6 @@
                 <li>For a card, the emotional wishes read best; for a family group chat, the short ones keep it light.</li>
             </ul>
         </section>
-        <p class="mt-8 text-sm text-slate-500">Looking for English? Browse all <a href="{{ route('birthday-messages.index') }}" class="text-violet-700 underline">birthday wishes</a>, or read more <a href="{{ route('urdu-content.index') }}" class="text-violet-700 underline">Urdu greetings and quotes</a>.</p>
+        <p class="mt-8 text-sm text-slate-500">Looking for English? Browse all <a href="{{ route('birthday-messages.index') }}" class="text-navy-600 underline">birthday wishes</a>, or read more <a href="{{ route('urdu-content.index') }}" class="text-navy-600 underline">Urdu greetings and quotes</a>.</p>
     </div>
 </x-layout>
