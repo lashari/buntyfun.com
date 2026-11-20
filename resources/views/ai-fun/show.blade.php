@@ -1,4 +1,6 @@
-<x-layout :title="$tool->title.' — BuntyFun'" :description="$tool->description">
+@php $guide = \App\Content\AiToolGuides::for($tool->slug); @endphp
+<x-layout :title="$tool->title.' — Free Online AI Tool | BuntyFun'" :description="$tool->description.' Type a few words, get a result in seconds, copy it. Free, no sign-up.'"
+          :meta="$tool->meta" :breadcrumbs="['AI Fun Studio' => route('ai-tools.index'), $tool->title => null]">
     <div class="mx-auto max-w-xl px-4 py-10"
          x-data="{
              input: '',
@@ -58,6 +60,35 @@
                 <span x-show="copied" x-cloak>Copied!</span>
             </button>
         </div>
+
+        @if ($guide)
+            <section class="mt-10 prose-page">
+                <h2>How it works</h2>
+                <ol>
+                    <li><strong>What to type:</strong> {{ $guide['input'] }}</li>
+                    <li><strong>What you get:</strong> {{ $guide['output'] }}</li>
+                    <li>Press <em>Copy</em> to paste the result anywhere. Press <em>Generate</em> again for a different version.</li>
+                </ol>
+                <h3>Ideas to try</h3>
+                <ul>
+                    @foreach ($guide['examples'] as $ex)
+                        <li><button type="button" class="text-violet-700 underline" @click="input = @js($ex); $el.closest('[x-data]').scrollIntoView({ behavior: 'smooth' })">{{ $ex }}</button></li>
+                    @endforeach
+                </ul>
+                <h3>Good for</h3>
+                <ul>
+                    @foreach ($guide['uses'] as $use)
+                        <li>{{ $use }}</li>
+                    @endforeach
+                </ul>
+                @isset($guide['note'])<p>{{ $guide['note'] }}</p>@endisset
+            </section>
+        @endif
+
+        <section class="mt-8 rounded-lg bg-slate-100 p-4 text-xs leading-relaxed text-slate-600">
+            <p><strong>Limits:</strong> {{ config('ai.daily_free_limit') }} free generations per tool per day; input up to 300 characters. Results are written by an AI model (Google Gemini) on the spot, are not checked by a person and can be wrong or odd. Harmful requests are blocked.</p>
+            <p class="mt-2"><strong>Privacy:</strong> what you type is sent to Google to create the reply; BuntyFun does not save it. Please do not enter personal or sensitive details. See our <a href="{{ route('pages.privacy') }}" class="underline">privacy policy</a>.</p>
+        </section>
 
         <a href="{{ route('ai-tools.index') }}" class="mt-8 block text-sm text-slate-500 hover:underline">More AI tools</a>
     </div>

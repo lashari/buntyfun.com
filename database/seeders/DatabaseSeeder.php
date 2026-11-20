@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             BirthdayWishesSeeder::class,
             UrduContentSeeder::class,
             AiToolsSeeder::class,
+            QuizLibrarySeeder::class,
         ]);
     }
 }

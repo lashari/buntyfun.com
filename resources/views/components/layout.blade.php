@@ -7,6 +7,23 @@
     $pageDesc = $meta?->seo_description ?: ($description ?? 'Play exciting games, discover fun quizzes, create personalized wishes and explore something new every day.');
     $pageImage = $meta?->og_image ?: $ogImage;
     $isNoindex = $noindex || ($meta?->noindex ?? false);
+    // No ads on pages we ask search engines not to index (thin, private, utility pages).
+    $showAds = $ads && ! $isNoindex;
+    // Hide sections that have nothing published yet (an empty section reads as unfinished).
+    $nav = \Illuminate\Support\Facades\Cache::remember('layout.nav-sections', 600, fn () => [
+        'messages' => \App\Models\Message::where('status', 'published')->exists(),
+        'wallpapers' => \App\Models\Wallpaper::where('status', 'published')->exists(),
+    ]);
+    $links = array_filter([
+        [route('games.index'), 'Games'],
+        [route('quizzes.index'), 'Quizzes'],
+        [route('birthday-messages.index'), 'Birthday Wishes'],
+        $nav['messages'] ? [route('messages.index'), 'Messages'] : null,
+        [route('name-entries.index'), 'Islamic Names'],
+        [route('urdu-content.index'), 'اردو'],
+        $nav['wallpapers'] ? [route('wallpapers.index'), 'Wallpapers'] : null,
+        [route('ai-tools.index'), 'AI Fun'],
+    ]);
     $faq = collect($meta?->faq ?? [])->filter(fn ($f) => ! empty($f['q']) && ! empty($f['a']))->values();
     $ld = $schema;
     if (request()->routeIs('home')) {
@@ -54,44 +71,61 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=noto-nastaliq-urdu" rel="stylesheet">
     @endif
+    {{-- Google Consent Mode v2: denied by default in the EEA, UK and Switzerland until the
+         Google-certified consent message (AdSense → Privacy & messaging) records a choice. --}}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('consent', 'default', {
+            ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied',
+            region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH'],
+            wait_for_update: 500
+        });
+        gtag('consent', 'default', { ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted' });
+    </script>
     @if (config('services.ga4.measurement_id'))
         <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.ga4.measurement_id') }}"></script>
         <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', '{{ config('services.ga4.measurement_id') }}');
         </script>
     @endif
-    @if ($ads && config('services.adsense.client_id'))
+    @if ($showAds && config('services.adsense.client_id'))
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config('services.adsense.client_id') }}" crossorigin="anonymous"></script>
     @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-900 antialiased {{ $dir === 'rtl' ? 'font-urdu' : '' }}">
-    <header class="border-b border-slate-200 bg-white">
-        <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+    <header class="border-b border-slate-200 bg-white" x-data="{ open: false }">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4">
             <a href="{{ route('home') }}" class="text-xl font-bold text-violet-600">BuntyFun</a>
-            <nav class="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
-                <a href="{{ route('home') }}" class="hover:text-violet-600">Home</a>
-                <a href="{{ route('games.index') }}" class="hover:text-violet-600">Games</a>
-                <a href="{{ route('quizzes.index') }}" class="hover:text-violet-600">Quizzes</a>
-                <a href="{{ route('birthday-messages.index') }}" class="hover:text-violet-600">Birthday Wishes</a>
-                <a href="{{ route('messages.index') }}" class="hover:text-violet-600">Messages</a>
-                <a href="{{ route('name-entries.index') }}" class="hover:text-violet-600">Islamic Names</a>
-                <a href="{{ route('urdu-content.index') }}" class="hover:text-violet-600">اردو</a>
-                <a href="{{ route('wallpapers.index') }}" class="hover:text-violet-600">Wallpapers</a>
-                <a href="{{ route('ai-tools.index') }}" class="hover:text-violet-600">AI Fun</a>
+            <nav class="hidden items-center gap-6 text-sm font-medium text-slate-600 lg:flex" aria-label="Main">
+                @foreach ($links as [$href, $label])
+                    <a href="{{ $href }}" class="hover:text-violet-600">{{ $label }}</a>
+                @endforeach
             </nav>
-            <form action="{{ route('search') }}" method="GET" class="flex items-center gap-2">
-                <input type="search" name="q" value="{{ request('q') }}" placeholder="Search BuntyFun"
-                       class="w-40 rounded-full border border-slate-300 px-3 py-1.5 text-sm focus:border-violet-500 focus:outline-none md:w-56">
-                <button type="submit" class="rounded-full bg-violet-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-700">Go</button>
-            </form>
+            <div class="flex items-center gap-2">
+                <form action="{{ route('search') }}" method="GET" class="flex items-center gap-2" role="search">
+                    <label for="site-search" class="sr-only">Search BuntyFun</label>
+                    <input id="site-search" type="search" name="q" value="{{ request('q') }}" placeholder="Search"
+                           class="w-28 rounded-full border border-slate-300 px-3 py-1.5 text-sm focus:border-violet-500 focus:outline-none sm:w-44">
+                    <button type="submit" class="rounded-full bg-violet-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-700">Go</button>
+                </form>
+                <button type="button" @click="open = !open" :aria-expanded="open.toString()" aria-controls="mobile-menu"
+                        class="rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm font-medium text-slate-700 lg:hidden">
+                    <span x-show="!open">Menu</span><span x-show="open" x-cloak>Close</span>
+                </button>
+            </div>
         </div>
+        <nav id="mobile-menu" x-show="open" x-cloak class="border-t border-slate-200 lg:hidden" aria-label="Main mobile">
+            <div class="mx-auto grid max-w-6xl grid-cols-2 gap-1 px-4 py-3 text-sm font-medium text-slate-700">
+                <a href="{{ route('home') }}" class="rounded-lg px-3 py-2 hover:bg-violet-50">Home</a>
+                @foreach ($links as [$href, $label])
+                    <a href="{{ $href }}" class="rounded-lg px-3 py-2 hover:bg-violet-50">{{ $label }}</a>
+                @endforeach
+            </div>
+        </nav>
     </header>
-
-    <x-ad-slot :enabled="$ads" />
 
     <main>
         @if ($breadcrumbs)
@@ -119,20 +153,27 @@
         @endif
     </main>
 
-    <x-ad-slot :enabled="$ads" />
+    <x-ad-slot :enabled="$showAds" />
 
     <footer class="mt-16 border-t border-slate-200 bg-white">
         <div class="mx-auto max-w-6xl px-4 py-8 text-sm text-slate-500">
-            <div class="flex flex-wrap gap-4">
+            <div class="flex flex-wrap gap-x-4 gap-y-2">
                 <a href="{{ route('home') }}" class="hover:text-violet-600">Home</a>
-                <a href="{{ route('games.index') }}" class="hover:text-violet-600">Games</a>
-                <a href="{{ route('quizzes.index') }}" class="hover:text-violet-600">Quizzes</a>
-                <a href="{{ route('birthday-messages.index') }}" class="hover:text-violet-600">Birthday Wishes</a>
-                <a href="{{ route('messages.index') }}" class="hover:text-violet-600">Messages</a>
-                <a href="{{ route('name-entries.index') }}" class="hover:text-violet-600">Islamic Names</a>
-                <a href="{{ route('urdu-content.index') }}" class="hover:text-violet-600">اردو</a>
-                <a href="{{ route('wallpapers.index') }}" class="hover:text-violet-600">Wallpapers</a>
-                <a href="{{ route('ai-tools.index') }}" class="hover:text-violet-600">AI Fun</a>
+                @foreach ($links as [$href, $label])
+                    <a href="{{ $href }}" class="hover:text-violet-600">{{ $label }}</a>
+                @endforeach
+            </div>
+            <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
+                <a href="{{ route('pages.about') }}" class="hover:text-violet-600">About</a>
+                <a href="{{ route('pages.contact') }}" class="hover:text-violet-600">Contact</a>
+                <a href="{{ route('pages.privacy') }}" class="hover:text-violet-600">Privacy Policy</a>
+                <a href="{{ route('pages.terms') }}" class="hover:text-violet-600">Terms of Use</a>
+                <a href="{{ route('pages.editorial') }}" class="hover:text-violet-600">Editorial Policy</a>
+                @if (config('services.adsense.client_id'))
+                    {{-- Re-opens the Google consent message (shown only once the AdSense message is live). --}}
+                    <button type="button" class="hover:text-violet-600"
+                            onclick="window.googlefc = window.googlefc || {}; googlefc.callbackQueue = googlefc.callbackQueue || []; googlefc.callbackQueue.push(function () { googlefc.showRevocationMessage(); });">Privacy settings</button>
+                @endif
             </div>
             <p class="mt-4">&copy; {{ now()->year }} BuntyFun.com</p>
         </div>

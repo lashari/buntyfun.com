@@ -1,7 +1,14 @@
-<x-layout :title="$quiz->title.' — BuntyFun'" description="Take the quiz and share your result."
-          :meta="$quiz->meta" :breadcrumbs="['Quizzes' => route('quizzes.index'), $quiz->title => null]">
+@php $isTrivia = $quiz->questions->flatMap->answers->contains(fn ($a) => ! is_null($a->is_correct)); @endphp
+<x-layout :title="$quiz->title.' — Free Online Quiz | BuntyFun'" :description="$quiz->intro ? Str::limit($quiz->intro, 150) : 'Take the '.$quiz->title.' — '.$quiz->questions->count().' questions, free, no sign-up.'"
+          :meta="$quiz->meta" :noindex="$quiz->questions->count() < 5" :breadcrumbs="['Quizzes' => route('quizzes.index'), $quiz->title => null]">
     <div class="mx-auto max-w-2xl px-4 py-10">
         <h1 class="text-2xl font-bold">{{ $quiz->title }}</h1>
+        @if ($quiz->intro)
+            <p class="mt-3 leading-relaxed text-slate-700">{{ $quiz->intro }}</p>
+        @endif
+        <p class="mt-3 text-sm text-slate-500">
+            {{ $quiz->questions->count() }} questions · one answer each · @if ($isTrivia) your score and an explanation for every answer at the end @else for fun, not a scientific test @endif
+        </p>
 
         <form method="POST" action="{{ route('quizzes.submit', $quiz) }}"
               x-data="{

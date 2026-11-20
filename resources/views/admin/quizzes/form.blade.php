@@ -2,6 +2,7 @@
     $existingQuestions = $quiz->exists
         ? $quiz->questions->map(fn ($q) => [
             'prompt' => $q->prompt,
+            'explanation' => $q->explanation,
             'answers' => $q->answers->map(fn ($a) => array_filter([
                 'label' => $a->label,
                 'is_correct' => $a->is_correct,
@@ -32,6 +33,11 @@
         </div>
 
         <div>
+            <label class="block text-sm font-medium text-slate-700">Intro (shown above the quiz: what it covers, who it is for)</label>
+            <textarea name="intro" rows="3" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">{{ old('intro', $quiz->intro) }}</textarea>
+        </div>
+
+        <div>
             <label class="block text-sm font-medium text-slate-700">Slug (optional — derived from title if blank)</label>
             <input type="text" name="slug" value="{{ old('slug', $quiz->slug) }}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
         </div>
@@ -58,7 +64,7 @@
 
         <div>
             <label class="block text-sm font-medium text-slate-700">
-                Questions (JSON) — each item: <code>{"prompt": "...", "answers": [{"label": "...", "is_correct": true}]}</code>
+                Questions (JSON) — each item: <code>{"prompt": "...", "explanation": "why the answer is right", "answers": [{"label": "...", "is_correct": true}]}</code>
                 or use <code>"score_value"</code> instead of <code>is_correct</code> for a personality quiz.
             </label>
             <textarea name="questions_json" rows="12" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs">{{ old('questions_json', $existingQuestions->toJson(JSON_PRETTY_PRINT)) }}</textarea>

@@ -1,13 +1,13 @@
 @props(['enabled' => true])
-{{-- Reserved space from day one so turning ads on later doesn't shift layout.
-     Renders nothing but an empty, correctly-sized container until ADSENSE_CLIENT_ID
-     is set — never assumes AdSense approval. $enabled is false on pages (e.g. the
-     future Condolence Library) that must never show ads, full stop. --}}
-@if ($enabled && config('services.adsense.client_id'))
-    <div class="mx-auto my-4 max-w-6xl px-4">
-        <ins class="adsbygoogle" style="display:block" data-ad-client="{{ config('services.adsense.client_id') }}"
-             data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
-    </div>
-@elseif ($enabled)
-    <div class="mx-auto my-4 max-w-6xl px-4" aria-hidden="true"></div>
+{{-- A manual display unit needs a real numeric ad-unit id (ADSENSE_SLOT_ID) from the AdSense
+     account. Without one, nothing is rendered and placement is left to Auto ads (the
+     adsbygoogle script in the layout). Never assumes approval, never invents ids.
+     $enabled is false on pages that must not show ads (condolence, noindex, policy pages). --}}
+@if ($enabled && config('services.adsense.client_id') && config('services.adsense.slot_id'))
+    <aside class="mx-auto my-8 max-w-3xl px-4" aria-label="Advertisement">
+        <p class="mb-1 text-center text-[11px] uppercase tracking-wide text-slate-400">Advertisement</p>
+        <ins class="adsbygoogle" style="display:block; min-height:100px" data-ad-client="{{ config('services.adsense.client_id') }}"
+             data-ad-slot="{{ config('services.adsense.slot_id') }}" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
 @endif

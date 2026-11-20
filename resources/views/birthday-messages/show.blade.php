@@ -1,6 +1,7 @@
+@php $hub = in_array($message->relationship, \App\Models\BirthdayMessage::hubRelationships(), true) ? route('birthday-messages.relationship', \App\Models\BirthdayMessage::relationshipSlug($message->relationship)) : route('birthday-messages.index', ['relationship' => $message->relationship]); @endphp
 <x-layout :dir="$message->language === 'ur' ? 'rtl' : 'ltr'" :lang="$message->language"
           :title="Str::headline($message->tone).' Birthday Wish for '.Str::headline($message->relationship).': '.Str::limit($message->body, 38).' — BuntyFun'" :description="Str::limit($message->body, 140).' Copy or share this birthday wish.'"
-          :meta="$message->meta" :breadcrumbs="['Birthday Wishes' => route('birthday-messages.index'), Str::headline($message->relationship) => route('birthday-messages.index', ['relationship' => $message->relationship]), 'Wish' => null]">
+          :meta="$message->meta" :noindex="! config('site.index_single_snippets')" :breadcrumbs="['Birthday Wishes' => route('birthday-messages.index'), Str::headline($message->relationship) => $hub, 'Wish' => null]">
     <div class="mx-auto max-w-xl px-4 py-12">
         <p class="text-xs uppercase tracking-wide text-slate-500">{{ Str::headline($message->relationship) }} · {{ Str::headline($message->tone) }}</p>
         <p class="mt-4 text-xl leading-relaxed">{{ $message->body }}</p>
@@ -44,6 +45,6 @@
             </div>
         @endif
 
-        <a href="{{ route('birthday-messages.index') }}" class="mt-8 block text-sm text-slate-500 hover:underline">More birthday wishes</a>
+        <a href="{{ $hub }}" class="mt-8 block text-sm font-medium text-violet-700 hover:underline">All birthday wishes for {{ Str::lower(Str::headline($message->relationship)) }}, with tips</a>
     </div>
 </x-layout>

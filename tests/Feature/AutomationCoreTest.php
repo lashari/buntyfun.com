@@ -302,6 +302,9 @@ class AutomationCoreTest extends TestCase
         Config::set('services.adsense.client_id', 'ca-pub-test');
         $this->get(route('messages.show', $condolence))->assertDontSee('adsbygoogle');
 
+        // Single messages are noindex by default (site.index_single_snippets); the hub is listed instead.
+        $this->get('/sitemap.xml')->assertOk()->assertDontSee(route('messages.show', $m), false)->assertSee(route('messages.index'), false);
+        Config::set('site.index_single_snippets', true);
         $sitemap = $this->get('/sitemap.xml')->assertOk();
         $sitemap->assertSee(route('messages.show', $m), false);
         $sitemap->assertDontSee('hidden-eid', false);

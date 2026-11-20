@@ -43,6 +43,14 @@ class GeminiProvider implements AiProviderContract
                         ['parts' => [['text' => $prompt]]],
                     ],
                     'generationConfig' => $config,
+                    // Public, general-audience site: block harmful output rather than rely on the prompt alone.
+                    // A blocked reply has no text and surfaces as emptyResponse() → friendly error.
+                    'safetySettings' => [
+                        ['category' => 'HARM_CATEGORY_HARASSMENT', 'threshold' => 'BLOCK_MEDIUM_AND_ABOVE'],
+                        ['category' => 'HARM_CATEGORY_HATE_SPEECH', 'threshold' => 'BLOCK_LOW_AND_ABOVE'],
+                        ['category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold' => 'BLOCK_LOW_AND_ABOVE'],
+                        ['category' => 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold' => 'BLOCK_MEDIUM_AND_ABOVE'],
+                    ],
                 ]);
         } catch (Throwable $e) {
             Log::error('Gemini request failed', ['error' => $e->getMessage()]);

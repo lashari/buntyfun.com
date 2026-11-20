@@ -10,7 +10,7 @@ class Quiz extends Model
 {
     use \App\Models\Concerns\HasContentMeta;
 
-    protected $fillable = ['category_id', 'slug', 'title', 'language', 'status', 'published_at'];
+    protected $fillable = ['category_id', 'slug', 'title', 'intro', 'language', 'status', 'published_at'];
 
     protected $casts = [
         'published_at' => 'datetime',

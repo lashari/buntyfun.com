@@ -14,7 +14,7 @@
     <div class="mx-auto max-w-6xl space-y-12 px-4 py-12">
         <section>
             <div class="mb-4 flex items-center justify-between">
-                <h2 class="text-2xl font-bold">Trending Quizzes</h2>
+                <h2 class="text-2xl font-bold">Quizzes</h2>
                 <a href="{{ route('quizzes.index') }}" class="text-sm font-medium text-violet-600 hover:underline">See all</a>
             </div>
             <div class="grid gap-4 sm:grid-cols-3">
@@ -30,7 +30,7 @@
 
         <section>
             <div class="mb-4 flex items-center justify-between">
-                <h2 class="text-2xl font-bold">Popular Games</h2>
+                <h2 class="text-2xl font-bold">Games</h2>
                 <a href="{{ route('games.index') }}" class="text-sm font-medium text-violet-600 hover:underline">See all</a>
             </div>
             <div class="grid gap-4 sm:grid-cols-3">
@@ -77,6 +77,7 @@
             </div>
         </section>
 
+        @if ($wallpapers->isNotEmpty())
         <section>
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-2xl font-bold">Wallpapers</h2>
@@ -93,6 +94,7 @@
                 @endforelse
             </div>
         </section>
+        @endif
 
         <section>
             <div class="mb-4 flex items-center justify-between">
@@ -109,6 +111,11 @@
                     <p class="text-sm text-slate-500">No AI tools published yet.</p>
                 @endforelse
             </div>
+        </section>
+
+        <section class="rounded-xl border border-slate-200 bg-white p-6 text-sm leading-relaxed text-slate-600">
+            <h2 class="text-lg font-bold text-slate-900">About BuntyFun</h2>
+            <p class="mt-2">BuntyFun is a free site for small everyday moments: copy a birthday wish, look up what an Islamic name means, play a two-minute game or test yourself with a quiz. Everything works in your browser without an account. Wishes are grouped by who they are for, name meanings link to their sources, and quizzes explain every answer. <a href="{{ route('pages.about') }}" class="text-violet-700 underline">Read more about how we make our content</a>.</p>
         </section>
     </div>
 </x-layout>

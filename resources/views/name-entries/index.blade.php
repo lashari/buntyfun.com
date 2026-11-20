@@ -1,6 +1,11 @@
-<x-layout title="Islamic Names — BuntyFun" description="Islamic and Muslim baby names with meanings, searchable by letter and gender.">
+<x-layout title="Islamic Names with Meanings — Arabic & Urdu Spelling | BuntyFun" description="Muslim baby names for boys and girls with Arabic and Urdu spelling, meaning and a cited source for every name."
+          :noindex="request()->hasAny(['q', 'gender', 'letter', 'page'])">
     <div class="mx-auto max-w-6xl px-4 py-10">
         <h1 class="text-3xl font-bold">Islamic Names</h1>
+        <div class="mt-3 max-w-3xl space-y-3 leading-relaxed text-slate-700">
+            <p>Muslim names for boys and girls, each with its Arabic spelling, Urdu spelling, gender and meaning. Every meaning is checked against a published reference, and the source is linked on the name's page. Where references disagree about a name's origin, we say so rather than choose one.</p>
+            <p>Many names come from Arabic roots of three letters that carry a core idea. Muhammad, Ahmad and Hamid all share the root ḥ-m-d ("praise"), for example. English spellings of the same name differ widely, so search by the spelling you know and check the Arabic form on the name page.</p>
+        </div>
 
         <form method="GET" class="mt-4 flex flex-wrap gap-3">
             <input type="search" name="q" value="{{ request('q') }}" placeholder="Search by name or meaning"
