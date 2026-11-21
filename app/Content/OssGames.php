@@ -223,6 +223,67 @@ class OssGames
                 'It is a very short game, so it fits in a coffee break.',
             ],
         ],
+        'connect-four' => [
+            'title' => 'Connect Four',
+            'entry' => 'index.html',
+            'author' => 'Kenrick (kenrick95)',
+            'repo' => 'https://github.com/kenrick95/c4',
+            'license' => 'MIT',
+            'genre' => 'Board game',
+            'audience' => ['kids', 'family', 'teens', 'adults'],
+            'ratio' => '4/5',
+            'summary' => 'Drop discs into the grid and get four in a row before your opponent, against the computer or a friend.',
+            'how' => [
+                'Choose a mode: against the computer (vs AI), against a friend on the same device (vs human), or online.',
+                'Click or tap a column to drop your disc. It falls to the lowest free space.',
+                'Players take turns. The first to line up four discs across, down or diagonally wins.',
+            ],
+            'tips' => [
+                'The middle column is part of the most lines, so start there.',
+                'Watch for your opponent building three in a row and block the fourth space.',
+            ],
+        ],
+        'ball-and-wall' => [
+            'title' => 'Ball and Wall',
+            'entry' => 'index.html',
+            'author' => 'Krzysztof Budnik (budnix)',
+            'repo' => 'https://github.com/budnix/ball-and-wall',
+            'license' => 'MIT',
+            'genre' => 'Arcade',
+            'audience' => ['kids', 'family', 'teens'],
+            'ratio' => '16/10',
+            'summary' => 'Brick-breaker: bounce the ball off your paddle and smash every brick in the wall.',
+            'how' => [
+                'Move the paddle with the mouse, your finger, or the arrow keys left and right.',
+                'Space or Enter launches the ball.',
+                'Bounce the ball into the bricks to break them. Clear all bricks to finish the level.',
+                'Do not let the ball fall past your paddle.',
+            ],
+            'tips' => [
+                'Hit the ball with the edge of the paddle to send it off at a sharper angle.',
+            ],
+        ],
+        'underrun' => [
+            'title' => 'Underrun',
+            'entry' => 'index.html',
+            'author' => 'Dominic Szablewski (phoboslab)',
+            'repo' => 'https://github.com/phoboslab/underrun',
+            'license' => 'MIT',
+            'genre' => 'Shooter',
+            'audience' => ['teens', 'adults'],
+            'ratio' => '16/9',
+            'summary' => 'A dark top-down sci-fi shooter: fight robot spiders and bring the station\'s systems back online.',
+            'how' => [
+                'Move with W A S D or the arrow keys.',
+                'Aim with the mouse and hold the mouse button to shoot.',
+                'Find the terminals and follow the messages on screen to reach the next level.',
+            ],
+            'tips' => [
+                'Keep moving: standing still makes you an easy target.',
+                'Pick up health when you see it.',
+            ],
+            'keyboard' => true,
+        ],
     ];
 
     public static function for(string $slug): ?array
