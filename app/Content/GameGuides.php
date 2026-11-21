@@ -84,6 +84,6 @@ class GameGuides
 
     public static function for(string $slug): ?array
     {
-        return self::ALL[$slug] ?? null;
+        return self::ALL[$slug] ?? OssGames::for($slug);
     }
 }

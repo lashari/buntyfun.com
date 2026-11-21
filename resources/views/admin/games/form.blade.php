@@ -24,6 +24,16 @@
             <input type="text" name="slug" value="{{ old('slug', $game->slug) }}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
         </div>
 
+        <fieldset>
+            <legend class="block text-sm font-medium text-slate-700">Who is it for? (filters on /games)</legend>
+            @php $aud = old('audience', $game->exists ? \App\Content\OssGames::audienceOf($game) : ['family']); @endphp
+            <div class="mt-1 flex flex-wrap gap-4 text-sm">
+                @foreach (\App\Content\OssGames::AUDIENCES as $key => $label)
+                    <label class="inline-flex items-center gap-1"><input type="checkbox" name="audience[]" value="{{ $key }}" @checked(in_array($key, $aud, true))> {{ $label }}</label>
+                @endforeach
+            </div>
+        </fieldset>
+
         <div>
             <label class="block text-sm font-medium text-slate-700">Status</label>
             <select name="status" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">

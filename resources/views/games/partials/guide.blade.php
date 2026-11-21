@@ -7,8 +7,10 @@
                 <li>{{ $step }}</li>
             @endforeach
         </ol>
-        <h2>Scoring</h2>
-        <p>{{ $guide['scoring'] }}</p>
+        @if (! empty($guide['scoring']))
+            <h2>Scoring</h2>
+            <p>{{ $guide['scoring'] }}</p>
+        @endif
         <h2>Tips</h2>
         <ul>
             @foreach ($guide['tips'] as $tip)
