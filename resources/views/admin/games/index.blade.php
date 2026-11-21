@@ -19,11 +19,12 @@
                     <td class="px-4 py-2">{{ $game->title }}</td>
                     <td class="px-4 py-2 text-slate-500">{{ $game->slug }}</td>
                     <td class="px-4 py-2">
-                        <span class="rounded-full px-2 py-0.5 text-xs {{ $game->status === 'published' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600' }}">
+                        <span class="rounded-full px-2 py-0.5 text-xs {{ $game->status === 'published' ? 'bg-emerald-100 text-emerald-700' : ($game->status === 'in_review' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600') }}">
                             {{ Str::headline($game->status) }}
                         </span>
                     </td>
                     <td class="px-4 py-2 text-right">
+                        <a href="{{ route('games.show', $game) }}" target="_blank" class="mr-3 text-navy-600 hover:underline">{{ $game->status === 'published' ? 'View' : 'Preview' }}</a>
                         <a href="{{ route('admin.games.edit', $game) }}" class="text-navy-600 hover:underline">Edit</a>
                         @if (auth()->user()->canPublish())
                             @if ($game->status === 'published')

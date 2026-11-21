@@ -31,6 +31,7 @@ class GameAdminController extends Controller
         $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['title']);
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
+        $data = $this->withAudience($data);
         $game = Game::create($data);
         AuditLog::record($request->user(), 'created', 'game', $game->id);
         $this->saveMeta($request, $game);
@@ -49,6 +50,7 @@ class GameAdminController extends Controller
         $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['title']);
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
+        $data = $this->withAudience($data, $game);
         $game->update($data);
         AuditLog::record($request->user(), 'updated', 'game', $game->id);
         $this->saveMeta($request, $game);
@@ -80,6 +82,17 @@ class GameAdminController extends Controller
         return back()->with('status', 'Game unpublished.');
     }
 
+    /** Moves the audience checkboxes into config_json, keeping its other keys. */
+    private function withAudience(array $data, ?Game $game = null): array
+    {
+        $config = $game?->config_json ?? [];
+        $config['audience'] = array_values($data['audience'] ?? []);
+        unset($data['audience']);
+        $data['config_json'] = $config;
+
+        return $data;
+    }
+
     private function validated(Request $request): array
     {
         return $request->validate([
@@ -87,6 +100,8 @@ class GameAdminController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:draft,in_review,published'],
+            'audience' => ['nullable', 'array'],
+            'audience.*' => ['in:'.implode(',', array_keys(\App\Content\OssGames::AUDIENCES))],
         ]);
     }
 }

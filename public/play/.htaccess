@@ -1,0 +1,10 @@
+# Bundled open-source games: the BuntyFun /games/{slug} page is the one to index,
+# not the raw game file it frames.
+<IfModule mod_headers.c>
+    Header set X-Robots-Tag "noindex, follow"
+</IfModule>
+# Static files only: never run scripts from here.
+<FilesMatch "\.(php|phtml|phar|cgi|pl|py|sh)$">
+    Require all denied
+</FilesMatch>
+Options -Indexes
