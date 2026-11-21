@@ -57,8 +57,11 @@
             </div>
             <div class="grid gap-4 sm:grid-cols-3">
                 @forelse ($games as $game)
-                    <a href="{{ route('games.show', $game) }}" class="rounded-2xl border border-slate-200 border-t-4 border-t-brand-400 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                        <h3 class="font-semibold">{{ $game->title }}</h3>
+                    <a href="{{ route('games.show', $game) }}" class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                        @if ($thumb = \App\Content\OssGames::thumb($game->slug))
+                            <img src="{{ $thumb }}" alt="{{ $game->title }} game preview" width="400" height="250" loading="lazy" class="aspect-[8/5] w-full object-cover">
+                        @endif
+                        <h3 class="p-4 font-semibold">{{ $game->title }}</h3>
                     </a>
                 @empty
                     <p class="text-sm text-slate-500">No games published yet.</p>

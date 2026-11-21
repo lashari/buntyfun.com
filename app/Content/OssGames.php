@@ -291,6 +291,14 @@ class OssGames
         return self::ALL[$slug] ?? null;
     }
 
+    /** Card picture for any game (built-in or open-source), or null if none drawn yet. */
+    public static function thumb(string $slug): ?string
+    {
+        $rel = 'images/games/'.$slug.'.svg';
+
+        return is_file(public_path($rel)) ? '/'.$rel : null;
+    }
+
     public static function src(string $slug): ?string
     {
         $g = self::for($slug);
