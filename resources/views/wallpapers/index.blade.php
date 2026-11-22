@@ -1,30 +1,23 @@
-<x-layout title="Wallpapers — BuntyFun" description="Free wallpapers for desktop and mobile, by category." :noindex="$wallpapers->isEmpty() || request()->hasAny(['category', 'page'])">
+<x-layout title="Free HD Wallpapers by Category — BuntyFun" description="Free HD wallpapers for desktop and mobile: space, nature, Islamic, cars, animals and more. Browse by category and download."
+          :noindex="$counts->isEmpty()" :breadcrumbs="['Wallpapers' => null]">
     <div class="mx-auto max-w-6xl px-4 py-10">
         <h1 class="text-3xl font-bold">Wallpapers</h1>
+        @include('wallpapers.partials.chips', ['active' => null])
 
-        <form method="GET" class="mt-4 flex flex-wrap gap-3">
-            <select name="category" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" onchange="this.form.submit()">
-                <option value="">All categories</option>
-                @foreach ($categories as $category)
-                    <option value="{{ $category }}" @selected(request('category') === $category)>{{ Str::headline($category) }}</option>
-                @endforeach
-            </select>
-        </form>
-
-        <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            @forelse ($wallpapers as $wallpaper)
-                <a href="{{ route('wallpapers.show', $wallpaper) }}" class="group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md">
-                    <img src="{{ $wallpaper->url() }}" alt="{{ $wallpaper->title }}" loading="lazy"
-                         class="aspect-video w-full object-cover transition group-hover:scale-105">
-                    <div class="p-3">
-                        <p class="font-medium">{{ $wallpaper->title }}</p>
-                        <p class="text-xs text-slate-500">{{ Str::headline($wallpaper->category) }} · {{ $wallpaper->resolutionLabel() }}</p>
-                    </div>
-                </a>
-            @empty
-                <p class="text-sm text-slate-500">No wallpapers published yet.</p>
-            @endforelse
-        </div>
-        <div class="mt-8">{{ $wallpapers->links() }}</div>
+        @forelse ($sections as $category => $items)
+            <section class="mt-10">
+                <div class="flex items-baseline justify-between">
+                    <h2 class="text-xl font-bold">{{ Str::headline($category) }} <span class="text-sm font-normal text-slate-500">{{ $counts[$category] }} wallpapers</span></h2>
+                    <a href="{{ route('wallpapers.category', $category) }}" class="text-sm font-semibold text-brand-600 hover:underline">View all →</a>
+                </div>
+                <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    @foreach ($items as $wallpaper)
+                        @include('wallpapers.partials.card')
+                    @endforeach
+                </div>
+            </section>
+        @empty
+            <p class="mt-6 text-sm text-slate-500">No wallpapers published yet.</p>
+        @endforelse
     </div>
 </x-layout>

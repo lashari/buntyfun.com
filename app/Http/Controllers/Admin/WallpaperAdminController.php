@@ -35,6 +35,7 @@ class WallpaperAdminController extends Controller
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $wallpaper = Wallpaper::create($data);
+        app(\App\Services\Import\ThumbnailMaker::class)->make($wallpaper);
         AuditLog::record($request->user(), 'created', 'wallpaper', $wallpaper->id);
         $this->saveMeta($request, $wallpaper);
 
@@ -51,12 +52,21 @@ class WallpaperAdminController extends Controller
         $data = $this->validated($request, requireImage: false);
         if ($request->hasFile('image')) {
             $data = $this->storeUpload($request, $data);
-            Storage::disk('public')->delete($wallpaper->file_path);
+            if ($wallpaper->file_path !== '') {
+                Storage::disk('public')->delete($wallpaper->file_path);
+            }
+            \App\Services\Import\ThumbnailMaker::forget($wallpaper);
+            // An uploaded file replaces a hotlinked (Unsplash) image.
+            $data['remote_url'] = null;
+            $data['download_location'] = null;
         }
         $data['slug'] = ($data['slug'] ?? null) ?: $wallpaper->slug;
         $data['status'] = $this->sanitizeStatus($request, $data['status']);
 
         $wallpaper->update($data);
+        if ($request->hasFile('image')) {
+            app(\App\Services\Import\ThumbnailMaker::class)->make($wallpaper->fresh());
+        }
         AuditLog::record($request->user(), 'updated', 'wallpaper', $wallpaper->id);
         $this->saveMeta($request, $wallpaper);
 
@@ -67,7 +77,10 @@ class WallpaperAdminController extends Controller
     {
         $this->authorizeDelete($request);
 
-        Storage::disk('public')->delete($wallpaper->file_path);
+        if ($wallpaper->file_path !== '') {
+            Storage::disk('public')->delete($wallpaper->file_path);
+        }
+        \App\Services\Import\ThumbnailMaker::forget($wallpaper);
         AuditLog::record($request->user(), 'deleted', 'wallpaper', $wallpaper->id);
         $wallpaper->delete();
 
@@ -95,7 +108,7 @@ class WallpaperAdminController extends Controller
             'slug' => ['nullable', 'string', 'max:255'],
             'category' => ['required', 'string', 'max:60'],
             'orientation' => ['required', 'in:desktop,mobile,both'],
-            'license' => ['required', Rule::in(['public_domain', 'cc0', 'cc_by', 'original', 'licensed'])],
+            'license' => ['required', Rule::in(['public_domain', 'cc0', 'cc_by', 'cc_by_sa', 'original', 'licensed'])],
             'attribution' => ['nullable', 'string', 'max:255'],
             'source_url' => ['nullable', 'url', 'max:500'],
             'status' => ['required', 'in:draft,in_review,published'],
@@ -107,7 +120,7 @@ class WallpaperAdminController extends Controller
 
         $validator->after(function ($validator) use ($request) {
             $license = $request->input('license');
-            if (in_array($license, ['cc_by', 'licensed'], true) && ! $request->filled('attribution')) {
+            if (in_array($license, ['cc_by', 'cc_by_sa', 'licensed'], true) && ! $request->filled('attribution')) {
                 $validator->errors()->add('attribution', 'Attribution is required for CC-BY or licensed images.');
             }
         });

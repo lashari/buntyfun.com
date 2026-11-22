@@ -37,6 +37,9 @@ class SeoController extends Controller
         }
         if (Wallpaper::indexable()->exists()) {
             $urls->push(['loc' => route('wallpapers.index'), 'changefreq' => 'weekly']);
+            foreach (Wallpaper::indexable()->distinct()->orderBy('category')->pluck('category') as $category) {
+                $urls->push(['loc' => route('wallpapers.category', $category), 'changefreq' => 'weekly']);
+            }
         }
 
         if (BirthdayMessage::urduPageIndexable()) {
