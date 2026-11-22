@@ -108,7 +108,7 @@
             <div class="grid gap-4 sm:grid-cols-3">
                 @forelse ($wallpapers as $wallpaper)
                     <a href="{{ route('wallpapers.show', $wallpaper) }}" class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md">
-                        <img src="{{ $wallpaper->url() }}" alt="{{ $wallpaper->title }}" loading="lazy" class="aspect-video w-full object-cover">
+                        <img src="{{ $wallpaper->thumbUrl() }}" alt="{{ $wallpaper->title }}" loading="lazy" class="aspect-video w-full object-cover">
                         <p class="p-3 font-semibold">{{ $wallpaper->title }}</p>
                     </a>
                 @empty

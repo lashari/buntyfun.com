@@ -51,6 +51,11 @@ return [
         'graph_version' => env('META_GRAPH_VERSION', 'v27.0'),
     ],
 
+    // Admin → Import. Free key from unsplash.com/developers (Access Key, not the Secret).
+    'unsplash' => [
+        'access_key' => env('UNSPLASH_ACCESS_KEY'),
+    ],
+
     'ga4' => [
         'measurement_id' => env('GA4_MEASUREMENT_ID'),
     ],

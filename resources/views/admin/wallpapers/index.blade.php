@@ -7,7 +7,7 @@
     <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         @forelse ($wallpapers as $wallpaper)
             <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                <img src="{{ $wallpaper->url() }}" alt="{{ $wallpaper->title }}" class="aspect-video w-full object-cover">
+                <img src="{{ $wallpaper->thumbUrl() }}" alt="{{ $wallpaper->title }}" class="aspect-video w-full object-cover">
                 <div class="p-3">
                     <p class="font-medium">{{ $wallpaper->title }}</p>
                     <p class="text-xs text-slate-500">{{ Str::headline($wallpaper->category) }} · {{ $wallpaper->resolutionLabel() }} · {{ Str::headline($wallpaper->license) }}</p>

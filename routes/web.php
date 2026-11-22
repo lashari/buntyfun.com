@@ -85,6 +85,7 @@ Route::prefix('messages')->group(function () {
 
 Route::prefix('wallpapers')->group(function () {
     Route::get('/', [WallpaperController::class, 'index'])->name('wallpapers.index');
+    Route::get('/c/{category}', [WallpaperController::class, 'category'])->where('category', '[a-z0-9-]+')->name('wallpapers.category');
     Route::get('/{wallpaper:slug}', [WallpaperController::class, 'show'])->name('wallpapers.show');
     Route::get('/{wallpaper:slug}/download', [WallpaperController::class, 'download'])->name('wallpapers.download');
 });
@@ -134,6 +135,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('messages', MessageAdminController::class)->except(['show']);
         Route::post('messages/{message}/publish', [MessageAdminController::class, 'publish'])->name('messages.publish');
         Route::post('messages/{message}/unpublish', [MessageAdminController::class, 'unpublish'])->name('messages.unpublish');
+
+        Route::get('import', [\App\Http\Controllers\Admin\ImportController::class, 'index'])->name('import.index');
+        Route::post('import', [\App\Http\Controllers\Admin\ImportController::class, 'store'])->middleware('throttle:10,1')->name('import.store');
+        Route::post('import/thumbnails', [\App\Http\Controllers\Admin\ImportController::class, 'thumbs'])->name('import.thumbs');
+        Route::get('import/{run}', [\App\Http\Controllers\Admin\ImportController::class, 'show'])->name('import.show');
+        Route::post('import/{run}/step', [\App\Http\Controllers\Admin\ImportController::class, 'step'])->name('import.step');
+        Route::post('import/{run}/stop', [\App\Http\Controllers\Admin\ImportController::class, 'stop'])->name('import.stop');
+        Route::post('import/{run}/publish', [\App\Http\Controllers\Admin\ImportController::class, 'publish'])->name('import.publish');
+        Route::post('import/{run}/undo', [\App\Http\Controllers\Admin\ImportController::class, 'undo'])->name('import.undo');
+        Route::get('import/{run}/csv', [\App\Http\Controllers\Admin\ImportController::class, 'csv'])->name('import.csv');
+        Route::get('import/{run}/zip', [\App\Http\Controllers\Admin\ImportController::class, 'zip'])->name('import.zip');
 
         Route::get('ai-studio', [AiStudioController::class, 'index'])->name('ai-studio.index');
         Route::post('ai-studio/generate', [AiStudioController::class, 'generate'])->middleware('throttle:10,1')->name('ai-studio.generate');

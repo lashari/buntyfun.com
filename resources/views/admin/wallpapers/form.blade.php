@@ -42,6 +42,7 @@
                 <option value="public_domain" @selected($wallpaper->license === 'public_domain')>Public domain</option>
                 <option value="cc0" @selected($wallpaper->license === 'cc0')>CC0</option>
                 <option value="cc_by" @selected($wallpaper->license === 'cc_by')>CC-BY (attribution required)</option>
+                <option value="cc_by_sa" @selected($wallpaper->license === 'cc_by_sa')>CC BY-SA (attribution required, share unchanged)</option>
                 <option value="licensed" @selected($wallpaper->license === 'licensed')>Licensed (attribution required)</option>
             </select>
         </div>
