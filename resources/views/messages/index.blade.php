@@ -7,6 +7,7 @@
           :noindex="! \App\Models\Message::indexable()->exists() || request()->has('page')">
     <div class="mx-auto max-w-6xl px-4 py-10">
         <h1 class="text-3xl font-bold">{{ $label }}</h1>
+        <p class="mt-3"><a href="{{ route('messages.new-year') }}" class="inline-flex rounded-full bg-navy-700 px-4 py-1.5 text-sm font-semibold text-white hover:bg-navy-600">🎆 New Year Wishes {{ \App\Content\NewYearWishes::YEAR }} — all sections on one page →</a></p>
 
         @if ($categories->isNotEmpty())
             <div class="mt-4 flex flex-wrap gap-2 text-sm">

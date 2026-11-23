@@ -42,6 +42,9 @@ class SeoController extends Controller
             }
         }
 
+        if (Message::indexable()->where('category', 'new_year')->count() >= \App\Content\NewYearWishes::MIN_FOR_INDEX) {
+            $urls->push(['loc' => route('messages.new-year'), 'changefreq' => 'weekly']);
+        }
         if (BirthdayMessage::urduPageIndexable()) {
             $urls->push(['loc' => route('birthday-messages.urdu'), 'changefreq' => 'weekly']);
         }

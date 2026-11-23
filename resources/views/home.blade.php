@@ -33,6 +33,15 @@
         @endforeach
     </nav>
 
+    @if (now()->month >= 11 || (now()->month === 1 && now()->day <= 15))
+        <div class="mx-auto mt-6 max-w-6xl px-4">
+            <a href="{{ route('messages.new-year') }}" class="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-navy-700 px-5 py-4 text-white transition hover:bg-navy-600">
+                <span class="font-semibold">🎆 New Year Wishes {{ \App\Content\NewYearWishes::YEAR }} <span class="font-urdu font-normal text-sun-400" lang="ur">· نیا سال مبارک</span></span>
+                <span class="text-sm text-white/80">For family, friends, love &amp; work — copy or WhatsApp →</span>
+            </a>
+        </div>
+    @endif
+
     <div class="mx-auto max-w-6xl space-y-12 px-4 py-12">
         <section>
             <div class="mb-4 flex items-center justify-between">
