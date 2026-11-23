@@ -78,6 +78,8 @@ Route::prefix('ur/entertainment')->group(function () {
     Route::get('/{urduContent:slug}', [UrduContentController::class, 'show'])->name('urdu-content.show');
 });
 
+Route::get('/new-year-wishes', [MessageController::class, 'newYear'])->name('messages.new-year');
+
 Route::prefix('messages')->group(function () {
     Route::get('/', [MessageController::class, 'index'])->name('messages.index');
     Route::get('/{message:slug}', [MessageController::class, 'show'])->name('messages.show');
