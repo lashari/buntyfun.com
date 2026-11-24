@@ -157,6 +157,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('ai-studio/{draft}/reject', [AiStudioController::class, 'reject'])->name('ai-studio.reject');
         Route::post('ai-studio/{draft}/regenerate', [AiStudioController::class, 'regenerate'])->middleware('throttle:10,1')->name('ai-studio.regenerate');
 
+        Route::get('growth-plan', [\App\Http\Controllers\Admin\GrowthPlanController::class, 'index'])->name('growth-plan');
         Route::get('automation', [AutomationController::class, 'index'])->name('automation.index');
         Route::get('automation/calendar', [AutomationController::class, 'calendar'])->name('automation.calendar');
         Route::get('automation/settings', [AutomationController::class, 'settings'])->name('automation.settings');

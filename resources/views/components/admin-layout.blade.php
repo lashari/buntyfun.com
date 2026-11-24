@@ -13,6 +13,7 @@
             <div class="border-b border-slate-200 px-4 py-4 text-lg font-bold text-navy-600">BuntyFun Admin</div>
             <nav class="flex flex-col gap-1 p-3 text-sm font-medium text-slate-600">
                 <a href="{{ route('admin.dashboard') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Dashboard</a>
+                <a href="{{ route('admin.growth-plan') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Growth Plan</a>
                 <a href="{{ route('admin.ai-studio.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">AI Studio</a>
                 <a href="{{ route('admin.import.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Import</a>
                 <a href="{{ route('admin.automation.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Automation</a>
