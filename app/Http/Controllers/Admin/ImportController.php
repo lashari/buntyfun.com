@@ -118,6 +118,34 @@ class ImportController extends Controller
         return response()->json(['made' => $made, 'left' => $left, 'errors' => $errors]);
     }
 
+    /** Fetch source captions for wallpapers that have none yet (description NULL). ~20 s per call. */
+    public function descriptions(Request $request, \App\Services\Import\WallpaperDescriptions $fetcher)
+    {
+        $started = microtime(true);
+        $saved = 0;
+        $none = 0;
+        $errors = [];
+        foreach (Wallpaper::whereNull('description')->whereNotNull('source_key')->orderByDesc('id')->limit(60)->get() as $w) {
+            if (microtime(true) - $started > 20) {
+                break;
+            }
+            try {
+                $text = $fetcher->fetch($w);
+                $w->forceFill(['description' => $text])->saveQuietly();
+                $text === '' ? $none++ : $saved++;
+            } catch (\Throwable $e) {
+                $errors[$w->id] = \Illuminate\Support\Str::limit($e->getMessage(), 120);
+            }
+        }
+        $left = Wallpaper::whereNull('description')->whereNotNull('source_key')->count();
+
+        if ($request->expectsJson()) {
+            return response()->json(['saved' => $saved, 'none' => $none, 'left' => $left, 'errors' => $errors]);
+        }
+
+        return back()->with('status', "Descriptions: {$saved} saved, {$none} had no caption, {$left} left".($errors ? ', '.count($errors).' errors' : '').'.');
+    }
+
     public function stop(ImportRun $run)
     {
         if ($run->status === 'running') {

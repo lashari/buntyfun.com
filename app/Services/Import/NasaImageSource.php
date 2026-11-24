@@ -71,6 +71,7 @@ class NasaImageSource implements ImportSource
                 'title' => $data['title'] ?? $data['nasa_id'],
                 'center' => $data['center'] ?? null,
                 'photographer' => $data['photographer'] ?? ($data['secondary_creator'] ?? null),
+                'description' => $data['description'] ?? ($data['description_508'] ?? null),
                 'thumb' => $item['links'][0]['href'] ?? null,
             ];
         }
@@ -133,6 +134,7 @@ class NasaImageSource implements ImportSource
 
             return Wallpaper::create([
                 'title' => $title,
+                'description' => WallpaperDescriptions::clean($candidate['description'] ?? null, $title),
                 'slug' => $this->slugFor($title),
                 'category' => $run->category,
                 'orientation' => $orientation,

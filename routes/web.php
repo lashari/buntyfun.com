@@ -147,6 +147,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('import', [\App\Http\Controllers\Admin\ImportController::class, 'index'])->name('import.index');
         Route::post('import', [\App\Http\Controllers\Admin\ImportController::class, 'store'])->middleware('throttle:10,1')->name('import.store');
         Route::post('import/thumbnails', [\App\Http\Controllers\Admin\ImportController::class, 'thumbs'])->name('import.thumbs');
+        Route::post('import/descriptions', [\App\Http\Controllers\Admin\ImportController::class, 'descriptions'])->middleware('throttle:30,1')->name('import.descriptions');
         Route::get('import/{run}', [\App\Http\Controllers\Admin\ImportController::class, 'show'])->name('import.show');
         Route::post('import/{run}/step', [\App\Http\Controllers\Admin\ImportController::class, 'step'])->name('import.step');
         Route::post('import/{run}/stop', [\App\Http\Controllers\Admin\ImportController::class, 'stop'])->name('import.stop');
