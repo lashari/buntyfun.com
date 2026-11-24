@@ -97,7 +97,8 @@ class SeoController extends Controller
             }
         }
 
-        foreach (Wallpaper::indexable()->get() as $wallpaper) {
+        // Single wallpaper pages only with a real caption; the rest stay noindex (category pages carry them).
+        foreach (Wallpaper::indexable()->get()->filter->hasUsefulDescription() as $wallpaper) {
             $urls->push(['loc' => route('wallpapers.show', $wallpaper), 'changefreq' => 'yearly']);
         }
 

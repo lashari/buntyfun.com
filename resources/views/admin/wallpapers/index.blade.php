@@ -1,7 +1,14 @@
 <x-admin-layout title="Wallpapers">
     <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold">Wallpapers</h1>
-        <a href="{{ route('admin.wallpapers.create') }}" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">Upload Wallpaper</a>
+        <div class="flex items-center gap-2">
+            <form method="POST" action="{{ route('admin.import.descriptions') }}">
+                @csrf
+                <button type="submit" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                        title="Fetch the caption from NASA / Wikimedia for wallpapers that have none yet (about 20 seconds per click)">Fetch descriptions</button>
+            </form>
+            <a href="{{ route('admin.wallpapers.create') }}" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">Upload Wallpaper</a>
+        </div>
     </div>
 
     <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

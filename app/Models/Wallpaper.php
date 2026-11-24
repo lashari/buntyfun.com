@@ -10,7 +10,7 @@ class Wallpaper extends Model
     use \App\Models\Concerns\HasContentMeta;
 
     protected $fillable = [
-        'title', 'slug', 'category', 'orientation', 'width', 'height',
+        'title', 'description', 'slug', 'category', 'orientation', 'width', 'height',
         'file_path', 'license', 'attribution', 'source_url', 'status',
         'source_key', 'remote_url', 'download_location', 'attribution_url',
     ];
@@ -46,6 +46,24 @@ class Wallpaper extends Model
         return Storage::disk('public')->exists($path)
             ? Storage::disk('public')->url($path).'?v='.$this->updated_at?->timestamp
             : $this->url();
+    }
+
+    /** A single wallpaper page is worth indexing only with a real caption of this many words. */
+    public const MIN_DESCRIPTION_WORDS = 20;
+
+    public function hasUsefulDescription(): bool
+    {
+        return str_word_count((string) $this->description) >= self::MIN_DESCRIPTION_WORDS;
+    }
+
+    /** Where the caption came from, for the credit line under it. */
+    public function descriptionSource(): ?string
+    {
+        return match (strtok((string) $this->source_key, ':')) {
+            'nasa' => 'NASA Image Library',
+            'wikimedia' => 'Wikimedia Commons',
+            default => null,
+        };
     }
 
     public function resolutionLabel(): string

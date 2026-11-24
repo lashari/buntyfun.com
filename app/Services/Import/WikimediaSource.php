@@ -89,7 +89,7 @@ class WikimediaSource implements ImportSource
             'generator' => 'search', 'gsrsearch' => 'filemime:image/jpeg '.(($options['quality_only'] ?? true) ? 'incategory:Quality_images ' : '').$query, 'gsrnamespace' => 6,
             'gsrlimit' => self::PER_PAGE, 'gsroffset' => ($page - 1) * self::PER_PAGE,
             'prop' => 'imageinfo', 'iiprop' => 'url|size|mime|extmetadata', 'iiurlwidth' => 2560,
-            'iiextmetadatafilter' => 'License|LicenseShortName|Artist|ObjectName',
+            'iiextmetadatafilter' => 'License|LicenseShortName|Artist|ObjectName|ImageDescription', 'iiextmetadatalanguage' => 'en',
         ])->throw();
 
         $items = [];
@@ -112,6 +112,7 @@ class WikimediaSource implements ImportSource
                 'license' => $meta['License']['value'] ?? '',
                 'license_name' => $meta['LicenseShortName']['value'] ?? '',
                 'artist' => trim(html_entity_decode(strip_tags($meta['Artist']['value'] ?? ''))),
+                'description' => $meta['ImageDescription']['value'] ?? null,
             ];
         }
         // generator results come keyed by pageid in random order; keep search order stable
@@ -159,6 +160,7 @@ class WikimediaSource implements ImportSource
 
             return Wallpaper::create([
                 'title' => $title,
+                'description' => WallpaperDescriptions::clean($candidate['description'] ?? null, $title),
                 'slug' => $this->slugFor($title),
                 'category' => $run->category,
                 'orientation' => $orientation,
