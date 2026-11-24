@@ -37,6 +37,8 @@ class WallpaperDescriptionsTest extends TestCase
         $this->assertStringEndsWith('.', $long);
         $this->assertSame('the “Emerald Isle” is green', WallpaperDescriptions::fixMojibake(mb_convert_encoding('the “Emerald Isle” is green', 'UTF-8', 'Windows-1252')));
         $this->assertSame('café “ok”', WallpaperDescriptions::fixMojibake('café “ok”'));
+        // Exact form NASA sends for iss043e003041: UTF-8 bytes read as Latin-1.
+        $this->assertSame('the “Emerald Isle” is', WallpaperDescriptions::fixMojibake("the \u{e2}\u{80}\u{9c}Emerald Isle\u{e2}\u{80}\u{9d} is"));
     }
 
     public function test_page_is_noindex_without_caption_and_indexed_with_one(): void

@@ -80,14 +80,31 @@ class WallpaperDescriptions
         return $text;
     }
 
-    /** Repair UTF-8 that was decoded as Windows-1252 at the source ("â€œEmerald Isleâ€" → “Emerald Isle”). */
+    /** Windows-1252 bytes 0x80–0x9F that map to characters above U+00FF. */
+    private const CP1252 = [
+        '€' => 0x80, '‚' => 0x82, 'ƒ' => 0x83, '„' => 0x84, '…' => 0x85, '†' => 0x86, '‡' => 0x87, 'ˆ' => 0x88,
+        '‰' => 0x89, 'Š' => 0x8A, '‹' => 0x8B, 'Œ' => 0x8C, 'Ž' => 0x8E, '‘' => 0x91, '’' => 0x92, '“' => 0x93,
+        '”' => 0x94, '•' => 0x95, '–' => 0x96, '—' => 0x97, '˜' => 0x98, '™' => 0x99, 'š' => 0x9A, '›' => 0x9B,
+        'œ' => 0x9C, 'ž' => 0x9E, 'Ÿ' => 0x9F,
+    ];
+
+    /**
+     * Repair UTF-8 that the source decoded as Latin-1 or Windows-1252
+     * ("â€œEmerald Isleâ€" → “Emerald Isle”). Each broken sequence is turned back into
+     * bytes and kept only if those bytes are valid UTF-8, so normal text is never touched.
+     */
     public static function fixMojibake(string $text): string
     {
-        if (! preg_match('/[ÃÂâ][\x{80}-\x{BF}\x{152}\x{153}\x{160}\x{161}\x{178}\x{17D}\x{17E}\x{192}\x{2C6}\x{2DC}\x{2013}-\x{203A}\x{20AC}\x{2122}]/u', $text)) {
-            return $text;
-        }
-        $fixed = @mb_convert_encoding($text, 'Windows-1252', 'UTF-8');
+        $cont = '[\x{80}-\x{BF}'.implode('', array_keys(self::CP1252)).']';
 
-        return is_string($fixed) && mb_check_encoding($fixed, 'UTF-8') ? $fixed : $text;
+        return preg_replace_callback('/[\x{C2}-\x{F4}]'.$cont.'{1,3}/u', function ($m) {
+            $bytes = '';
+            foreach (mb_str_split($m[0]) as $ch) {
+                $code = mb_ord($ch);
+                $bytes .= chr($code <= 0xFF ? $code : (self::CP1252[$ch] ?? 0x3F));
+            }
+
+            return mb_check_encoding($bytes, 'UTF-8') && mb_strlen($bytes) === 1 ? $bytes : $m[0];
+        }, $text) ?? $text;
     }
 }
