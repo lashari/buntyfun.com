@@ -79,6 +79,9 @@ Route::prefix('ur/entertainment')->group(function () {
 });
 
 Route::get('/new-year-wishes', [MessageController::class, 'newYear'])->name('messages.new-year');
+Route::get('/{messagePage}', [MessageController::class, 'page'])
+    ->where('messagePage', implode('|', array_keys(\App\Content\MessagePages::PAGES)))
+    ->name('messages.page');
 
 Route::prefix('messages')->group(function () {
     Route::get('/', [MessageController::class, 'index'])->name('messages.index');

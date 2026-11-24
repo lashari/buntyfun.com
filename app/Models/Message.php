@@ -40,6 +40,14 @@ class Message extends Model
         return self::CATEGORIES[$this->category][0] ?? ucwords(str_replace('_', ' ', $this->category));
     }
 
+    /** Category page (/good-morning-messages …) when one exists, else the filtered list. */
+    public static function categoryUrl(string $category): string
+    {
+        $page = \App\Content\MessagePages::forCategory($category);
+
+        return $page ? route('messages.page', $page) : route('messages.index', ['category' => $category]);
+    }
+
     public function adsAllowed(): bool
     {
         return self::CATEGORIES[$this->category][1] ?? true;

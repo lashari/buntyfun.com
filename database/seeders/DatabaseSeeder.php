@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             BirthdayWishesSeeder::class,
             UrduContentSeeder::class,
             NewYearWishesSeeder::class,
+            MessagePagesSeeder::class,
             AiToolsSeeder::class,
             QuizLibrarySeeder::class,
         ]);

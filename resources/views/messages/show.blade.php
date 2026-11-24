@@ -2,7 +2,7 @@
           :title="($message->title ?: $message->categoryLabel()).' — BuntyFun'"
           :description="Str::limit($message->body, 140).' Copy or share this message.'"
           :meta="$message->meta" :ads="$message->adsAllowed()" :noindex="! config('site.index_single_snippets')"
-          :breadcrumbs="['Messages' => route('messages.index'), $message->categoryLabel() => route('messages.index', ['category' => $message->category]), ($message->title ?: 'Message') => null]">
+          :breadcrumbs="['Messages' => route('messages.index'), $message->categoryLabel() => \App\Models\Message::categoryUrl($message->category), ($message->title ?: 'Message') => null]">
     <div class="mx-auto max-w-xl px-4 py-12">
         <p class="text-xs uppercase tracking-wide text-slate-500">{{ $message->categoryLabel() }}</p>
         @if ($message->title)<h1 class="mt-2 text-2xl font-bold">{{ $message->title }}</h1>@endif
