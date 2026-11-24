@@ -106,32 +106,39 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-cream text-slate-800 antialiased {{ $dir === 'rtl' ? 'font-urdu' : '' }}">
-    <header class="sticky top-0 z-30 border-b border-brand-100 bg-white/95 backdrop-blur" x-data="{ open: false }">
-        <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4">
+    <header class="sticky top-0 z-30 border-b border-brand-100 bg-white/95 backdrop-blur" x-data="{ open: false, search: false }" @keydown.escape.window="search = false; open = false">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
             <a href="{{ route('home') }}" class="shrink-0" aria-label="BuntyFun home">
                 <img src="{{ asset('images/brand/buntyfun-logo.svg') }}" alt="BuntyFun" width="170" height="36" class="hidden h-9 w-auto sm:block">
                 <img src="{{ asset('images/brand/buntyfun-mark.svg') }}" alt="BuntyFun" width="47" height="36" class="h-9 w-auto sm:hidden">
             </a>
-            <nav class="hidden items-center gap-5 text-sm font-semibold text-navy-700 lg:flex" aria-label="Main">
+            <nav class="hidden min-w-0 items-center gap-4 whitespace-nowrap text-sm font-semibold text-navy-700 xl:flex" aria-label="Main">
                 @foreach ($links as [$href, $label])
-                    <a href="{{ $href }}" class="hover:text-navy-600">{{ $label }}</a>
+                    <a href="{{ $href }}" class="py-1 hover:text-brand-600 {{ str_starts_with(url()->current(), $href) ? 'text-brand-600' : '' }}">{{ $label }}</a>
                 @endforeach
             </nav>
-            <div class="flex items-center gap-2">
-                <form action="{{ route('search') }}" method="GET" class="flex items-center gap-2" role="search">
-                    <label for="site-search" class="sr-only">Search BuntyFun</label>
-                    <input id="site-search" type="search" name="q" value="{{ request('q') }}" placeholder="Search"
-                           class="w-28 rounded-full border border-navy-100 bg-navy-50/60 px-3 py-1.5 text-sm focus:border-brand-500 focus:bg-white focus:outline-none sm:w-44">
-                    <button type="submit" class="rounded-full bg-brand-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-700">Go</button>
-                </form>
-                <button type="button" @click="open = !open" :aria-expanded="open.toString()" aria-controls="mobile-menu"
-                        class="rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm font-medium text-slate-700 lg:hidden">
+            <div class="flex shrink-0 items-center gap-2">
+                <button type="button" @click="search = !search; open = false; if (search) $nextTick(() => $refs.q.focus())" :aria-expanded="search.toString()" aria-controls="site-search-bar"
+                        class="flex h-9 w-9 items-center justify-center rounded-full border border-navy-100 bg-navy-50/60 text-navy-700 hover:border-brand-400" aria-label="Search BuntyFun">
+                    <svg x-show="!search" viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                    <svg x-show="search" x-cloak viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                </button>
+                <button type="button" @click="open = !open; search = false" :aria-expanded="open.toString()" aria-controls="mobile-menu"
+                        class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 xl:hidden">
                     <span x-show="!open">Menu</span><span x-show="open" x-cloak>Close</span>
                 </button>
             </div>
         </div>
-        <nav id="mobile-menu" x-show="open" x-cloak class="border-t border-slate-200 lg:hidden" aria-label="Main mobile">
-            <div class="mx-auto grid max-w-6xl grid-cols-2 gap-1 px-4 py-3 text-sm font-medium text-slate-700">
+        <div id="site-search-bar" x-show="search" x-cloak x-transition.opacity class="border-t border-slate-200 bg-white">
+            <form action="{{ route('search') }}" method="GET" role="search" class="mx-auto flex max-w-2xl gap-2 px-4 py-3">
+                <label for="site-search" class="sr-only">Search BuntyFun</label>
+                <input id="site-search" x-ref="q" type="search" name="q" value="{{ request('q') }}" placeholder="Search quizzes, games, quotes, wishes, names…"
+                       class="min-w-0 flex-1 rounded-full border border-navy-100 bg-navy-50/60 px-4 py-2 text-base focus:border-brand-500 focus:bg-white focus:outline-none">
+                <button type="submit" class="rounded-full bg-brand-600 px-5 py-2 font-semibold text-white hover:bg-brand-700">Search</button>
+            </form>
+        </div>
+        <nav id="mobile-menu" x-show="open" x-cloak class="border-t border-slate-200 xl:hidden" aria-label="Main mobile">
+            <div class="mx-auto grid max-w-6xl grid-cols-2 gap-1 px-4 py-3 text-sm font-medium text-slate-700 sm:grid-cols-3 lg:grid-cols-5">
                 <a href="{{ route('home') }}" class="rounded-lg px-3 py-2 hover:bg-brand-50">Home</a>
                 @foreach ($links as [$href, $label])
                     <a href="{{ $href }}" class="rounded-lg px-3 py-2 hover:bg-brand-50">{{ $label }}</a>

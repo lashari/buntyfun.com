@@ -319,4 +319,22 @@ class ContentLibraryTest extends TestCase
         }
         $this->assertFalse((bool) \App\Models\AutomationJob::where('key', 'import_wallpapers')->value('enabled'));
     }
+
+    public function test_search_covers_quotes_messages_and_quiz_intros_and_header_has_search_toggle(): void
+    {
+        $this->publishStarter();
+        app(QuoteImporter::class)->save([['id' => 1, 'quote' => 'Imagination is more important than knowledge.', 'author' => 'Albert Einstein', 'tags' => ['knowledge']]]);
+        Quote::query()->update(['status' => 'published']);
+        \App\Models\Message::create(['category' => 'good_morning', 'language' => 'en', 'title' => 'Sunny mango morning', 'body' => 'Good morning! Have a sweet day.', 'slug' => 'sunny-mango', 'status' => 'published']);
+
+        $this->get(route('search', ['q' => 'einstein']))->assertOk()->assertSee('Imagination is more important')->assertSee('Quotes');
+        $this->get(route('search', ['q' => 'mango']))->assertOk()->assertSee('Sunny mango morning');
+        $this->get(route('search', ['q' => 'Kyrgyzstan']))->assertOk()->assertSee('No results');
+        $this->get(route('search', ['q' => 'time zones']))->assertOk()->assertSee('General Knowledge Quiz');   // matched in the quiz intro
+        $this->get(route('search', ['q' => '100%']))->assertOk();                                             // LIKE wildcard escaped
+        $this->get(route('search'))->assertOk()->assertSee('Search BuntyFun')->assertSee('search-page-q', false);
+
+        $home = $this->get(route('home'))->assertOk();
+        $home->assertSee('site-search-bar', false)->assertSee('aria-label="Search BuntyFun"', false)->assertSee('whitespace-nowrap', false);
+    }
 }
