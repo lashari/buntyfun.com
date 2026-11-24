@@ -28,6 +28,16 @@
         </div>
 
         <div>
+            <label class="block text-sm font-medium text-slate-700">Topic <span class="font-normal text-slate-500">(puts the quiz on /quizzes/topic/…)</span></label>
+            <select name="topic" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
+                <option value="">— none —</option>
+                @foreach (\App\Content\QuizTopics::ALL as $key => $t)
+                    <option value="{{ $key }}" @selected(old('topic', $quiz->topic) === $key)>{{ $t['label'] }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
             <label class="block text-sm font-medium text-slate-700">Title</label>
             <input type="text" name="title" value="{{ old('title', $quiz->title) }}" required class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
         </div>

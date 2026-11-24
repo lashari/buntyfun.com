@@ -72,6 +72,26 @@ class SeoController extends Controller
             }
         }
 
+        $urls->push(['loc' => route('daily'), 'changefreq' => 'daily']);
+        foreach (\App\Http\Controllers\QuizController::topicCounts() as $topic => $count) {
+            if ($count >= 2) {
+                $urls->push(['loc' => route('quizzes.topic', $topic), 'changefreq' => 'weekly']);
+            }
+        }
+        if (\App\Models\Quote::where('status', 'published')->count() >= 10) {
+            $urls->push(['loc' => route('quotes.index'), 'changefreq' => 'daily']);
+            foreach (\App\Http\Controllers\QuoteController::topicCounts() as $topic => $count) {
+                if ($count >= \App\Content\QuoteTopics::MIN_FOR_INDEX) {
+                    $urls->push(['loc' => route('quotes.topic', $topic), 'changefreq' => 'weekly']);
+                }
+            }
+            $authors = \App\Models\Quote::where('status', 'published')->where('author', '!=', 'Anonymous')
+                ->selectRaw('author_slug, count(*) c')->groupBy('author_slug')->having('c', '>=', \App\Http\Controllers\QuoteController::MIN_AUTHOR_INDEX)->pluck('author_slug');
+            foreach ($authors as $slug) {
+                $urls->push(['loc' => route('quotes.author', $slug), 'changefreq' => 'monthly']);
+            }
+        }
+
         // Quizzes under 5 questions are noindex on the page itself (too thin to rank or carry ads).
         foreach (Quiz::indexable()->has('questions', '>=', 5)->get() as $quiz) {
             $urls->push(['loc' => route('quizzes.show', $quiz), 'changefreq' => 'monthly', 'lastmod' => $quiz->updated_at]);

@@ -43,6 +43,16 @@
     @endif
 
     <div class="mx-auto max-w-6xl space-y-12 px-4 py-12">
+        @php $dailyQuote = \Illuminate\Support\Facades\Schema::hasTable('quotes') ? app(\App\Services\Library\DailyPicker::class)->item('quote') : null; @endphp
+        <section x-data="{ streak: 0, done: false }" x-init="streak = BF.streak('daily_trivia'); done = BF.doneToday('daily_trivia')">
+            <a href="{{ route('daily') }}" class="block rounded-2xl bg-linear-to-r from-navy-600 to-brand-600 p-6 text-white shadow-md transition hover:shadow-lg sm:p-8">
+                <p class="text-xs font-semibold uppercase tracking-wide text-white/80">{{ now()->format('l, F j') }}</p>
+                <h2 class="mt-1 text-2xl font-bold">Today's Daily Challenge</h2>
+                <p class="mt-1 text-white/90">5 trivia questions, a quiz, a game and a quote. About two minutes.</p>
+                @if ($dailyQuote)<p class="mt-3 text-sm italic text-white/90">“{{ Str::limit($dailyQuote->body, 120) }}” — {{ $dailyQuote->author }}</p>@endif
+                <span class="mt-4 inline-block rounded-full bg-white px-5 py-2 font-semibold text-navy-700" x-text="done ? '✓ Done today · 🔥 ' + streak + ' day streak' : (streak ? 'Keep your 🔥 ' + streak + '-day streak' : 'Play now')">Play now</span>
+            </a>
+        </section>
         <section>
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-2xl font-bold"><span class="mr-2 inline-block h-6 w-1.5 rounded-full bg-brand-500 align-[-3px]"></span>Quizzes</h2>

@@ -20,6 +20,11 @@ class AutomationRunner
         'broken_links' => Tasks\BrokenLinksTask::class,
         'content_review' => Tasks\ContentReviewTask::class,
         'social_publish' => Tasks\SocialPublishTask::class,
+        'import_trivia' => Tasks\ImportTriviaTask::class,
+        'build_quizzes' => Tasks\BuildQuizzesTask::class,
+        'import_quotes' => Tasks\ImportQuotesTask::class,
+        'daily_picks' => Tasks\DailyPicksTask::class,
+        'import_wallpapers' => Tasks\ImportWallpapersTask::class,
     ];
 
     /** Called by cron every 5 minutes. Returns the runs it made. */
