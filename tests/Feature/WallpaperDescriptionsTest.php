@@ -35,6 +35,8 @@ class WallpaperDescriptionsTest extends TestCase
         $long = WallpaperDescriptions::clean(str_repeat('This sentence describes the sky over the hills. ', 40));
         $this->assertLessThanOrEqual(WallpaperDescriptions::MAX_CHARS, mb_strlen($long));
         $this->assertStringEndsWith('.', $long);
+        $this->assertSame('the “Emerald Isle” is green', WallpaperDescriptions::fixMojibake(mb_convert_encoding('the “Emerald Isle” is green', 'UTF-8', 'Windows-1252')));
+        $this->assertSame('café “ok”', WallpaperDescriptions::fixMojibake('café “ok”'));
     }
 
     public function test_page_is_noindex_without_caption_and_indexed_with_one(): void

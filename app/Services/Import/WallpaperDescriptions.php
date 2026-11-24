@@ -58,6 +58,7 @@ class WallpaperDescriptions
      */
     public static function clean(?string $raw, string $title = ''): string
     {
+        $raw = self::fixMojibake((string) $raw);
         $text = html_entity_decode(strip_tags(str_replace(['<br>', '<br/>', '<br />', '</p>'], ' ', (string) $raw)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $text = preg_replace('#https?://\S+#u', '', $text);
         // Drop trailing credit / caption boilerplate that the page already shows.
@@ -77,5 +78,16 @@ class WallpaperDescriptions
         }
 
         return $text;
+    }
+
+    /** Repair UTF-8 that was decoded as Windows-1252 at the source ("â€œEmerald Isleâ€" → “Emerald Isle”). */
+    public static function fixMojibake(string $text): string
+    {
+        if (! preg_match('/[ÃÂâ][\x{80}-\x{BF}\x{152}\x{153}\x{160}\x{161}\x{178}\x{17D}\x{17E}\x{192}\x{2C6}\x{2DC}\x{2013}-\x{203A}\x{20AC}\x{2122}]/u', $text)) {
+            return $text;
+        }
+        $fixed = @mb_convert_encoding($text, 'Windows-1252', 'UTF-8');
+
+        return is_string($fixed) && mb_check_encoding($fixed, 'UTF-8') ? $fixed : $text;
     }
 }
