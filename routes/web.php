@@ -49,9 +49,19 @@ Route::post('/share-events', [ShareEventController::class, 'store'])->middleware
 
 Route::prefix('quizzes')->group(function () {
     Route::get('/', [QuizController::class, 'index'])->name('quizzes.index');
+    Route::get('/topic/{topic}', [QuizController::class, 'topic'])->where('topic', '[a-z]+')->name('quizzes.topic');
     Route::get('/{quiz:slug}', [QuizController::class, 'show'])->name('quizzes.show');
     Route::post('/{quiz:slug}/submit', [QuizController::class, 'submit'])->middleware('throttle:20,1')->name('quizzes.submit');
     Route::get('/{quiz:slug}/result/{result:result_slug}', [QuizController::class, 'result'])->name('quizzes.result');
+});
+
+Route::get('/daily', [\App\Http\Controllers\DailyController::class, 'index'])->name('daily');
+
+Route::prefix('quotes')->group(function () {
+    Route::get('/', [\App\Http\Controllers\QuoteController::class, 'index'])->name('quotes.index');
+    Route::get('/topic/{topic}', [\App\Http\Controllers\QuoteController::class, 'topic'])->where('topic', '[a-z-]+')->name('quotes.topic');
+    Route::get('/author/{author}', [\App\Http\Controllers\QuoteController::class, 'author'])->where('author', '[a-z0-9-]+')->name('quotes.author');
+    Route::get('/q/{quote}', [\App\Http\Controllers\QuoteController::class, 'show'])->whereNumber('quote')->name('quotes.show');
 });
 
 Route::prefix('games')->group(function () {
@@ -73,12 +83,18 @@ Route::prefix('islamic-names')->group(function () {
     Route::get('/{nameEntry:slug}', [NameEntryController::class, 'show'])->name('name-entries.show');
 });
 
+Route::get('/{urduPage}', [UrduContentController::class, 'page'])
+    ->where('urduPage', implode('|', array_keys(\App\Content\UrduPages::PAGES)))
+    ->name('urdu-content.page');
 Route::prefix('ur/entertainment')->group(function () {
     Route::get('/', [UrduContentController::class, 'index'])->name('urdu-content.index');
     Route::get('/{urduContent:slug}', [UrduContentController::class, 'show'])->name('urdu-content.show');
 });
 
 Route::get('/new-year-wishes', [MessageController::class, 'newYear'])->name('messages.new-year');
+Route::get('/{messagePage}', [MessageController::class, 'page'])
+    ->where('messagePage', implode('|', array_keys(\App\Content\MessagePages::PAGES)))
+    ->name('messages.page');
 
 Route::prefix('messages')->group(function () {
     Route::get('/', [MessageController::class, 'index'])->name('messages.index');
@@ -112,6 +128,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('quizzes/{quiz}/publish', [QuizAdminController::class, 'publish'])->name('quizzes.publish');
         Route::post('quizzes/{quiz}/unpublish', [QuizAdminController::class, 'unpublish'])->name('quizzes.unpublish');
 
+        Route::get('question-bank', [\App\Http\Controllers\Admin\QuestionBankController::class, 'index'])->name('question-bank.index');
+        Route::post('question-bank/import', [\App\Http\Controllers\Admin\QuestionBankController::class, 'import'])->middleware('throttle:10,1')->name('question-bank.import');
+        Route::post('question-bank/starter', [\App\Http\Controllers\Admin\QuestionBankController::class, 'starter'])->name('question-bank.starter');
+        Route::post('question-bank/build', [\App\Http\Controllers\Admin\QuestionBankController::class, 'build'])->name('question-bank.build');
+        Route::post('question-bank/bulk', [\App\Http\Controllers\Admin\QuestionBankController::class, 'bulk'])->name('question-bank.bulk');
+        Route::get('question-bank/{question}/edit', [\App\Http\Controllers\Admin\QuestionBankController::class, 'edit'])->name('question-bank.edit');
+        Route::put('question-bank/{question}', [\App\Http\Controllers\Admin\QuestionBankController::class, 'update'])->name('question-bank.update');
+
+        Route::get('quotes', [\App\Http\Controllers\Admin\QuoteAdminController::class, 'index'])->name('quotes.index');
+        Route::post('quotes/import', [\App\Http\Controllers\Admin\QuoteAdminController::class, 'import'])->middleware('throttle:10,1')->name('quotes.import');
+        Route::post('quotes/bulk', [\App\Http\Controllers\Admin\QuoteAdminController::class, 'bulk'])->name('quotes.bulk');
+        Route::get('quotes/{quote}/edit', [\App\Http\Controllers\Admin\QuoteAdminController::class, 'edit'])->name('quotes.edit');
+        Route::put('quotes/{quote}', [\App\Http\Controllers\Admin\QuoteAdminController::class, 'update'])->name('quotes.update');
+
+        Route::get('daily', [\App\Http\Controllers\Admin\DailyScheduleController::class, 'index'])->name('daily.index');
+        Route::post('daily', [\App\Http\Controllers\Admin\DailyScheduleController::class, 'update'])->name('daily.update');
+
         Route::resource('games', GameAdminController::class)->except(['show']);
         Route::post('games/{game}/publish', [GameAdminController::class, 'publish'])->name('games.publish');
         Route::post('games/{game}/unpublish', [GameAdminController::class, 'unpublish'])->name('games.unpublish');
@@ -141,6 +174,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('import', [\App\Http\Controllers\Admin\ImportController::class, 'index'])->name('import.index');
         Route::post('import', [\App\Http\Controllers\Admin\ImportController::class, 'store'])->middleware('throttle:10,1')->name('import.store');
         Route::post('import/thumbnails', [\App\Http\Controllers\Admin\ImportController::class, 'thumbs'])->name('import.thumbs');
+        Route::post('import/descriptions', [\App\Http\Controllers\Admin\ImportController::class, 'descriptions'])->middleware('throttle:30,1')->name('import.descriptions');
         Route::get('import/{run}', [\App\Http\Controllers\Admin\ImportController::class, 'show'])->name('import.show');
         Route::post('import/{run}/step', [\App\Http\Controllers\Admin\ImportController::class, 'step'])->name('import.step');
         Route::post('import/{run}/stop', [\App\Http\Controllers\Admin\ImportController::class, 'stop'])->name('import.stop');

@@ -106,6 +106,7 @@ class WallpaperAdminController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:2000'],
             'category' => ['required', 'string', 'max:60'],
             'orientation' => ['required', 'in:desktop,mobile,both'],
             'license' => ['required', Rule::in(['public_domain', 'cc0', 'cc_by', 'cc_by_sa', 'original', 'licensed'])],

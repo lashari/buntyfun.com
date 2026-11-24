@@ -3,11 +3,14 @@
         'funny' => 'Light-hearted wishes for a group chat, a story post or anyone who loves a laugh.',
         'emotional' => 'Heartfelt wishes for a card or a private message, when you want to say what they mean to you.',
         'short' => 'One or two lines for a quick text, a comment or a cake topper.',
+        'formal' => 'Polite and professional — safe for email, a team chat or a shared card.',
+        'heartfelt' => 'Warm and sincere, for when you want to say thank you as well as happy birthday.',
     ];
     $count = $wishes->flatten()->count();
 @endphp
 <x-layout :title="$guide['title'].' — Funny, Emotional & Short | BuntyFun'"
           :description="$count.' original birthday wishes for your '.Str::lower($guide['label']).', grouped by tone, with tips on how to make the message personal.'"
+          :urdu-font="true"
           :breadcrumbs="['Birthday Wishes' => route('birthday-messages.index'), $guide['label'] => null]">
     <div class="mx-auto max-w-3xl px-4 py-10">
         <h1 class="text-3xl font-bold">{{ $guide['title'] }}</h1>
@@ -20,7 +23,7 @@
                 <div class="mt-4 space-y-3">
                     @foreach ($items as $wish)
                         <div class="rounded-xl border border-slate-200 bg-white p-5" x-data="{ copied: false }" @if ($wish->language === 'ur') dir="rtl" @endif>
-                            <p class="leading-relaxed text-slate-800">{{ $wish->body }}</p>
+                            <p class="{{ $wish->language === 'ur' ? 'font-urdu text-lg leading-loose' : 'leading-relaxed' }} text-slate-800" @if ($wish->language === 'ur') lang="ur" @endif>{{ $wish->body }}</p>
                             <div class="mt-3 flex flex-wrap gap-2 text-sm" dir="ltr">
                                 <button type="button" class="rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-50"
                                         @click="navigator.clipboard.writeText(@js($wish->body)); copied = true; setTimeout(() => copied = false, 2000)">

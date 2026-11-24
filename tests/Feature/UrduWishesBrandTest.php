@@ -16,6 +16,7 @@ class UrduWishesBrandTest extends TestCase
     {
         Category::firstOrCreate(['slug' => 'birthday-wishes'], ['department' => 'birthday', 'name' => 'Birthday Wishes']);
         $this->seed(UrduContentSeeder::class);
+        $this->seed(\Database\Seeders\BirthdayWishesMoreSeeder::class);
     }
 
     public function test_seeder_gives_every_relationship_hub_urdu_wishes_with_unique_slugs(): void

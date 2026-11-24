@@ -1,4 +1,6 @@
-<x-layout :title="$wallpaper->title.' — Wallpaper — BuntyFun'" :description="'Download '.$wallpaper->title.' free, '.$wallpaper->resolutionLabel().'.'"
+<x-layout :title="$wallpaper->title.' — Wallpaper — BuntyFun'"
+          :description="$wallpaper->hasUsefulDescription() ? Str::limit($wallpaper->description, 150) : 'Download '.$wallpaper->title.' free, '.$wallpaper->resolutionLabel().'.'"
+          :noindex="! $wallpaper->hasUsefulDescription()"
           :meta="$wallpaper->meta" :og-image="$wallpaper->previewUrl()" :breadcrumbs="['Wallpapers' => route('wallpapers.index'), Str::headline($wallpaper->category) => route('wallpapers.category', $wallpaper->category), $wallpaper->title => null]">
     <div class="mx-auto max-w-3xl px-4 py-10">
         <div class="relative">
@@ -26,6 +28,16 @@
                 Download
             </a>
         </div>
+
+        @if ($wallpaper->description)
+            <section class="mt-6 rounded-xl border border-slate-200 bg-white p-5">
+                <h2 class="text-base font-semibold">About this image</h2>
+                <p class="mt-2 leading-relaxed text-slate-700">{{ $wallpaper->description }}</p>
+                @if ($wallpaper->descriptionSource())
+                    <p class="mt-2 text-xs text-slate-500">Description from the {{ $wallpaper->descriptionSource() }}@if ($wallpaper->source_url) (<a href="{{ $wallpaper->source_url }}" class="hover:underline" rel="nofollow noopener" target="_blank">original page</a>)@endif.</p>
+                @endif
+            </section>
+        @endif
 
         @if ($wallpaper->attribution || $wallpaper->source_url)
             <p class="mt-6 text-xs text-slate-500">

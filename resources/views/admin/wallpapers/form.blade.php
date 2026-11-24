@@ -22,6 +22,11 @@
         </div>
 
         <div>
+            <label class="block text-sm font-medium text-slate-700">Description (what the image shows; 20+ words lets Google index the page)</label>
+            <textarea name="description" rows="4" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">{{ old('description', $wallpaper->description) }}</textarea>
+        </div>
+
+        <div>
             <label class="block text-sm font-medium text-slate-700">Category (nature, landscapes, abstract, minimalist, technology, animals, space, seasonal)</label>
             <input type="text" name="category" value="{{ old('category', $wallpaper->category) }}" required class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
         </div>

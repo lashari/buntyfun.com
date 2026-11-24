@@ -41,7 +41,7 @@ class BirthdayMessageController extends Controller
         abort_unless($guide && in_array($key, BirthdayMessage::hubRelationships(), true), 404);
 
         $wishes = BirthdayMessage::where('status', 'published')->where('relationship', $key)
-            ->orderBy('tone')->orderBy('id')->get()->groupBy('tone');
+            ->orderBy('tone')->orderBy('language')->orderBy('id')->get()->groupBy('tone');
 
         $others = collect(BirthdayMessage::hubRelationships())->reject(fn ($r) => $r === $key)->values();
 

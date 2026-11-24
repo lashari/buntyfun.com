@@ -10,7 +10,11 @@
         </nav>
         <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @forelse ($games as $game)
-                <a href="{{ route('games.show', $game) }}" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md">
+                <a href="{{ route('games.show', $game) }}" class="group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                    @if ($thumb = \App\Content\OssGames::thumb($game->slug))
+                        <img src="{{ $thumb }}" alt="{{ $game->title }} game preview" width="400" height="250" loading="lazy" class="aspect-[8/5] w-full object-cover transition group-hover:scale-[1.02]">
+                    @endif
+                    <div class="p-5">
                     <h2 class="font-semibold">{{ $game->title }}</h2>
                     @if ($g = \App\Content\GameGuides::for($game->slug))
                         <p class="mt-1 text-sm text-slate-600">{{ $g['summary'] }}</p>
@@ -21,6 +25,7 @@
                             <span class="rounded-full bg-brand-50 px-2 py-0.5 text-brand-700">{{ \App\Content\OssGames::AUDIENCES[$a] }}</span>
                         @endforeach
                     </p>
+                    </div>
                 </a>
             @empty
                 <p class="text-sm text-slate-500">No games in this group yet.</p>

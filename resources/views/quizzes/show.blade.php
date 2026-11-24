@@ -4,8 +4,11 @@
     $minutes = max(1, (int) ceil($count * 20 / 60));
 @endphp
 <x-layout :title="$quiz->title.' | BuntyFun'" :description="$quiz->intro ? Str::limit($quiz->intro, 150) : 'Take the '.$quiz->title.' — '.$quiz->questions->count().' questions, free, no sign-up.'"
-          :meta="$quiz->meta" :noindex="$quiz->questions->count() < 5" :breadcrumbs="['Quizzes' => route('quizzes.index'), $quiz->title => null]">
+          :meta="$quiz->meta" :noindex="$quiz->questions->count() < 5 || ($preview ?? false)" :breadcrumbs="$quiz->topic && \App\Content\QuizTopics::exists($quiz->topic) ? ['Quizzes' => route('quizzes.index'), \App\Content\QuizTopics::label($quiz->topic) => route('quizzes.topic', $quiz->topic), $quiz->title => null] : ['Quizzes' => route('quizzes.index'), $quiz->title => null]">
     <div class="mx-auto max-w-2xl px-4 py-10">
+        @if ($preview ?? false)
+            <p class="mb-4 rounded-lg bg-amber-100 px-4 py-2 text-sm font-semibold text-amber-900">Preview: this quiz is {{ Str::headline($quiz->status) }} and hidden from visitors. Publish it in Admin → Quizzes.</p>
+        @endif
         <h1 class="text-2xl font-bold">{{ $quiz->title }}</h1>
         @if ($quiz->intro)
             <p class="mt-3 leading-relaxed text-slate-700">{{ $quiz->intro }}</p>
@@ -21,7 +24,7 @@
         @endif
 
 
-        <form method="POST" action="{{ route('quizzes.submit', $quiz) }}"
+        <form method="POST" action="{{ route('quizzes.submit', $quiz) }}" x-init="window.BF && BF.played({ url: location.pathname, title: {{ Js::from($quiz->title) }}, type: 'quiz' })"
               x-data="{
                   step: 0,
                   total: {{ $quiz->questions->count() }},

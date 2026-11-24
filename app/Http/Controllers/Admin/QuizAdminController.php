@@ -15,11 +15,14 @@ class QuizAdminController extends Controller
     use HandlesPublishing;
     use \App\Http\Controllers\Admin\Concerns\SavesContentMeta;
 
-    public function index()
+    public function index(Request $request)
     {
-        $quizzes = Quiz::with('category')->latest()->paginate(20);
+        $status = $request->query('status');
+        $quizzes = Quiz::with('category')->withCount('questions')
+            ->when(in_array($status, ['draft', 'in_review', 'published'], true), fn ($q) => $q->where('status', $status))
+            ->latest()->paginate(30)->withQueryString();
 
-        return view('admin.quizzes.index', ['quizzes' => $quizzes]);
+        return view('admin.quizzes.index', ['quizzes' => $quizzes, 'status' => $status]);
     }
 
     public function create()
@@ -92,6 +95,7 @@ class QuizAdminController extends Controller
     {
         $data = $request->validate([
             'category_id' => ['required', 'exists:categories,id'],
+            'topic' => ['nullable', 'in:'.implode(',', array_keys(\App\Content\QuizTopics::ALL))],
             'title' => ['required', 'string', 'max:255'],
             'intro' => ['nullable', 'string', 'max:2000'],
             'difficulty' => ['nullable', 'in:'.implode(',', array_keys(Quiz::DIFFICULTIES))],

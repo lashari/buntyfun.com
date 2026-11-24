@@ -1,7 +1,7 @@
 <x-layout dir="rtl" lang="ur" :title="Str::limit($item->body, 50).' — BuntyFun'" description="اردو میں پیغام شیئر کریں۔"
-          :meta="$item->meta" :noindex="! config('site.index_single_snippets')" :breadcrumbs="['اردو' => route('urdu-content.index'), $item->category => null]">
+          :meta="$item->meta" :noindex="! config('site.index_single_snippets')" :breadcrumbs="['اردو' => route('urdu-content.index'), \App\Content\UrduPages::label($item->category) => \App\Models\UrduContent::categoryUrl($item->category)]">
     <div class="mx-auto max-w-xl px-4 py-12">
-        <p class="text-xs uppercase tracking-wide text-slate-500">{{ $item->category }}</p>
+        <p class="text-sm text-slate-500"><a href="{{ \App\Models\UrduContent::categoryUrl($item->category) }}" class="hover:underline">{{ \App\Content\UrduPages::label($item->category) }}</a></p>
         <p class="mt-4 text-xl leading-relaxed">{{ $item->body }}</p>
 
         <div class="mt-8 flex flex-wrap gap-3"

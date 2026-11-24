@@ -15,13 +15,24 @@
             'Still Getting to Know Each Other' => 'Plenty still to discover, which is a good excuse to spend more time together.',
         ][$result->outcome_label] ?? null;
     }
-    $more = \App\Models\Quiz::where('status', 'published')->whereKeyNot($quiz->id)->has('questions', '>=', 5)->inRandomOrder()->limit(3)->get();
+    $more = \App\Models\Quiz::where('status', 'published')->whereKeyNot($quiz->id)->has('questions', '>=', 5)
+        ->when($quiz->topic, fn ($q) => $q->orderByRaw('CASE WHEN topic = ? THEN 0 ELSE 1 END', [$quiz->topic]))->inRandomOrder()->limit(3)->get();
+    if ($isTrivia) {
+        $shareText = 'I scored '.$correct.'/'.$total.' on the '.$quiz->title.' '.str_repeat('🟩', $correct).str_repeat('⬜', $total - $correct).' Can you beat me?';
+    }
 @endphp
 <x-layout :title="$quiz->title.' — Result — BuntyFun'" description="See your quiz result." :noindex="true" :ads="false">
     <div class="mx-auto max-w-2xl px-4 py-12">
         <div class="text-center">
             <p class="text-sm font-medium text-navy-600">{{ $quiz->title }}</p>
             <h1 class="mt-2 text-3xl font-extrabold">{{ $result->outcome_label }}</h1>
+            @if ($isTrivia)
+                <p class="mt-2 text-2xl tracking-widest" aria-hidden="true">{{ str_repeat('🟩', $correct) }}{{ str_repeat('⬜', $total - $correct) }}</p>
+                <p class="mt-1 text-sm text-slate-500" x-data="{ b: null }" x-init="b = window.BF ? BF.best('quiz_{{ $quiz->id }}', {{ $correct }}) : null">
+                    <span x-show="b && b.isNew" x-cloak class="font-semibold text-emerald-700">New personal best!</span>
+                    <span x-show="b && !b.isNew" x-cloak>Your best: <span x-text="b && b.best"></span>/{{ $total }}</span>
+                </p>
+            @endif
             @if ($outcomeText)
                 <p class="mx-auto mt-3 max-w-xl leading-relaxed text-slate-600">{{ $outcomeText }}</p>
             @endif

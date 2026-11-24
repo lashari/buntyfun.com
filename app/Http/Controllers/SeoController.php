@@ -45,6 +45,16 @@ class SeoController extends Controller
         if (Message::indexable()->where('category', 'new_year')->count() >= \App\Content\NewYearWishes::MIN_FOR_INDEX) {
             $urls->push(['loc' => route('messages.new-year'), 'changefreq' => 'weekly']);
         }
+        foreach (\App\Content\MessagePages::PAGES as $url => $page) {
+            if (Message::indexable()->where('category', $page['category'])->count() >= \App\Content\MessagePages::MIN_FOR_INDEX) {
+                $urls->push(['loc' => route('messages.page', $url), 'changefreq' => 'weekly']);
+            }
+        }
+        foreach (\App\Content\UrduPages::PAGES as $url => $page) {
+            if (UrduContent::indexable()->where('category', $page['category'])->count() >= \App\Content\UrduPages::MIN_FOR_INDEX) {
+                $urls->push(['loc' => route('urdu-content.page', $url), 'changefreq' => 'weekly']);
+            }
+        }
         if (BirthdayMessage::urduPageIndexable()) {
             $urls->push(['loc' => route('birthday-messages.urdu'), 'changefreq' => 'weekly']);
         }
@@ -59,6 +69,26 @@ class SeoController extends Controller
         if ($snippets) {
             foreach (Message::indexable()->get() as $message) {
                 $urls->push(['loc' => route('messages.show', $message), 'changefreq' => 'monthly', 'lastmod' => $message->updated_at]);
+            }
+        }
+
+        $urls->push(['loc' => route('daily'), 'changefreq' => 'daily']);
+        foreach (\App\Http\Controllers\QuizController::topicCounts() as $topic => $count) {
+            if ($count >= 2) {
+                $urls->push(['loc' => route('quizzes.topic', $topic), 'changefreq' => 'weekly']);
+            }
+        }
+        if (\App\Models\Quote::where('status', 'published')->count() >= 10) {
+            $urls->push(['loc' => route('quotes.index'), 'changefreq' => 'daily']);
+            foreach (\App\Http\Controllers\QuoteController::topicCounts() as $topic => $count) {
+                if ($count >= \App\Content\QuoteTopics::MIN_FOR_INDEX) {
+                    $urls->push(['loc' => route('quotes.topic', $topic), 'changefreq' => 'weekly']);
+                }
+            }
+            $authors = \App\Models\Quote::where('status', 'published')->where('author', '!=', 'Anonymous')
+                ->selectRaw('author_slug, count(*) c')->groupBy('author_slug')->having('c', '>=', \App\Http\Controllers\QuoteController::MIN_AUTHOR_INDEX)->pluck('author_slug');
+            foreach ($authors as $slug) {
+                $urls->push(['loc' => route('quotes.author', $slug), 'changefreq' => 'monthly']);
             }
         }
 
@@ -87,7 +117,8 @@ class SeoController extends Controller
             }
         }
 
-        foreach (Wallpaper::indexable()->get() as $wallpaper) {
+        // Single wallpaper pages only with a real caption; the rest stay noindex (category pages carry them).
+        foreach (Wallpaper::indexable()->get()->filter->hasUsefulDescription() as $wallpaper) {
             $urls->push(['loc' => route('wallpapers.show', $wallpaper), 'changefreq' => 'yearly']);
         }
 
