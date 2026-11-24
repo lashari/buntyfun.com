@@ -282,6 +282,17 @@ class ContentLibraryTest extends TestCase
             'explanation' => 'Iron oxide (rust) in its soil and dust makes Mars look red.', 'status' => 'approved',
         ])->assertRedirect();
         $this->assertSame('approved', $q->fresh()->status);
+
+        $q->update(['status' => 'in_review']);
+        $editor = User::create(['name' => 'E', 'email' => 'qe@test.com', 'password' => 'password', 'role' => 'editor']);
+        $this->actingAs($editor)->put(route('admin.question-bank.update', $q), [
+            'topic' => 'science', 'difficulty' => 'easy', 'prompt' => $q->prompt, 'correct_answer' => 'Mars', 'wrong' => ['Venus', 'Jupiter', 'Saturn'],
+            'explanation' => 'Iron oxide (rust) in its soil and dust makes Mars look red.', 'status' => 'approved',
+        ])->assertRedirect();
+        $this->assertSame('in_review', $q->fresh()->status, 'editor cannot approve via the edit form');
+        $this->actingAs($editor)->post(route('admin.question-bank.bulk'), ['ids' => [$q->id], 'action' => 'approve'])->assertForbidden();
+        $this->actingAs($editor)->post(route('admin.question-bank.starter'))->assertForbidden();
+        $this->actingAs($admin);
         $this->get(route('admin.question-bank.edit', $q))->assertOk();
         $this->get(route('admin.quizzes.index', ['status' => 'in_review']))->assertOk()->assertSee('Preview');
     }

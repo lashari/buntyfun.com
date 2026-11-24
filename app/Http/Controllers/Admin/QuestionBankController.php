@@ -67,6 +67,7 @@ class QuestionBankController extends Controller
 
     public function build(Request $request, QuizBuilder $builder)
     {
+        abort_unless($request->user()->canModerate(), 403);
         $made = $builder->buildAll(10);
 
         return back()->with('status', $made ? count($made).' quiz(zes) built and saved In review: '.collect($made)->pluck('title')->implode('; ') : 'No topic has 10 approved, unused questions with explanations yet.');
@@ -112,6 +113,10 @@ class QuestionBankController extends Controller
             'explanation' => ['nullable', 'string', 'max:600'],
             'status' => ['required', Rule::in(array_keys(TriviaQuestion::STATUSES))],
         ]);
+        // Same rule as bulk(): only moderators and up may approve; editors can only send to review.
+        if ($data['status'] === 'approved' && ! $request->user()->canModerate()) {
+            $data['status'] = 'in_review';
+        }
         $wrong = array_values(array_map('trim', $data['wrong']));
         [$reject] = $validator->check(trim($data['prompt']), trim($data['correct_answer']), $wrong);
         if ($reject && $data['status'] === 'approved') {

@@ -26,6 +26,7 @@ class DailyScheduleController extends Controller
 
     public function update(Request $request)
     {
+        abort_unless($request->user()->canModerate(), 403);
         $data = $request->validate([
             'date' => ['required', 'date', 'after_or_equal:today'],
             'type' => ['required', Rule::in(array_keys(DailyFeature::TYPES))],
