@@ -26,6 +26,7 @@ class OssGamesTest extends TestCase
             $dir = public_path('play/'.$slug);
             $this->assertFileExists($dir.'/'.$g['entry'], $slug);
             $this->assertNotEmpty(glob($dir.'/{LICENSE,LICENSE.*,license.*}', GLOB_BRACE), "$slug has no licence file");
+            $this->assertNotNull(OssGames::thumb($slug), "$slug has no card picture");
             $this->assertContains($g['license'], ['MIT', 'BSD-2-Clause', 'BSD-3-Clause'], $slug);
             foreach ($g['audience'] as $a) {
                 $this->assertArrayHasKey($a, OssGames::AUDIENCES, $slug);
@@ -52,6 +53,8 @@ class OssGamesTest extends TestCase
     {
         $this->game('tower-builder', 'published');
         $this->game('the-house', 'published');
+
+        $this->get(route('games.index'))->assertSee('/images/games/tower-builder.svg', false);
 
         $this->get(route('games.show', 'tower-builder'))->assertOk()
             ->assertSee('github.com/iamkun/tower_game', false)

@@ -10,7 +10,7 @@ class Quiz extends Model
 {
     use \App\Models\Concerns\HasContentMeta;
 
-    protected $fillable = ['category_id', 'slug', 'title', 'intro', 'difficulty', 'sources', 'outcomes', 'reviewed_at', 'language', 'status', 'published_at'];
+    protected $fillable = ['category_id', 'topic', 'slug', 'title', 'intro', 'difficulty', 'sources', 'outcomes', 'reviewed_at', 'language', 'status', 'published_at'];
 
     public const DIFFICULTIES = ['easy' => 'Easy', 'medium' => 'Medium', 'hard' => 'Hard'];
 

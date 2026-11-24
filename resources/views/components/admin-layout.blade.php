@@ -21,6 +21,9 @@
                 <a href="{{ route('admin.social.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Social</a>
                 <span class="mt-2 px-3 text-xs uppercase tracking-wide text-slate-400">Content</span>
                 <a href="{{ route('admin.quizzes.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Quizzes</a>
+                <a href="{{ route('admin.question-bank.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Question Bank</a>
+                <a href="{{ route('admin.quotes.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Quotes</a>
+                <a href="{{ route('admin.daily.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Daily Schedule</a>
                 <a href="{{ route('admin.games.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Games</a>
                 <a href="{{ route('admin.birthday-messages.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Birthday Wishes</a>
                 <a href="{{ route('admin.name-entries.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Islamic Names</a>

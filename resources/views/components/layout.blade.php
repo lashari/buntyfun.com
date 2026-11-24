@@ -14,10 +14,13 @@
     $nav = \Illuminate\Support\Facades\Cache::remember('layout.nav-sections', 600, fn () => [
         'messages' => \App\Models\Message::where('status', 'published')->exists(),
         'wallpapers' => \App\Models\Wallpaper::where('status', 'published')->exists(),
+        'quotes' => \Illuminate\Support\Facades\Schema::hasTable('quotes') && \App\Models\Quote::where('status', 'published')->exists(),
     ]);
     $links = array_filter([
+        [route('daily'), 'Daily'],
         [route('games.index'), 'Games'],
         [route('quizzes.index'), 'Quizzes'],
+        $nav['quotes'] ? [route('quotes.index'), 'Quotes'] : null,
         [route('birthday-messages.index'), 'Birthday Wishes'],
         $nav['messages'] ? [route('messages.index'), 'Messages'] : null,
         [route('name-entries.index'), 'Islamic Names'],
@@ -166,7 +169,7 @@
     <x-ad-slot :enabled="$showAds" />
 
     <footer class="mt-16 bg-navy-700 text-navy-100">
-        <div class="h-1.5 bg-gradient-to-r from-brand-500 via-sun-400 to-sea-500"></div>
+        <div class="h-1.5 bg-linear-to-r from-brand-500 via-sun-400 to-sea-500"></div>
         <div class="mx-auto max-w-6xl px-4 py-10 text-sm">
             <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
                 <img src="{{ asset('images/brand/buntyfun-logo-dark.svg') }}" alt="BuntyFun" width="170" height="36" class="h-9 w-auto" loading="lazy">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Content\QuizTopics;
 use App\Models\Quiz;
 use App\Models\QuizResult;
 use Illuminate\Http\Request;
@@ -9,21 +10,51 @@ use Illuminate\Support\Str;
 
 class QuizController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $quizzes = Quiz::where('status', 'published')->withCount('questions')->latest('published_at')->paginate(12);
+        $query = Quiz::where('status', 'published')->withCount('questions');
+        $difficulty = $request->query('level');
+        if (is_string($difficulty) && isset(Quiz::DIFFICULTIES[$difficulty])) {
+            $query->where('difficulty', $difficulty);
+        } else {
+            $difficulty = null;
+        }
+        $quizzes = $query->latest('published_at')->latest('id')->paginate(24)->withQueryString();
 
-        return view('quizzes.index', ['quizzes' => $quizzes]);
+        return view('quizzes.index', ['quizzes' => $quizzes, 'topics' => $this->topicCounts(), 'level' => $difficulty]);
     }
 
-    public function show(Quiz $quiz)
+    /** /quizzes/topic/{topic}: one page per subject, indexable once it has 2+ quizzes. */
+    public function topic(string $topic)
     {
-        abort_unless($quiz->status === 'published', 404);
-        \App\Models\ContentView::track($quiz);
+        abort_unless(QuizTopics::exists($topic), 404);
+        $quizzes = Quiz::where('status', 'published')->where('topic', $topic)->withCount('questions')
+            ->orderByRaw("CASE difficulty WHEN 'easy' THEN 1 WHEN 'medium' THEN 2 WHEN 'hard' THEN 3 ELSE 4 END")->orderBy('id')->get();
+        abort_if($quizzes->isEmpty(), 404);
+
+        return view('quizzes.topic', ['topic' => $topic, 'info' => QuizTopics::ALL[$topic], 'quizzes' => $quizzes, 'topics' => $this->topicCounts()]);
+    }
+
+    /** topic => published quiz count, only topics that have quizzes. */
+    public static function topicCounts(): array
+    {
+        $counts = Quiz::where('status', 'published')->whereNotNull('topic')->selectRaw('topic, count(*) c')->groupBy('topic')->pluck('c', 'topic');
+
+        return collect(QuizTopics::ALL)->keys()->filter(fn ($t) => ($counts[$t] ?? 0) > 0)->mapWithKeys(fn ($t) => [$t => (int) $counts[$t]])->all();
+    }
+
+    public function show(Request $request, Quiz $quiz)
+    {
+        // Moderators can open an In review quiz to check it before publishing.
+        $preview = $quiz->status !== 'published';
+        abort_if($preview && ! $request->user()?->canModerate(), 404);
+        if (! $preview) {
+            \App\Models\ContentView::track($quiz);
+        }
 
         $quiz->load('questions.answers');
 
-        return view('quizzes.show', ['quiz' => $quiz]);
+        return view('quizzes.show', ['quiz' => $quiz, 'preview' => $preview]);
     }
 
     public function submit(Request $request, Quiz $quiz)
