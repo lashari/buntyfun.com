@@ -50,6 +50,11 @@ class SeoController extends Controller
                 $urls->push(['loc' => route('messages.page', $url), 'changefreq' => 'weekly']);
             }
         }
+        foreach (\App\Content\UrduPages::PAGES as $url => $page) {
+            if (UrduContent::indexable()->where('category', $page['category'])->count() >= \App\Content\UrduPages::MIN_FOR_INDEX) {
+                $urls->push(['loc' => route('urdu-content.page', $url), 'changefreq' => 'weekly']);
+            }
+        }
         if (BirthdayMessage::urduPageIndexable()) {
             $urls->push(['loc' => route('birthday-messages.urdu'), 'changefreq' => 'weekly']);
         }

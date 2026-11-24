@@ -73,6 +73,9 @@ Route::prefix('islamic-names')->group(function () {
     Route::get('/{nameEntry:slug}', [NameEntryController::class, 'show'])->name('name-entries.show');
 });
 
+Route::get('/{urduPage}', [UrduContentController::class, 'page'])
+    ->where('urduPage', implode('|', array_keys(\App\Content\UrduPages::PAGES)))
+    ->name('urdu-content.page');
 Route::prefix('ur/entertainment')->group(function () {
     Route::get('/', [UrduContentController::class, 'index'])->name('urdu-content.index');
     Route::get('/{urduContent:slug}', [UrduContentController::class, 'show'])->name('urdu-content.show');
