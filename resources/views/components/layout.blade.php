@@ -23,7 +23,9 @@
     // Sections + dropdown links come from one place (App\Content\SiteNav); empty sections are left out there.
     $navGroups = \App\Content\SiteNav::groups();
     $here = url()->current();
-    $isActive = fn (array $g) => collect($g['links'])->contains(fn ($l) => $l[0] === $here) || $g['url'] === $here;
+    // A section is active on its hub, its menu links, and any page under its hub URL (e.g. /wallpapers/c/airplanes).
+    $isActive = fn (array $g) => collect($g['links'])->contains(fn ($l) => $l[0] === $here) || $g['url'] === $here
+        || str_starts_with($here, rtrim($g['url'], '/').'/');
     $faq = collect($meta?->faq ?? [])->filter(fn ($f) => ! empty($f['q']) && ! empty($f['a']))->values();
     $ld = $schema;
     if (request()->routeIs('home')) {

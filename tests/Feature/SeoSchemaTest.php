@@ -65,4 +65,13 @@ class SeoSchemaTest extends TestCase
             ->assertSee('@keydown.escape.window="esc()"', false)
             ->assertSee('aria-controls="mobile-menu"', false);
     }
+
+    public function test_menu_section_opens_on_pages_under_its_hub(): void
+    {
+        Wallpaper::create(['title' => 'Jet', 'slug' => 'jet-x', 'category' => 'airplanes', 'orientation' => 'desktop', 'width' => 1, 'height' => 1,
+            'file_path' => 'w/j.jpg', 'license' => 'cc0', 'status' => 'published']);
+        $html = $this->get(route('wallpapers.category', 'airplanes'))->assertOk()->getContent();
+        preg_match_all('#<details class="group rounded-lg"\s*open\s*>\s*<summary[^>]*>\s*([^<]+?)\s*<svg#', $html, $m);
+        $this->assertSame(['Wallpapers'], $m[1]);
+    }
 }
