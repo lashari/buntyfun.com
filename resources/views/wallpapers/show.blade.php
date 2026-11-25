@@ -48,6 +48,20 @@
             </p>
         @endif
 
+        @if ($more->isNotEmpty())
+            <section class="mt-10" aria-labelledby="more-wallpapers">
+                <h2 id="more-wallpapers" class="text-lg font-bold">More {{ Str::lower(Str::headline($wallpaper->category)) }} wallpapers</h2>
+                <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    @foreach ($more as $m)
+                        <a href="{{ route('wallpapers.show', $m) }}" class="overflow-hidden rounded-xl border border-slate-200 bg-white text-sm shadow-sm hover:shadow-md">
+                            <img src="{{ $m->thumbUrl() }}" alt="{{ $m->title }}" width="400" height="225" loading="lazy" class="aspect-video w-full object-cover">
+                            <span class="block truncate p-2 font-medium">{{ $m->title }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+        @endif
+        <x-explore group="wallpapers" title="Wallpaper categories" />
         <a href="{{ route('wallpapers.index') }}" class="mt-6 block text-center text-sm text-slate-500 hover:underline">All wallpaper categories</a>
     </div>
 </x-layout>

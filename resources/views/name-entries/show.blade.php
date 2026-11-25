@@ -62,5 +62,6 @@
         @endif
 
         <a href="{{ route('name-entries.index') }}" class="mt-8 block text-sm text-slate-500 hover:underline">Browse all names</a>
+        <x-explore group="islamic" title="More Islamic names and resources" />
     </div>
 </x-layout>

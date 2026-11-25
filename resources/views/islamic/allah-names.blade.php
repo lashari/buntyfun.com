@@ -39,5 +39,6 @@
             <p class="mt-8 text-slate-500">This page is being checked by our editors and will be published soon.</p>
         @endif
         <p class="mt-8 text-sm text-slate-500">Spotted a mistake? <a href="{{ route('pages.contact') }}" class="underline">Tell us</a>. See also: <a href="{{ route('duas.index') }}" class="underline">daily duas</a>, <a href="{{ route('name-entries.list', 'prophets') }}" class="underline">names of the prophets</a>, <a href="{{ route('islamic.calendar') }}" class="underline">Islamic calendar</a>.</p>
+        <x-explore group="islamic" />
     </div>
 </x-layout>

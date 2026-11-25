@@ -51,5 +51,6 @@
             <h2>About this collection</h2>
             <p>We publish only poetry that is out of copyright: the poets here died between 1785 and 1938. The texts come from Urdu Wikisource through the open <a href="https://github.com/anas-rashid/divan-data" rel="nofollow noopener" target="_blank">Divan</a> database (CC BY-SA 4.0), and every poem page links to its source. Mood labels (romantic, sad, Islamic, motivational, friendship) are added from the words of each poem and checked by our editors; tell us if one looks wrong.</p>
         </section>
+        <x-explore group="urdu" />
     </div>
 </x-layout>

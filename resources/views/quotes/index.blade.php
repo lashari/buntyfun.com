@@ -35,7 +35,7 @@
         @include('quotes.partials.topics', ['current' => null])
 
         @if ($authors->isNotEmpty())
-            <h2 class="mt-10 text-xl font-bold">Popular authors</h2>
+            <h2 class="mt-10 text-xl font-bold">Quotes by author</h2>
             <ul class="mt-4 flex flex-wrap gap-2 text-sm">
                 @foreach ($authors as $a)
                     <li><a href="{{ route('quotes.author', $a->author_slug) }}" class="block rounded-lg bg-slate-100 px-3 py-1.5 hover:bg-brand-50">{{ $a->author }} <span class="text-slate-500">{{ $a->c }}</span></a></li>

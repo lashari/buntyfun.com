@@ -1,4 +1,4 @@
-<x-layout title="Birthday Wishes for Family, Friends & Colleagues — BuntyFun" description="Original birthday wishes for mom, dad, best friends, siblings, spouses and colleagues, in funny, emotional and short styles, with tips to personalise them."
+<x-layout :breadcrumbs="['Birthday Wishes' => null]" title="Birthday Wishes for Family, Friends & Colleagues — BuntyFun" description="Original birthday wishes for mom, dad, best friends, siblings, spouses and colleagues, in funny, emotional and short styles, with tips to personalise them."
           :noindex="request()->hasAny(['relationship', 'tone', 'language', 'page'])">
     <div class="mx-auto max-w-6xl px-4 py-10">
         <h1 class="text-3xl font-bold">Birthday Wishes</h1>
@@ -45,5 +45,6 @@
             @endforelse
         </div>
         <div class="mt-8">{{ $messages->links() }}</div>
+        <x-explore group="wishes" />
     </div>
 </x-layout>

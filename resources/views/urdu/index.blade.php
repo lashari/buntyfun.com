@@ -33,5 +33,6 @@
             @endforelse
         </div>
         <div class="mt-8" dir="ltr">{{ $content->links() }}</div>
+        <x-explore group="urdu" />
     </div>
 </x-layout>

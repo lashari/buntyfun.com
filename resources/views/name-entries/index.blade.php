@@ -1,4 +1,4 @@
-<x-layout title="Islamic Names with Meanings — Arabic & Urdu Spelling | BuntyFun" description="Muslim baby names for boys and girls with Arabic and Urdu spelling, meaning and a cited source for every name."
+<x-layout :breadcrumbs="['Islamic Names' => null]" title="Islamic Names with Meanings — Arabic & Urdu Spelling | BuntyFun" description="Muslim baby names for boys and girls with Arabic and Urdu spelling, meaning and a cited source for every name."
           :noindex="request()->hasAny(['q', 'gender', 'letter', 'page'])">
     <div class="mx-auto max-w-6xl px-4 py-10">
         <h1 class="text-3xl font-bold">Islamic Names</h1>
@@ -41,5 +41,6 @@
             @endforelse
         </div>
         <div class="mt-8">{{ $names->links() }}</div>
+        <x-explore group="islamic" />
     </div>
 </x-layout>

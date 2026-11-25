@@ -70,5 +70,6 @@
         </form>
 
         @include('quizzes.partials.sources')
+        <x-explore group="quizzes" title="More quizzes" :extra="[[route('games.index'), 'Free games']]" />
     </div>
 </x-layout>

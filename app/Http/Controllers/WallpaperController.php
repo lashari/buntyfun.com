@@ -59,7 +59,15 @@ class WallpaperController extends Controller
         $position = (clone $inCategory)->where('id', '>=', $wallpaper->id)->count();
         $total = (clone $inCategory)->count();
 
-        return view('wallpapers.show', compact('wallpaper', 'previous', 'next', 'position', 'total'));
+        // "More in this category": the 6 that follow this one (wrapping to the newest), so every
+        // wallpaper gets links from the pages before it, not only through the Back/Next chain.
+        $more = (clone $inCategory)->where('id', '<', $wallpaper->id)->orderByDesc('id')->take(6)->get();
+        if ($more->count() < 6) {
+            $more = $more->concat((clone $inCategory)->where('id', '>', $wallpaper->id)->orderByDesc('id')
+                ->take(6 - $more->count())->get());
+        }
+
+        return view('wallpapers.show', compact('wallpaper', 'previous', 'next', 'position', 'total', 'more'));
     }
     public function download(Wallpaper $wallpaper)
     {

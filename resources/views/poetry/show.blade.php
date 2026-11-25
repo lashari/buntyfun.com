@@ -57,6 +57,9 @@
             @if ($poem->source_url)· <a href="{{ $poem->source_url }}" rel="nofollow noopener" target="_blank" class="underline">source page</a>@endif.
             Spotted a typing mistake? <a href="{{ route('pages.contact') }}" class="underline">Tell us</a>.
         </p>
+        @php $otherPoets = \App\Models\Poet::where('status', 'published')->whereKeyNot($poem->poet_id)->whereHas('poems', fn ($q) => $q->where('status', 'published'))->orderBy('name_en')->get(); @endphp
+        <x-explore group="urdu" title="More Urdu poetry and quotes"
+                   :extra="$otherPoets->map(fn ($p) => [route('poetry.segment', $p->slug), $p->name_en.' poetry'])->all()" />
     </div>
     <script>
         function poemCard(full, poet) {

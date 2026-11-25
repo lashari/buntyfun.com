@@ -30,5 +30,6 @@
             @endforelse
         </div>
         <div class="mt-8">{{ $messages->links() }}</div>
+        <x-explore group="wishes" />
     </div>
 </x-layout>

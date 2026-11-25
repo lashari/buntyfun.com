@@ -60,10 +60,11 @@ class OssGamesTest extends TestCase
             ->assertSee('github.com/iamkun/tower_game', false)
             ->assertSee('MIT');
 
+        // Card headings only: the header menu now lists popular games on every page.
         $this->get(route('games.index', ['for' => 'kids']))->assertOk()
-            ->assertSee('Tower Builder')->assertDontSee('The House');
+            ->assertSee('<h2 class="font-semibold">Tower Builder</h2>', false)->assertDontSee('<h2 class="font-semibold">The House</h2>', false);
         $this->get(route('games.index', ['for' => 'adults']))->assertOk()
-            ->assertSee('The House')->assertDontSee('Tower Builder');
+            ->assertSee('<h2 class="font-semibold">The House</h2>', false)->assertDontSee('<h2 class="font-semibold">Tower Builder</h2>', false);
         $this->get(route('games.index', ['for' => 'nonsense']))->assertOk()
             ->assertSee('Tower Builder')->assertSee('The House');
     }

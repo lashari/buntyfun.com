@@ -21,5 +21,6 @@
             <p class="mt-8 text-slate-500">Duas are being checked by our editors and will be published soon.</p>
         @endforelse
         <p class="mt-10 text-sm text-slate-500">See also the <a href="{{ route('islamic.allah-names') }}" class="underline">99 Names of Allah</a> and the <a href="{{ route('islamic.calendar') }}" class="underline">Islamic calendar</a>.</p>
+        <x-explore group="islamic" />
     </div>
 </x-layout>

@@ -26,5 +26,6 @@
             </ul>
         @endif
         <a href="{{ route('duas.index') }}" class="mt-8 block text-sm text-slate-500 hover:underline">All duas</a>
+        <x-explore group="islamic" title="More Islamic resources" />
     </div>
 </x-layout>
