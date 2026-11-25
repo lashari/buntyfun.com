@@ -84,7 +84,7 @@ class LibraryAdminController extends Controller
     {
         $t = $this->type($type);
         $model = $t['model'];
-        $status = $request->query('status', 'in_review');
+        $status = $request->query('status', 'all');
         $query = $model::query();
         if (isset(self::STATUSES[$status])) {
             $query->where('status', $status);
