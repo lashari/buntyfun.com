@@ -128,22 +128,49 @@ document.addEventListener('alpine:init', () => {
 });
 
 /**
- * Name pronunciation fallback when no reviewed recording exists: the visitor's own
- * device voice (Web Speech API). Returns false when the device has no Arabic/Urdu voice.
+ * Device-voice fallback when no reviewed recording exists (Web Speech API).
+ * Only ever uses a voice of the right language: never reads Arabic with an English voice.
+ * Natural / neural voices are preferred; the visitor can pick another one (saved on this device).
  */
-export function say(text, lang = 'ar') {
-    if (!('speechSynthesis' in window)) return false;
-    const voices = window.speechSynthesis.getVoices();
-    const voice = voices.find((v) => v.lang && v.lang.toLowerCase().startsWith(lang));
-    if (!voice && voices.length) return false;
+const QUALITY = /natural|neural|online|premium|enhanced|wavenet|google|siri|hamed|zariyah|majed|maged|laila|tarik|mariam|shakir|hoda|naayf/i;
+
+function loadVoices() {
+    return new Promise((resolve) => {
+        if (!('speechSynthesis' in window)) { resolve([]); return; }
+        const now = window.speechSynthesis.getVoices();
+        if (now.length) { resolve(now); return; }
+        const done = () => resolve(window.speechSynthesis.getVoices());
+        window.speechSynthesis.addEventListener('voiceschanged', done, { once: true });
+        setTimeout(done, 1500); // some browsers never fire the event
+    });
+}
+
+/** Voices for a language, best first: [{ id, label }]. */
+export async function voicesFor(lang = 'ar') {
+    const list = (await loadVoices()).filter((v) => (v.lang || '').toLowerCase().replace('_', '-').startsWith(lang));
+    const score = (v) => (QUALITY.test(v.name) ? 0 : 1) + (v.localService ? 0.5 : 0);
+    return list.sort((a, b) => score(a) - score(b) || a.name.localeCompare(b.name))
+        .map((v) => ({ id: v.voiceURI || v.name, label: v.name.replace(/^Microsoft |^Google /, '').replace(/ Online \(Natural\)/, ' (natural)') + ' · ' + v.lang }));
+}
+
+export async function say(text, lang = 'ar') {
+    if (!('speechSynthesis' in window)) return 'none';
+    const all = (await loadVoices()).filter((v) => (v.lang || '').toLowerCase().replace('_', '-').startsWith(lang));
+    if (!all.length) return 'none';
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem('bf_voice_' + lang)); } catch { /* ignore */ }
+    const best = (await voicesFor(lang))[0];
+    const voice = all.find((v) => (v.voiceURI || v.name) === saved) || all.find((v) => (v.voiceURI || v.name) === best.id);
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = voice ? voice.lang : (lang === 'ar' ? 'ar-SA' : 'ur-PK');
-    if (voice) u.voice = voice;
-    u.rate = 0.8;
+    u.voice = voice;
+    u.lang = voice.lang;
+    u.rate = 0.85;
     window.speechSynthesis.speak(u);
-    return true;
+    return 'voice';
 }
+
+export function stopVoice() { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }
 
 if ('speechSynthesis' in window) window.speechSynthesis.getVoices(); // warm the voice list (loads async in Chrome)
 

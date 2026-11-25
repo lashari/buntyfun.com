@@ -1,16 +1,19 @@
 import './bootstrap';
 import './bf';
-import { say } from './player';
+import { say, voicesFor, stopVoice } from './player';
 
 import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 window.BF.say = say;
+window.BF.voicesFor = voicesFor;
+window.BF.stopVoice = stopVoice;
+window.BF.setVoice = (lang, id) => window.BF.store.set('voice_' + lang, id);
 
 // Play a name: reviewed recording if there is one, otherwise the device voice.
 window.BF.playName = (src, arabic, title) => {
     if (src) { window.BFPlayer.load([{ src, title, subtitle: 'Name pronunciation', key: 'name:' + title }], 0, { allowSpeed: true }); return 'audio'; }
-    return say(arabic, 'ar') ? 'voice' : 'none';
+    return say(arabic, 'ar');
 };
 // Quran audio URL from a reciter pattern: {g} global ayah, {sss}{aaa} padded surah/ayah.
 window.BF.quranSrc = (pattern, g, s, a) => pattern.replace('{g}', g).replace('{sss}', String(s).padStart(3, '0')).replace('{aaa}', String(a).padStart(3, '0'));
@@ -35,7 +38,7 @@ window.BF.listenDua = (listen, dua, reciters) => {
         window.BFPlayer.load([{ src: listen.src, title: dua.title, subtitle: listen.speaker ? 'Recited by ' + listen.speaker : 'Recording', key: 'dua:' + dua.slug }], 0);
         return 'file';
     }
-    return say(dua.arabic, 'ar') ? 'voice' : 'none';
+    return say(dua.arabic, 'ar');
 };
 
 Alpine.start();
