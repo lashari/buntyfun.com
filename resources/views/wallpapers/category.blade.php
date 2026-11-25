@@ -1,7 +1,7 @@
 @php($label = Str::headline($category))
 <x-layout :title="$label.' Wallpapers HD — Free Download'.($wallpapers->currentPage() > 1 ? ' (Page '.$wallpapers->currentPage().')' : '').' — BuntyFun'"
           :description="'Free '.$label.' wallpapers in HD for desktop and mobile. '.$wallpapers->total().' pictures, free download.'"
-          :noindex="$wallpapers->currentPage() > 1"
+          :schema="\App\Support\Schema::itemList($label.' Wallpapers', $wallpapers->map(fn ($w) => [route('wallpapers.show', $w), $w->title]), $wallpapers->firstItem() ?? 1)"
           :breadcrumbs="['Wallpapers' => route('wallpapers.index'), $label => null]">
     <div class="mx-auto max-w-6xl px-4 py-10">
         <h1 class="text-3xl font-bold">{{ $label }} Wallpapers</h1>

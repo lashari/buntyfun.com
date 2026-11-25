@@ -5,7 +5,7 @@
 <x-layout :title="$poet->name_en.' Poetry — Ghazals & Shayari in Urdu ('.$poet->name_ur.') | BuntyFun'"
           :description="'Read '.$poet->name_en.' ('.$poet->years().') poetry in Urdu: '.Str::limit($poet->bio_en, 110)"
           :breadcrumbs="['Urdu Poetry' => route('poetry.index'), $poet->name_en => null]" :schema="$schema" :urduFont="true"
-          :noindex="request()->hasAny(['page', 'form'])">
+          :noindex="request()->has('form')">
     <div class="mx-auto max-w-6xl px-4 py-10">
         <h1 class="text-3xl font-bold">{{ $poet->name_en }} <span class="font-urdu font-normal text-slate-500" lang="ur">{{ $poet->name_ur }}</span></h1>
         <p class="mt-1 text-slate-500">{{ $poet->years() }}</p>

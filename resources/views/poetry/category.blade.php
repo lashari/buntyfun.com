@@ -1,7 +1,7 @@
 @php $title = $label[0]; @endphp
 <x-layout :title="'Urdu '.$title.' — '.$label[1].' | Classic Poetry | BuntyFun'"
           :description="'Read classic Urdu '.Str::lower($title).' ('.$label[1].') by Ghalib, Iqbal, Mir and other great poets, in Nastaliq with copy and WhatsApp share.'"
-          :breadcrumbs="['Urdu Poetry' => route('poetry.index'), $title => null]" :urduFont="true" :noindex="$poems->isEmpty() || request()->has('page')">
+          :breadcrumbs="['Urdu Poetry' => route('poetry.index'), $title => null]" :urduFont="true" :noindex="$poems->isEmpty()">
     <div class="mx-auto max-w-6xl px-4 py-10">
         <h1 class="text-3xl font-bold">{{ $isForm ? 'Urdu '.$title : $title }} <span class="font-urdu font-normal text-slate-500" lang="ur">{{ $label[1] }}</span></h1>
         <p class="mt-3 max-w-3xl leading-relaxed text-slate-700">

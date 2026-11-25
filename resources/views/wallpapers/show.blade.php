@@ -1,7 +1,7 @@
 <x-layout :title="$wallpaper->title.' — Wallpaper — BuntyFun'"
           :description="$wallpaper->hasUsefulDescription() ? Str::limit($wallpaper->description, 150) : 'Download '.$wallpaper->title.' free, '.$wallpaper->resolutionLabel().'.'"
           :noindex="! $wallpaper->hasUsefulDescription()"
-          :meta="$wallpaper->meta" :og-image="$wallpaper->previewUrl()" :breadcrumbs="['Wallpapers' => route('wallpapers.index'), Str::headline($wallpaper->category) => route('wallpapers.category', $wallpaper->category), $wallpaper->title => null]">
+          :schema="$wallpaper->schema()" :meta="$wallpaper->meta" :og-image="$wallpaper->previewUrl()" :breadcrumbs="['Wallpapers' => route('wallpapers.index'), Str::headline($wallpaper->category) => route('wallpapers.category', $wallpaper->category), $wallpaper->title => null]">
     <div class="mx-auto max-w-3xl px-4 py-10">
         <div class="relative">
             <img src="{{ $wallpaper->previewUrl() }}" alt="{{ $wallpaper->title }}" class="w-full rounded-xl border border-slate-200">
