@@ -29,7 +29,7 @@ class QuoteController extends Controller
             'topics' => $this->topicCounts(),
             'authors' => Quote::where('status', 'published')->where('author', '!=', 'Anonymous')
                 ->selectRaw('author, author_slug, count(*) c')->groupBy('author', 'author_slug')
-                ->having('c', '>=', self::MIN_AUTHOR_INDEX)->orderByDesc('c')->limit(30)->get(),
+                ->having('c', '>=', self::MIN_AUTHOR_INDEX)->orderByDesc('c')->orderBy('author')->get(), // all indexable authors: each one in the sitemap needs a link
             'total' => Quote::where('status', 'published')->count(),
         ]);
     }

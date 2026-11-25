@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DailyFeature extends Model
 {
-    public const TYPES = ['quiz' => 'Quiz of the day', 'quote' => 'Quote of the day', 'game' => 'Game of the day'];
+    public const TYPES = ['quiz' => 'Quiz of the day', 'quote' => 'Quote of the day', 'game' => 'Game of the day', 'poem' => 'Poetry of the day', 'dua' => 'Dua of the day'];
 
     protected $fillable = ['feature_date', 'type', 'item_id', 'pinned'];
 

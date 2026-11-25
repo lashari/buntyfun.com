@@ -7,14 +7,19 @@ const store = {
 
 const today = () => new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in the visitor's time zone
 
+// GA4 event if the site tag is loaded (no-op otherwise). Only counts: no personal data.
+const track = (name, params = {}) => { try { if (typeof window.gtag === 'function') window.gtag('event', name, params); } catch { /* ignore */ } };
+
 const BF = {
     store,
     today,
+    track,
     /** Save a score; returns { best, isNew }. lowerIsBetter for time/moves. */
     best(key, score, lowerIsBetter = false) {
         const old = store.get('best_' + key);
         const isNew = old === null || (lowerIsBetter ? score < old : score > old);
-        if (isNew) store.set('best_' + key, score);
+        if (isNew) { store.set('best_' + key, score); track('new_personal_best', { game_key: key, score }); }
+        track('game_complete', { game_key: key, score });
         return { best: isNew ? score : old, isNew };
     },
     getBest(key) { return store.get('best_' + key); },
@@ -37,6 +42,7 @@ const BF = {
     doneToday(key) { return store.get('streak_' + key, {}).last === today(); },
     /** Remember a played game/quiz for the "recently played" row. */
     played(item) {
+        track(item.type === 'game' ? 'game_start' : 'content_start', { item_name: item.title, page_path: item.url });
         const list = store.get('recent', []).filter((x) => x.url !== item.url);
         list.unshift(item);
         store.set('recent', list.slice(0, 8));
@@ -44,8 +50,9 @@ const BF = {
     recent() { return store.get('recent', []); },
     async share(text, url = location.href) {
         if (navigator.share) {
-            try { await navigator.share({ text, url }); return 'shared'; } catch { /* cancelled */ }
+            try { await navigator.share({ text, url }); track('share', { method: 'native', page_path: location.pathname }); return 'shared'; } catch { /* cancelled */ }
         }
+        track('share', { method: 'whatsapp', page_path: location.pathname });
         window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank', 'noopener');
         return 'whatsapp';
     },

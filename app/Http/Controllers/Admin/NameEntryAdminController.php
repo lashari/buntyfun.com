@@ -14,9 +14,35 @@ class NameEntryAdminController extends Controller
     use HandlesPublishing;
     use \App\Http\Controllers\Admin\Concerns\SavesContentMeta;
 
-    public function index()
+    public function index(Request $request)
     {
-        return view('admin.name-entries.index', ['names' => NameEntry::latest()->paginate(20)]);
+        $names = NameEntry::query()
+            ->when($request->query('status'), fn ($q, $st) => $q->where('status', $st))
+            ->when($request->query('category'), fn ($q, $c) => $q->where('category', $c))
+            ->when($request->query('q'), fn ($q, $t) => $q->where(fn ($w) => $w->where('name_en', 'like', '%'.addcslashes($t, '%_\\').'%')->orWhere('meaning', 'like', '%'.addcslashes($t, '%_\\').'%')))
+            ->latest()->paginate(50)->withQueryString();
+        $counts = NameEntry::selectRaw('status, count(*) c')->groupBy('status')->pluck('c', 'status');
+
+        return view('admin.name-entries.index', ['names' => $names, 'counts' => $counts]);
+    }
+
+    /** Publish / send back to review / unpublish many names at once. Publishing still needs a real source_ref. */
+    public function bulk(Request $request)
+    {
+        $data = $request->validate(['ids' => ['required', 'array', 'max:500'], 'ids.*' => ['integer'], 'action' => ['required', 'in:published,in_review,draft']]);
+        abort_unless($request->user()->canModerate(), 403);
+        abort_if($data['action'] === 'published' && ! $request->user()->canPublish(), 403);
+        $done = 0;
+        foreach (NameEntry::whereIn('id', $data['ids'])->get() as $name) {
+            if ($data['action'] === 'published' && (empty($name->source_ref) || stripos($name->source_ref, 'placeholder') !== false)) {
+                continue;
+            }
+            $name->update(['status' => $data['action']] + ($data['action'] === 'published' ? ['verification' => 'editor_checked'] : []));
+            AuditLog::record($request->user(), 'status:'.$data['action'], 'name_entry', $name->id);
+            $done++;
+        }
+
+        return back()->with('status', "{$done} name(s) updated.");
     }
 
     public function create()
@@ -93,7 +119,11 @@ class NameEntryAdminController extends Controller
             'name_ur' => ['nullable', 'string', 'max:120'],
             'gender' => ['required', 'in:male,female,unisex'],
             'meaning' => ['required', 'string'],
+            'meaning_ur' => ['nullable', 'string', 'max:2000'],
             'origin' => ['nullable', 'string', 'max:120'],
+            'category' => ['required', 'in:'.implode(',', array_keys(NameEntry::CATEGORIES))],
+            'quranic_ref' => ['nullable', 'string', 'max:190'],
+            'verification' => ['required', 'in:needs_review,editor_checked,scholar_checked'],
             'source_ref' => ['required', 'string', 'max:500'],
             'slug' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:draft,in_review,published'],

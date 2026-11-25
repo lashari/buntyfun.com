@@ -1,4 +1,4 @@
-<x-layout title="AI Fun Studio — Free Joke, Caption, Greeting & Birthday Message Generators | BuntyFun" description="Small free AI tools for jokes, captions, nicknames, greetings, bios and birthday messages. Type a few words, get a result, copy it.">
+<x-layout :breadcrumbs="['AI Fun Studio' => null]" title="AI Fun Studio — Free Joke, Caption, Greeting & Birthday Message Generators | BuntyFun" description="Small free AI tools for jokes, captions, nicknames, greetings, bios and birthday messages. Type a few words, get a result, copy it.">
     <div class="mx-auto max-w-6xl px-4 py-10">
         <h1 class="text-3xl font-bold">AI Fun Studio</h1>
         <div class="mt-3 max-w-3xl space-y-3 leading-relaxed text-slate-700">
@@ -15,5 +15,6 @@
                 <p class="text-sm text-slate-500">No AI tools published yet.</p>
             @endforelse
         </div>
+        <x-explore group="ai" />
     </div>
 </x-layout>

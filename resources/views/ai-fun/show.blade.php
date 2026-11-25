@@ -91,5 +91,6 @@
         </section>
 
         <a href="{{ route('ai-tools.index') }}" class="mt-8 block text-sm text-slate-500 hover:underline">More AI tools</a>
+        <x-explore group="ai" title="Other AI fun tools" />
     </div>
 </x-layout>

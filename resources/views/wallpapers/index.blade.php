@@ -19,5 +19,6 @@
         @empty
             <p class="mt-6 text-sm text-slate-500">No wallpapers published yet.</p>
         @endforelse
+        <x-explore group="wallpapers" />
     </div>
 </x-layout>

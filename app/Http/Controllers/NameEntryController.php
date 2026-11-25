@@ -31,6 +31,23 @@ class NameEntryController extends Controller
         return view('name-entries.index', ['names' => $names]);
     }
 
+    /** /islamic-names/boys, /girls, /quranic, /prophets, /sahaba */
+    public function list(Request $request, string $list)
+    {
+        $def = NameEntry::LISTS[$list] ?? abort(404);
+        $query = NameEntry::where('status', 'published');
+        if (isset($def['gender'])) {
+            $query->where('gender', $def['gender']);
+        } elseif ($def['category'] === 'sahaba') {
+            $query->whereIn('category', ['sahaba', 'sahabiyah']);
+        } else {
+            $query->where('category', $def['category']);
+        }
+        $names = $query->orderBy('name_en')->paginate(48)->withQueryString();
+
+        return view('name-entries.list', ['names' => $names, 'list' => $list, 'def' => $def]);
+    }
+
     public function show(NameEntry $nameEntry)
     {
         abort_unless($nameEntry->status === 'published', 404);

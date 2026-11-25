@@ -23,10 +23,21 @@
             @if ($name->origin)
                 <dt class="text-slate-500">Origin</dt><dd>{{ $name->origin }}</dd>
             @endif
+            @if (($name->category ?? 'general') !== 'general')
+                <dt class="text-slate-500">Type</dt><dd>{{ \App\Models\NameEntry::CATEGORIES[$name->category] ?? Str::headline($name->category) }}</dd>
+            @endif
+            @if ($name->quranic_ref)
+                @php $qm = preg_match('/(\d+):(\d+)/', $name->quranic_ref, $mm) ? 'https://quran.com/'.$mm[1].'/'.$mm[2] : null; @endphp
+                <dt class="text-slate-500">In the Quran</dt><dd>@if ($qm)<a href="{{ $qm }}" rel="noopener nofollow" target="_blank" class="text-navy-600 underline">{{ $name->quranic_ref }}</a>@else{{ $name->quranic_ref }}@endif</dd>
+            @endif
         </dl>
 
         <h2 class="mt-8 text-lg font-bold">Meaning of {{ $name->name_en }}</h2>
         <p class="mt-2 text-lg leading-relaxed">{{ $name->meaning }}</p>
+        @if ($name->meaning_ur)
+            <h2 class="mt-6 text-lg font-bold">Meaning in Urdu</h2>
+            <p class="font-urdu mt-2 text-xl leading-loose" dir="rtl" lang="ur">{{ $name->meaning_ur }}</p>
+        @endif
 
         <p class="mt-6 text-sm text-slate-600">
             Source:
@@ -51,5 +62,6 @@
         @endif
 
         <a href="{{ route('name-entries.index') }}" class="mt-8 block text-sm text-slate-500 hover:underline">Browse all names</a>
+        <x-explore group="islamic" title="More Islamic names and resources" />
     </div>
 </x-layout>

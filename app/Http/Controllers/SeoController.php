@@ -126,9 +126,56 @@ class SeoController extends Controller
             $urls->push(['loc' => route('ai-tools.show', $tool), 'changefreq' => 'monthly']);
         }
 
+        $this->libraryUrls($urls);
+
         $xml = view('seo.sitemap', ['urls' => $urls])->render();
 
         return response($xml, 200)->header('Content-Type', 'application/xml');
+    }
+
+    /** Islamic knowledge + Urdu poetry pages (11-26-2026). Lists only pages that have published content. */
+    private function libraryUrls(\Illuminate\Support\Collection $urls): void
+    {
+        $urls->push(['loc' => route('islamic.calendar'), 'changefreq' => 'monthly']);
+        // Before the library SQL is run (tables/columns missing) list nothing else rather than fail the whole sitemap.
+        if (! \Illuminate\Support\Facades\Schema::hasTable('poems') || ! \Illuminate\Support\Facades\Schema::hasColumn('name_entries', 'category')) {
+            return;
+        }
+        foreach (NameEntry::LISTS as $key => $def) {
+            $q = NameEntry::where('status', 'published');
+            isset($def['gender']) ? $q->where('gender', $def['gender']) : ($def['category'] === 'sahaba' ? $q->whereIn('category', ['sahaba', 'sahabiyah']) : $q->where('category', $def['category']));
+            if ($q->count() >= 5) {
+                $urls->push(['loc' => route('name-entries.list', $key), 'changefreq' => 'weekly']);
+            }
+        }
+        if (\App\Models\AllahName::where('status', 'published')->count() >= 99) {
+            $urls->push(['loc' => route('islamic.allah-names'), 'changefreq' => 'yearly']);
+        }
+        $duas = \App\Models\Dua::indexable()->get();
+        if ($duas->isNotEmpty()) {
+            $urls->push(['loc' => route('duas.index'), 'changefreq' => 'monthly']);
+            foreach ($duas as $dua) {
+                $urls->push(['loc' => route('duas.show', $dua), 'changefreq' => 'yearly', 'lastmod' => $dua->updated_at]);
+            }
+        }
+        $poems = \App\Models\Poem::indexable()->with('poet:id,slug')->get(['id', 'poet_id', 'slug', 'form', 'mood', 'updated_at']);
+        if ($poems->isEmpty()) {
+            return;
+        }
+        $urls->push(['loc' => route('poetry.index'), 'changefreq' => 'daily']);
+        foreach ($poems->groupBy(fn ($p) => $p->poet->slug) as $slug => $list) {
+            $urls->push(['loc' => route('poetry.segment', $slug), 'changefreq' => 'weekly']);
+        }
+        foreach ([$poems->countBy('form'), $poems->whereNotNull('mood')->countBy('mood')] as $counts) {
+            foreach ($counts as $key => $c) {
+                if ($c >= 5) {
+                    $urls->push(['loc' => route('poetry.segment', $key), 'changefreq' => 'weekly']);
+                }
+            }
+        }
+        foreach ($poems as $poem) {
+            $urls->push(['loc' => route('poetry.show', [$poem->poet->slug, $poem->slug]), 'changefreq' => 'yearly', 'lastmod' => $poem->updated_at]);
+        }
     }
 
     public function robots(): Response

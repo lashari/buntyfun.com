@@ -80,7 +80,20 @@ Route::prefix('birthday-wishes')->group(function () {
 
 Route::prefix('islamic-names')->group(function () {
     Route::get('/', [NameEntryController::class, 'index'])->name('name-entries.index');
+    Route::get('/{list}', [NameEntryController::class, 'list'])->where('list', implode('|', array_keys(\App\Models\NameEntry::LISTS)))->name('name-entries.list');
     Route::get('/{nameEntry:slug}', [NameEntryController::class, 'show'])->name('name-entries.show');
+});
+
+Route::get('/99-names-of-allah', [\App\Http\Controllers\IslamicController::class, 'allahNames'])->name('islamic.allah-names');
+Route::get('/islamic-calendar', [\App\Http\Controllers\IslamicController::class, 'calendar'])->name('islamic.calendar');
+Route::prefix('duas')->group(function () {
+    Route::get('/', [\App\Http\Controllers\IslamicController::class, 'duas'])->name('duas.index');
+    Route::get('/{dua:slug}', [\App\Http\Controllers\IslamicController::class, 'dua'])->name('duas.show');
+});
+Route::prefix('urdu-poetry')->group(function () {
+    Route::get('/', [\App\Http\Controllers\PoetryController::class, 'index'])->name('poetry.index');
+    Route::get('/{segment}', [\App\Http\Controllers\PoetryController::class, 'segment'])->where('segment', '[a-z-]+')->name('poetry.segment');
+    Route::get('/{poet}/{poem}', [\App\Http\Controllers\PoetryController::class, 'show'])->where(['poet' => '[a-z-]+', 'poem' => '[a-z0-9-]+'])->name('poetry.show');
 });
 
 Route::get('/{urduPage}', [UrduContentController::class, 'page'])
@@ -141,6 +154,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('quotes/bulk', [\App\Http\Controllers\Admin\QuoteAdminController::class, 'bulk'])->name('quotes.bulk');
         Route::get('quotes/{quote}/edit', [\App\Http\Controllers\Admin\QuoteAdminController::class, 'edit'])->name('quotes.edit');
         Route::put('quotes/{quote}', [\App\Http\Controllers\Admin\QuoteAdminController::class, 'update'])->name('quotes.update');
+
+        Route::prefix('library')->name('library.')->where(['type' => 'poems|poets|duas|allah-names', 'id' => '[0-9]+'])->group(function () {
+            $c = \App\Http\Controllers\Admin\LibraryAdminController::class;
+            Route::get('/{type?}', [$c, 'index'])->name('index');
+            Route::get('/{type}/new', [$c, 'create'])->name('create');
+            Route::post('/{type}', [$c, 'save'])->name('store');
+            Route::get('/{type}/{id}/edit', [$c, 'edit'])->name('edit');
+            Route::put('/{type}/{id}', [$c, 'save'])->name('update');
+            Route::post('/{type}/bulk', [$c, 'bulk'])->name('bulk');
+            Route::post('/{type}/import', [$c, 'import'])->middleware('throttle:10,1')->name('import');
+        });
+        Route::post('name-entries/bulk', [NameEntryAdminController::class, 'bulk'])->name('name-entries.bulk');
 
         Route::get('daily', [\App\Http\Controllers\Admin\DailyScheduleController::class, 'index'])->name('daily.index');
         Route::post('daily', [\App\Http\Controllers\Admin\DailyScheduleController::class, 'update'])->name('daily.update');

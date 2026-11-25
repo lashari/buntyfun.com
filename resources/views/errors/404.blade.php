@@ -1,4 +1,4 @@
-<x-layout title="Page not found — BuntyFun" description="This page could not be found." :noindex="true" :ads="false">
+<x-layout title="Page not found — BuntyFun" description="This page could not be found." :noindex="true" :ads="false" :canonical="false">
     <div class="mx-auto max-w-xl px-4 py-20 text-center">
         <h1 class="text-3xl font-bold">Page not found</h1>
         <p class="mt-3 text-slate-600">The page may have moved or been removed. Try one of these instead:</p>

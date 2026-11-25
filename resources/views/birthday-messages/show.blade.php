@@ -46,5 +46,6 @@
         @endif
 
         <a href="{{ $hub }}" class="mt-8 block text-sm font-medium text-navy-600 hover:underline">All birthday wishes for {{ Str::lower(Str::headline($message->relationship)) }}, with tips</a>
+        <x-explore group="wishes" title="More wishes and messages" />
     </div>
 </x-layout>

@@ -87,6 +87,8 @@ class DailyPicker
             'quiz' => Quiz::class,
             'quote' => Quote::class,
             'game' => Game::class,
+            'poem' => \App\Models\Poem::class,
+            'dua' => \App\Models\Dua::class,
             default => throw new \InvalidArgumentException("Unknown daily type {$type}"),
         };
     }

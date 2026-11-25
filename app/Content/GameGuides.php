@@ -190,6 +190,99 @@ class GameGuides
                 'Play at the same time every day, for example with morning tea, to keep your streak going.',
             ],
         ],
+        'daily-word' => [
+            'summary' => 'Guess the hidden five-letter word in six tries. A new word every day, the same for everyone.',
+            'how' => [
+                'Type any five-letter word and press Enter (or tap the on-screen keys).',
+                'Green means the letter is in the word and in the right place. Yellow means it is in the word but somewhere else. Grey means it is not in the word.',
+                'Use the colours to narrow it down. You have six guesses.',
+                'Today\'s word is the same for everyone and changes at midnight. Practice gives you a random word whenever you like.',
+            ],
+            'scoring' => 'Your daily wins, win rate and streak (days in a row solved) are saved in your own browser. Practice games do not count towards the streak.',
+            'tips' => [
+                'Start with a word that has common letters, such as RAISE, STONE or HEART.',
+                'Do not reuse grey letters: each guess should test new letters.',
+                'A letter can appear twice. If you are stuck, try doubling one you already found.',
+                'Share your colour grid with friends: it shows how you did without giving away the word.',
+            ],
+        ],
+        'emoji-guess' => [
+            'summary' => 'Read the emojis and guess the food, saying, place, job or thing they stand for.',
+            'how' => [
+                'Pick a category, or Mix for a bit of everything.',
+                'Each round shows a group of emojis. Choose the answer they describe from four options.',
+                'After you answer, the right option turns green. Press Next for the next puzzle.',
+                'Ten puzzles make one game.',
+            ],
+            'scoring' => 'One point per correct answer, out of 10. Your best score for each category is saved in your browser.',
+            'tips' => [
+                'Say the emojis out loud: many puzzles are sound-alikes or two words joined together.',
+                'In Sayings, think of well-known English proverbs and idioms.',
+                'Flags in Places are a big clue: look at the colours.',
+            ],
+        ],
+        'typing-test' => [
+            'summary' => 'Find out how many words per minute you type, and how accurately.',
+            'how' => [
+                'Choose Easy, Medium or Hard text and a 30 or 60 second test.',
+                'Start typing in the box: the timer starts with your first key.',
+                'Correct letters turn green and mistakes turn red. Use Backspace to fix them.',
+                'When time runs out you see your speed and accuracy. Pasting is turned off.',
+            ],
+            'scoring' => 'Speed is counted in words per minute (WPM), where one word is five correctly typed characters. Accuracy is the share of characters you typed correctly. Your best WPM for each level and length is saved in your browser.',
+            'tips' => [
+                'Accuracy first: fixing mistakes costs more time than typing a little slower.',
+                'Keep your fingers on the home row (ASDF and JKL;) and look at the screen, not the keyboard.',
+                'An average adult types about 40 WPM; 60+ is fast; 80+ is very fast.',
+            ],
+        ],
+        'reaction-time' => [
+            'summary' => 'Test how fast you react: wait for green, then tap as quickly as you can.',
+            'how' => [
+                'Tap the big box to start. It turns red: wait.',
+                'After a random pause it turns green. Tap or press Space at once.',
+                'Tapping while it is still red is too early: that round is repeated.',
+                'Five rounds make one test. Your average is shown at the end.',
+            ],
+            'scoring' => 'Your score is your average reaction time in milliseconds (ms) over five rounds: lower is better. Your best average is saved in your browser.',
+            'tips' => [
+                'Most people score between 200 and 300 ms on a phone or computer.',
+                'Rest your finger lightly on the screen or key so you do not have to move far.',
+                'Results also depend on your device and screen, so compare scores on the same device.',
+            ],
+        ],
+        'chess' => [
+            'summary' => 'Play chess against the computer at three levels, or against a friend on the same device.',
+            'how' => [
+                'White moves first. Tap a piece to see its legal moves (dots), then tap a square to move there.',
+                'All the rules are included: castling, en passant, check, checkmate and stalemate. A pawn that reaches the last row becomes a queen.',
+                'Choose vs Computer (Easy, Medium or Hard) or 2 Players to pass the device between turns.',
+                'Use Undo to take back a move and Flip board to look from Black\'s side.',
+            ],
+            'scoring' => 'A game ends in checkmate (a win), or in a draw by stalemate, the 50-move rule or when too few pieces are left to checkmate. Your wins against each computer level are saved in your browser.',
+            'tips' => [
+                'Control the centre squares early with pawns and knights.',
+                'Castle early to keep your king safe.',
+                'Before every move, check what your opponent\'s last move attacks.',
+                'Easy picks mostly random moves; Medium and Hard look two and three moves ahead.',
+            ],
+        ],
+        'ludo' => [
+            'summary' => 'The classic dice race for 2 to 4 players: play the computer or friends on one device.',
+            'how' => [
+                'Choose 2, 3 or 4 players, and whether the other colours are the computer or friends passing the device.',
+                'Press Roll. You need a 6 to move a token out of its base onto the start square.',
+                'Tap a glowing token to move it forward by the number on the dice. Tokens go once round the board, then up their own coloured lane to the centre.',
+                'A 6, a capture, or bringing a token home gives you another roll. Three 6s in a row lose the turn.',
+                'Landing on an opponent\'s token sends it back to its base, except on the safe squares marked with a star. You need the exact number to reach the centre.',
+            ],
+            'scoring' => 'The first player to bring all four tokens to the centre wins. Your wins are saved in your browser.',
+            'tips' => [
+                'Get several tokens out early, so every roll gives you a choice.',
+                'Rest on star squares when an opponent is close behind you.',
+                'When you roll a 6, think about whether a new token or a capture helps more.',
+            ],
+        ],
     ];
 
     /** Built-in games added 11-25-2026: slug => [title, audiences]. The migration inserts them In review. */
@@ -201,6 +294,12 @@ class GameGuides
         'hangman' => ['Hangman', ['kids', 'family', 'teens']],
         'sudoku' => ['Sudoku', ['teens', 'adults']],
         'daily-trivia' => ['Daily Trivia', ['family', 'teens', 'adults']],
+        'daily-word' => ['Daily Word', ['family', 'teens', 'adults']],
+        'emoji-guess' => ['Emoji Guess', ['kids', 'family', 'teens']],
+        'typing-test' => ['Typing Speed Test', ['teens', 'adults']],
+        'reaction-time' => ['Reaction Time Test', ['kids', 'family', 'teens', 'adults']],
+        'chess' => ['Chess', ['family', 'teens', 'adults']],
+        'ludo' => ['Ludo', ['kids', 'family', 'teens', 'adults']],
     ];
 
     public static function for(string $slug): ?array

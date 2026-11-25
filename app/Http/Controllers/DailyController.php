@@ -13,6 +13,8 @@ class DailyController extends Controller
             'quiz' => $picker->item('quiz'),
             'quote' => $picker->item('quote'),
             'game' => $picker->item('game'),
+            'poem' => \Illuminate\Support\Facades\Schema::hasTable('poems') ? $picker->item('poem')?->load('poet') : null,
+            'dua' => \Illuminate\Support\Facades\Schema::hasTable('duas') ? $picker->item('dua') : null,
         ]);
     }
 }
