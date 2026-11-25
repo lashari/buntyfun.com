@@ -13,8 +13,8 @@ class NameEntryController extends Controller
 
         if ($search = $request->query('q')) {
             $query->where(function ($q) use ($search) {
-                $q->where('name_en', 'like', "%{$search}%")
-                    ->orWhere('meaning', 'like', "%{$search}%");
+                $like = '%'.addcslashes($search, '%_\\').'%';
+                $q->where('name_en', 'like', $like)->orWhere('meaning', 'like', $like)->orWhere('name_ur', 'like', $like)->orWhere('name_ar', 'like', $like);
             });
         }
 
@@ -26,7 +26,7 @@ class NameEntryController extends Controller
             $query->where('name_en', 'like', "{$letter}%");
         }
 
-        $names = $query->orderBy('name_en')->paginate(24)->withQueryString();
+        $names = $query->with('audio')->orderBy('name_en')->paginate(24)->withQueryString();
 
         return view('name-entries.index', ['names' => $names]);
     }
@@ -43,7 +43,7 @@ class NameEntryController extends Controller
         } else {
             $query->where('category', $def['category']);
         }
-        $names = $query->orderBy('name_en')->paginate(48)->withQueryString();
+        $names = $query->with('audio')->orderBy('name_en')->paginate(48)->withQueryString();
 
         return view('name-entries.list', ['names' => $names, 'list' => $list, 'def' => $def]);
     }
@@ -60,6 +60,6 @@ class NameEntryController extends Controller
             ->take(4)
             ->get();
 
-        return view('name-entries.show', ['name' => $nameEntry, 'related' => $related]);
+        return view('name-entries.show', ['name' => $nameEntry->load('audio'), 'related' => $related]);
     }
 }

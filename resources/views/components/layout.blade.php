@@ -1,6 +1,6 @@
 {{-- title/description must be props: without them Blade drops the values every page passes, and all pages showed "BuntyFun" + the default description (fixed 12 Nov 2026). --}}
 @props(['dir' => 'ltr', 'lang' => 'en', 'ads' => true, 'title' => null, 'description' => null,
-         'meta' => null, 'breadcrumbs' => [], 'ogType' => 'website', 'ogImage' => null, 'noindex' => false, 'schema' => [], 'urduFont' => false])
+         'meta' => null, 'breadcrumbs' => [], 'ogType' => 'website', 'ogImage' => null, 'noindex' => false, 'schema' => [], 'urduFont' => false, 'player' => false, 'quranFont' => false])
 @php
     // Per-item SEO overrides (content_meta) win over the page defaults.
     $pageTitle = $meta?->seo_title ? $meta->seo_title.' — BuntyFun' : ($title ?? config('app.name'));
@@ -88,6 +88,9 @@
     @endif
     @if ($showAds && config('services.adsense.client_id'))
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config('services.adsense.client_id') }}" crossorigin="anonymous"></script>
+    @endif
+    @if ($quranFont)
+        <link href="https://fonts.bunny.net/css?family=amiri-quran" rel="stylesheet">
     @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -238,5 +241,9 @@
             <p class="mt-6 text-navy-200">&copy; {{ now()->year }} BuntyFun.com</p>
         </div>
     </footer>
+    @if ($player)
+        <x-audio-player />
+        <div class="h-28 sm:h-16" aria-hidden="true"></div>
+    @endif
 </body>
 </html>

@@ -136,7 +136,7 @@
                     @if ($dua)
                         <a href="{{ route('duas.show', $dua) }}" class="mt-3 block hover:opacity-80">
                             <span class="block text-sm font-medium">{{ $dua->title }}</span>
-                            <span class="mt-1 block text-right text-xl leading-loose text-navy-700" dir="rtl" lang="ar">{{ Str::limit($dua->arabic, 80) }}</span>
+                            <span class="mt-1 block text-right text-xl leading-loose text-navy-700" dir="rtl" lang="ar">{{ $dua->arabic }}</span>
                             <span class="block text-sm text-slate-600">{{ Str::limit($dua->translation_en, 90) }}</span>
                         </a>
                     @endif

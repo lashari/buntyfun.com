@@ -84,10 +84,21 @@ Route::prefix('islamic-names')->group(function () {
     Route::get('/{nameEntry:slug}', [NameEntryController::class, 'show'])->name('name-entries.show');
 });
 
+Route::prefix('quran')->group(function () {
+    Route::get('/', [\App\Http\Controllers\QuranController::class, 'index'])->name('quran.index');
+    Route::get('/search', [\App\Http\Controllers\QuranController::class, 'search'])->middleware('throttle:30,1')->name('quran.search');
+    Route::get('/{surah}', [\App\Http\Controllers\QuranController::class, 'surah'])->where('surah', '[0-9]{1,3}(-[a-z0-9-]+)?')->name('quran.surah');
+});
+Route::prefix('naats')->group(function () {
+    Route::get('/', [\App\Http\Controllers\NaatController::class, 'index'])->name('naats.index');
+    Route::get('/c/{category}', [\App\Http\Controllers\NaatController::class, 'category'])->where('category', '[a-z-]+')->name('naats.category');
+    Route::get('/{naat:slug}', [\App\Http\Controllers\NaatController::class, 'show'])->name('naats.show');
+});
 Route::get('/99-names-of-allah', [\App\Http\Controllers\IslamicController::class, 'allahNames'])->name('islamic.allah-names');
 Route::get('/islamic-calendar', [\App\Http\Controllers\IslamicController::class, 'calendar'])->name('islamic.calendar');
 Route::prefix('duas')->group(function () {
     Route::get('/', [\App\Http\Controllers\IslamicController::class, 'duas'])->name('duas.index');
+    Route::get('/c/{category}', [\App\Http\Controllers\IslamicController::class, 'duaCategory'])->where('category', '[a-z-]+')->name('duas.category');
     Route::get('/{dua:slug}', [\App\Http\Controllers\IslamicController::class, 'dua'])->name('duas.show');
 });
 Route::prefix('urdu-poetry')->group(function () {
@@ -155,7 +166,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('quotes/{quote}/edit', [\App\Http\Controllers\Admin\QuoteAdminController::class, 'edit'])->name('quotes.edit');
         Route::put('quotes/{quote}', [\App\Http\Controllers\Admin\QuoteAdminController::class, 'update'])->name('quotes.update');
 
-        Route::prefix('library')->name('library.')->where(['type' => 'poems|poets|duas|allah-names', 'id' => '[0-9]+'])->group(function () {
+        Route::prefix('library')->name('library.')->where(['type' => 'poems|poets|duas|allah-names|reciters|translations|naats|audio', 'id' => '[0-9]+'])->group(function () {
             $c = \App\Http\Controllers\Admin\LibraryAdminController::class;
             Route::get('/{type?}', [$c, 'index'])->name('index');
             Route::get('/{type}/new', [$c, 'create'])->name('create');

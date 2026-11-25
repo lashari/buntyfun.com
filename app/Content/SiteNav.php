@@ -19,7 +19,9 @@ class SiteNav
      */
     public static function groups(): array
     {
-        $live = Cache::remember('layout.nav-live', 600, fn () => [
+        $live = Cache::remember('layout.nav-live-v2', 600, fn () => [
+            'quran' => Schema::hasTable('quran_surahs') && \App\Models\QuranSurah::count() === 114,
+            'naats' => Schema::hasTable('naats') && \App\Models\Naat::where('status', 'published')->exists(),
             'messages' => Message::where('status', 'published')->exists(),
             'quotes' => Schema::hasTable('quotes') && \App\Models\Quote::where('status', 'published')->exists(),
             // biggest categories first; only categories with published wallpapers
@@ -69,15 +71,17 @@ class SiteNav
             ],
             'islamic' => [
                 'label' => 'Islamic', 'url' => route('name-entries.index'),
-                'intro' => 'Muslim names with sourced meanings, the 99 Names of Allah and daily duas.',
-                'links' => [
+                'intro' => 'The Quran with audio, Muslim names with sourced meanings and pronunciation, masnoon duas, naats and the 99 Names of Allah.',
+                'links' => array_values(array_filter([
+                    $live['quran'] ? [route('quran.index'), 'Quran with audio'] : null,
                     [route('name-entries.index'), 'Islamic names'],
                     [route('name-entries.list', 'boys'), 'Boys names'],
                     [route('name-entries.list', 'girls'), 'Girls names'],
+                    [route('duas.index'), 'Masnoon duas'],
+                    $live['naats'] ? [route('naats.index'), 'Naats'] : null,
                     [route('islamic.allah-names'), '99 Names of Allah'],
-                    [route('duas.index'), 'Daily duas'],
                     [route('islamic.calendar'), 'Islamic calendar'],
-                ],
+                ])),
             ],
             'urdu' => [
                 'label' => 'Urdu', 'url' => route('poetry.index'),

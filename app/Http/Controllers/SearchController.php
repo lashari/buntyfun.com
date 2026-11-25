@@ -21,7 +21,7 @@ class SearchController extends Controller
     public function index(Request $request)
     {
         $q = mb_substr(trim((string) $request->query('q', '')), 0, 80);
-        $results = array_fill_keys(['quizzes', 'games', 'quotes', 'wishes', 'messages', 'names', 'urdu', 'wallpapers', 'aiTools', 'poems', 'duas'], collect());
+        $results = array_fill_keys(['quizzes', 'games', 'quotes', 'wishes', 'messages', 'names', 'urdu', 'wallpapers', 'aiTools', 'poems', 'duas', 'surahs', 'naats'], collect());
 
         if (mb_strlen($q) >= 2) {
             $like = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\%', '\_'], $q).'%';
@@ -40,6 +40,11 @@ class SearchController extends Controller
             if (\Illuminate\Support\Facades\Schema::hasTable('poems')) {
                 $results['poems'] = $any(\App\Models\Poem::query()->with('poet'), ['title', 'body']);
                 $results['duas'] = $any(\App\Models\Dua::query(), ['title', 'translation_en', 'transliteration']);
+            }
+            if (\Illuminate\Support\Facades\Schema::hasTable('quran_surahs')) {
+                $results['surahs'] = \App\Models\QuranSurah::where(fn ($w) => $w->where('name_en', 'like', $like)->orWhere('name_meaning', 'like', $like)->orWhere('name_ar', 'like', $like))
+                    ->orderBy('number')->take(self::PER_SECTION)->get();
+                $results['naats'] = $any(\App\Models\Naat::query(), ['title', 'title_ur', 'poet', 'reciter']);
             }
         }
 

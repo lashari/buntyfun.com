@@ -52,7 +52,7 @@
                         <h2 class="mb-3 text-xl font-bold">🤲 Dua of the day</h2>
                         <a href="{{ route('duas.show', $dua) }}" class="block rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md">
                             <span class="font-semibold">{{ $dua->title }}</span>
-                            <span class="mt-2 block text-right text-xl leading-loose text-navy-700" dir="rtl" lang="ar">{{ Str::limit($dua->arabic, 100) }}</span>
+                            <span class="mt-2 block text-right text-xl leading-loose text-navy-700" dir="rtl" lang="ar">{{ $dua->arabic }}</span>
                             <span class="mt-1 block text-sm text-slate-600">{{ Str::limit($dua->translation_en, 110) }}</span>
                         </a>
                     </section>

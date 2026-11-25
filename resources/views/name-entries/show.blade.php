@@ -6,9 +6,9 @@
 @endphp
 <x-layout :title="$name->name_en.' Name Meaning ('.$genderLabel.') — Arabic & Urdu Spelling | BuntyFun'"
           :description="$name->name_en.($name->name_ar ? ' ('.$name->name_ar.')' : '').': '.Str::limit($name->meaning, 120).' Source cited.'"
-          :meta="$name->meta" :breadcrumbs="['Islamic Names' => route('name-entries.index'), $name->name_en => null]">
+          :meta="$name->meta" :player="true" :breadcrumbs="['Islamic Names' => route('name-entries.index'), $name->name_en => null]">
     <div class="mx-auto max-w-xl px-4 py-12">
-        <h1 class="text-3xl font-bold">{{ $name->name_en }}</h1>
+        <div class="flex flex-wrap items-center gap-3"><h1 class="text-3xl font-bold">{{ $name->name_en }}</h1>@include('name-entries.partials.play', ['name' => $name, 'full' => true])</div>
         <p class="mt-1 text-slate-500">Name meaning and spelling</p>
 
         <dl class="mt-6 grid grid-cols-[auto_1fr] gap-x-6 gap-y-3 rounded-xl border border-slate-200 bg-white p-5 text-sm">
@@ -19,6 +19,9 @@
                 <dt class="text-slate-500">Urdu</dt><dd class="font-urdu text-xl" dir="rtl" lang="ur">{{ $name->name_ur }}</dd>
             @endif
             <dt class="text-slate-500">English spelling</dt><dd>{{ $name->name_en }}</dd>
+            @if ($name->pronunciation)
+                <dt class="text-slate-500">Say it</dt><dd><span class="font-medium">{{ $name->pronunciation }}</span> <span class="text-xs text-slate-500">(capitals = stressed part)</span></dd>
+            @endif
             <dt class="text-slate-500">Gender</dt><dd>{{ $genderLabel }}</dd>
             @if ($name->origin)
                 <dt class="text-slate-500">Origin</dt><dd>{{ $name->origin }}</dd>
@@ -39,6 +42,9 @@
             <p class="font-urdu mt-2 text-xl leading-loose" dir="rtl" lang="ur">{{ $name->meaning_ur }}</p>
         @endif
 
+        @if (in_array($name->verification, ['uncertain', 'needs_review'], true))
+            <p class="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{{ $name->verification === 'uncertain' ? 'The meaning of this name is uncertain; scholars and dictionaries differ.' : 'This meaning has not yet been checked by an editor.' }}</p>
+        @endif
         <p class="mt-6 text-sm text-slate-600">
             Source:
             {!! $sourceHtml !!}

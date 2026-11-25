@@ -133,6 +133,30 @@ class SeoController extends Controller
         return response($xml, 200)->header('Content-Type', 'application/xml');
     }
 
+    /** Quran (index + 114 surahs) and naats (11-27-2026), only once their tables are filled. */
+    private function quranNaatUrls(\Illuminate\Support\Collection $urls): void
+    {
+        $schema = \Illuminate\Support\Facades\Schema::class;
+        if ($schema::hasTable('quran_surahs') && \App\Models\QuranSurah::count() === 114 && \App\Models\QuranAyah::count() === 6236) {
+            $urls->push(['loc' => route('quran.index'), 'changefreq' => 'monthly']);
+            foreach (\App\Models\QuranSurah::orderBy('number')->get() as $s) {
+                $urls->push(['loc' => $s->url(), 'changefreq' => 'yearly']);
+            }
+        }
+        if ($schema::hasTable('naats')) {
+            $naats = \App\Models\Naat::indexable()->get(['id', 'slug', 'category', 'updated_at']);
+            if ($naats->isNotEmpty()) {
+                $urls->push(['loc' => route('naats.index'), 'changefreq' => 'weekly']);
+                foreach ($naats->countBy('category') as $cat => $c) {
+                    $urls->push(['loc' => route('naats.category', $cat), 'changefreq' => 'weekly']);
+                }
+                foreach ($naats as $n) {
+                    $urls->push(['loc' => route('naats.show', $n), 'changefreq' => 'monthly', 'lastmod' => $n->updated_at]);
+                }
+            }
+        }
+    }
+
     /** Islamic knowledge + Urdu poetry pages (11-26-2026). Lists only pages that have published content. */
     private function libraryUrls(\Illuminate\Support\Collection $urls): void
     {
@@ -157,7 +181,13 @@ class SeoController extends Controller
             foreach ($duas as $dua) {
                 $urls->push(['loc' => route('duas.show', $dua), 'changefreq' => 'yearly', 'lastmod' => $dua->updated_at]);
             }
+            foreach ($duas->countBy('category') as $cat => $c) {
+                if ($c >= 2 && isset(\App\Models\Dua::CATEGORIES[$cat])) {
+                    $urls->push(['loc' => route('duas.category', $cat), 'changefreq' => 'monthly']);
+                }
+            }
         }
+        $this->quranNaatUrls($urls);
         $poems = \App\Models\Poem::indexable()->with('poet:id,slug')->get(['id', 'poet_id', 'slug', 'form', 'mood', 'updated_at']);
         if ($poems->isEmpty()) {
             return;
