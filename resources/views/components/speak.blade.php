@@ -1,18 +1,34 @@
-@props(['text', 'lang' => 'en', 'full' => false, 'label' => null])
+@props(['text' => '', 'lang' => 'en', 'full' => false, 'label' => null, 'parts' => null])
 {{--
-    Read text aloud with the visitor's own device voice (Web Speech API) in the right language.
-    Never uses a voice of another language. full=true also shows the Voice menu (choice is saved per language, site-wide).
+    Listen button. Urdu text with a pre-generated recording (App\Support\UrduVoice, female + male) plays that;
+    otherwise the visitor's device voice of the right language (never another language's voice).
+    full=true also shows the voice menu. Choices are saved site-wide.
+    parts: [['text' => …, 'lang' => 'ar'|'en'|'ur'], …] read one after another; a page may filter them by meaning language.
 --}}
 @php
     $lang = in_array($lang, ['en', 'ur', 'ar'], true) ? $lang : 'en';
     $names = ['en' => 'English', 'ur' => 'Urdu', 'ar' => 'Arabic'];
     $text = trim(preg_replace('/\s+/u', ' ', strip_tags((string) $text)));
+    $parts = $parts ? array_values(array_filter($parts, fn ($p) => trim((string) ($p['text'] ?? '')) !== '')) : null;
+    if ($parts) {
+        $parts = array_map(fn ($p) => $p + (($p['lang'] ?? '') === 'ur' ? ['src' => \App\Support\UrduVoice::src(trim(preg_replace('/\s+/u', ' ', $p['text'])))] : []), $parts);
+        $recorded = collect($parts)->contains(fn ($p) => ! empty($p['src']));
+    } else {
+        $src = $lang === 'ur' && $text !== '' ? \App\Support\UrduVoice::src($text) : null;
+        $parts = $src ? [['text' => $text, 'lang' => 'ur', 'src' => $src]] : null;
+        $recorded = (bool) $src;
+    }
 @endphp
-@if ($text !== '')
-<span x-data="{ said: '', voices: [], v: '', lang: '{{ $lang }}', text: {{ Js::from($text) }},
-               async go() { this.said = await BF.say(this.text, this.lang); },
+@if ($text !== '' || $parts)
+<span x-data="{ said: '', voices: [], v: '', g: 'female', lang: '{{ $lang }}', text: {{ Js::from($text) }}, parts: {{ Js::from($parts) }},
+               async go() {
+                   BF.stopVoice();
+                   if (!this.parts) { this.said = await BF.say(this.text, this.lang); return; }
+                   const m = BF.store.get('meaning_lang', 'en');
+                   this.said = await BF.speakSeq(this.parts.filter((p) => this.parts.length === 1 || p.lang === 'ar' || m === 'both' || p.lang === m));
+               },
                stop() { BF.stopVoice(); this.said = ''; } }"
-      @if ($full) x-init="voices = await BF.voicesFor(lang); v = BF.store.get('voice_' + lang) || (voices[0] ? voices[0].id : '')" @endif
+      x-init="g = BF.urduVoice(); @if ($full && ! $recorded) voices = await BF.voicesFor(lang); v = BF.store.get('voice_' + lang) || (voices[0] ? voices[0].id : ''); @endif"
       {{ $attributes->merge(['class' => 'inline-flex flex-wrap items-center gap-2']) }} dir="ltr">
     <button type="button" @click.prevent.stop="go()"
             class="inline-flex items-center gap-1.5 rounded-full {{ $full ? 'bg-emerald-700 px-4 py-2 text-sm text-white hover:bg-emerald-800' : 'border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50' }} font-semibold"
@@ -20,8 +36,15 @@
         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 9v6h4l5 5V4L8 9z"/><path d="M16 8a5 5 0 0 1 0 8" stroke="currentColor" stroke-width="2" fill="none"/></svg>
         Listen
     </button>
-    <button type="button" x-show="said === 'voice'" x-cloak @click.prevent.stop="stop()" class="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold" aria-label="Stop reading">■ Stop</button>
-    @if ($full)
+    <button type="button" x-show="said === 'voice' || said === 'audio'" x-cloak @click.prevent.stop="stop()" class="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold" aria-label="Stop reading">■ Stop</button>
+    @if ($recorded)
+        <label class="inline-flex items-center gap-1 text-xs text-slate-500">
+            <span class="{{ $full ? '' : 'sr-only' }}">Urdu voice:</span>
+            <select x-model="g" @change="BF.urduVoice(g); go()" class="rounded border-slate-300 py-0.5 pl-1 pr-6 text-xs" aria-label="Urdu voice: female or male">
+                @foreach (\App\Support\UrduVoice::VOICES as $k => $l)<option value="{{ $k }}">{{ $l }}</option>@endforeach
+            </select>
+        </label>
+    @elseif ($full)
         <template x-if="voices.length > 1">
             <label class="inline-flex items-center gap-1 text-xs text-slate-500">Voice:
                 <select x-model="v" @change="BF.setVoice(lang, v); go()" class="max-w-[11rem] rounded border-slate-300 py-0.5 pl-1 pr-6 text-xs" aria-label="Choose {{ $names[$lang] }} voice">
@@ -31,6 +54,7 @@
         </template>
         <span class="text-xs text-slate-500" x-show="said !== 'none'">Device voice (automatic)</span>
     @endif
+    @if ($full && $recorded)<span class="text-xs text-slate-400">Computer voice (AI4Bharat Indic Parler-TTS)</span>@endif
     <span x-show="said === 'none'" x-cloak class="text-xs text-amber-700">No {{ $names[$lang] }} voice on this device{{ $lang === 'ur' ? ' (add Urdu in your phone’s text-to-speech settings)' : '' }}.</span>
 </span>
 @endif

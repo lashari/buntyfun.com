@@ -253,6 +253,22 @@ class IslamicAudioLibraryTest extends TestCase
         $this->get(route('messages.show', $msg))->assertOk()->assertSee('Listen (English voice)', false);
         $this->get(route('urdu-content.show', $u))->assertOk()->assertSee('Listen (Urdu voice)', false)->assertSee('Choose Urdu voice', false);
         $this->get(route('urdu-content.index'))->assertOk()->assertSee('Listen (Urdu voice)', false);
-        $this->get(route('islamic.allah-names'))->assertOk()->assertSee('Listen to Ar-Rahman (Arabic voice)', false);
+        $this->get(route('islamic.allah-names'))->assertOk()->assertSee('Listen to Ar-Rahman and its meaning (Arabic voice)', false)->assertSee('Arabic name, then meaning in');
+    }
+
+    public function test_urdu_text_with_recording_offers_female_and_male_voice_and_falls_back_without(): void
+    {
+        Storage::fake('public');
+        $u = \App\Models\UrduContent::create(['category' => 'quotes', 'body' => "زندگی  ایک سفر ہے۔\n", 'slug' => 'ur-2', 'status' => 'published']);
+        $this->get(route('urdu-content.show', $u))->assertOk()->assertDontSee('Urdu voice: female or male', false);
+
+        $k = \App\Support\UrduVoice::key('زندگی ایک سفر ہے۔'); // whitespace-normalised, same as the generator
+        Storage::disk('public')->put("tts/female/{$k}.m4a", 'x');
+        Storage::disk('public')->put("tts/male/{$k}.m4a", 'x');
+        $this->get(route('urdu-content.show', $u))->assertOk()->assertSee('Urdu voice: female or male', false)->assertSee('AI4Bharat Indic Parler-TTS');
+        $html = $this->js(route('urdu-content.show', $u));
+        $this->assertStringContainsString("tts/female/{$k}.m4a", $html);
+        $this->assertStringContainsString("tts/male/{$k}.m4a", $html);
+        $this->assertSame($k, sha1('زندگی ایک سفر ہے۔'));
     }
 }

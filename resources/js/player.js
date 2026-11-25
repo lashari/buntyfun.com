@@ -153,24 +153,96 @@ export async function voicesFor(lang = 'ar') {
         .map((v) => ({ id: v.voiceURI || v.name, label: v.name.replace(/^Microsoft |^Google /, '').replace(/ Online \(Natural\)/, ' (natural)') + ' · ' + v.lang }));
 }
 
-export async function say(text, lang = 'ar') {
-    if (!('speechSynthesis' in window)) return 'none';
+async function pickVoice(lang) {
     const all = (await loadVoices()).filter((v) => (v.lang || '').toLowerCase().replace('_', '-').startsWith(lang));
-    if (!all.length) return 'none';
+    if (!all.length) return null;
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem('bf_voice_' + lang)); } catch { /* ignore */ }
     const best = (await voicesFor(lang))[0];
-    const voice = all.find((v) => (v.voiceURI || v.name) === saved) || all.find((v) => (v.voiceURI || v.name) === best.id);
+    return all.find((v) => (v.voiceURI || v.name) === saved) || all.find((v) => (v.voiceURI || v.name) === best.id);
+}
+
+/**
+ * Speak text, or a list of parts in different languages one after another:
+ * say([{ text: 'الرَّحْمَٰنُ', lang: 'ar' }, { text: 'The Most Merciful', lang: 'en' }]).
+ * A part whose language has no voice on this device is skipped (never read in another accent).
+ * Returns 'voice' if anything was spoken, else 'none'.
+ */
+export async function say(text, lang = 'ar') {
+    if (!('speechSynthesis' in window)) return 'none';
+    const parts = Array.isArray(text) ? text : [{ text, lang }];
+    const ready = [];
+    for (const p of parts) {
+        if (!p || !String(p.text || '').trim()) continue;
+        const voice = await pickVoice(p.lang || 'en');
+        if (voice) ready.push([p.text, voice]);
+    }
+    if (!ready.length) return 'none';
     window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.voice = voice;
-    u.lang = voice.lang;
-    u.rate = 0.85;
-    window.speechSynthesis.speak(u);
+    for (const [t, voice] of ready) {
+        const u = new SpeechSynthesisUtterance(t);
+        u.voice = voice;
+        u.lang = voice.lang;
+        u.rate = voice.lang.toLowerCase().startsWith('en') ? 0.95 : 0.85;
+        window.speechSynthesis.speak(u); // the browser queues these, so they play in order
+    }
     return 'voice';
 }
 
-export function stopVoice() { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }
+let seqId = 0;
+let seqAudio = null;
+
+export function stopVoice() {
+    seqId++;
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    if (seqAudio) { seqAudio.pause(); seqAudio = null; }
+}
+
+/** Female or male for pre-recorded Urdu voices (saved site-wide). */
+export function urduVoice(v) {
+    if (v) { try { localStorage.setItem('bf_urdu_voice', JSON.stringify(v)); } catch { /* ignore */ } return v; }
+    try { return JSON.parse(localStorage.getItem('bf_urdu_voice')) || 'female'; } catch { return 'female'; }
+}
+
+const speakOne = (text, voice) => new Promise((resolve) => {
+    const u = new SpeechSynthesisUtterance(text);
+    u.voice = voice; u.lang = voice.lang;
+    u.rate = voice.lang.toLowerCase().startsWith('en') ? 0.95 : 0.85;
+    u.onend = resolve; u.onerror = resolve;
+    window.speechSynthesis.speak(u);
+});
+
+const playOne = (src) => new Promise((resolve) => {
+    if (typeof Audio === 'undefined') { resolve(); return; }
+    seqAudio = new Audio(src);
+    seqAudio.onended = resolve; seqAudio.onerror = resolve;
+    seqAudio.play().catch(resolve);
+});
+
+/**
+ * Read parts one after another: [{ text, lang, src: { female, male } }].
+ * A part with a recording plays it (chosen voice, else the other one); otherwise the device voice of that
+ * language is used; a part with neither is skipped. Returns 'audio' | 'voice' | 'none'.
+ */
+export async function speakSeq(parts) {
+    stopVoice();
+    const id = seqId;
+    const plan = [];
+    for (const p of parts) {
+        if (!p || !String(p.text || '').trim()) continue;
+        if (p.src && (p.src.female || p.src.male)) { const g = urduVoice(); plan.push(['audio', p.src[g] || p.src.female || p.src.male]); continue; }
+        if ('speechSynthesis' in window) { const v = await pickVoice(p.lang || 'en'); if (v) plan.push(['voice', p.text, v]); }
+    }
+    if (!plan.length) return 'none';
+    const kind = plan.some((x) => x[0] === 'audio') ? 'audio' : 'voice';
+    (async () => {
+        for (const step of plan) {
+            if (id !== seqId) return;
+            if (step[0] === 'audio') await playOne(step[1]); else await speakOne(step[1], step[2]);
+        }
+    })();
+    return kind;
+}
 
 if ('speechSynthesis' in window) window.speechSynthesis.getVoices(); // warm the voice list (loads async in Chrome)
 
