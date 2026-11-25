@@ -5,6 +5,7 @@
     <div class="mx-auto max-w-xl px-4 py-12">
         <p class="text-xs uppercase tracking-wide text-slate-500">{{ Str::headline($message->relationship) }} · {{ Str::headline($message->tone) }}</p>
         <p class="mt-4 text-xl leading-relaxed">{{ $message->body }}</p>
+        <x-speak :text="$message->body" :lang="$message->language" :full="true" class="mt-4" />
 
         <div class="mt-8 flex flex-wrap gap-3"
              x-data="{

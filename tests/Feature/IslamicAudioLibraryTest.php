@@ -240,4 +240,19 @@ class IslamicAudioLibraryTest extends TestCase
         $this->actingAs($admin)->post(route('admin.library.bulk', 'translations'), ['ids' => [QuranTranslation::first()->id], 'action' => 'archived'])->assertRedirect();
         $this->assertSame('archived', QuranTranslation::first()->status);
     }
+
+    public function test_listen_button_on_wishes_messages_quotes_urdu_and_99_names_pages(): void
+    {
+        $cat = \App\Models\Category::firstOrCreate(['slug' => 'birthday'], ['name' => 'Birthday', 'department' => 'wishes']);
+        $en = \App\Models\BirthdayMessage::create(['category_id' => $cat->id, 'relationship' => 'friend', 'tone' => 'funny', 'language' => 'en', 'body' => 'Happy birthday my friend, have a great year!', 'slug' => 'hb-en', 'status' => 'published']);
+        $msg = \App\Models\Message::create(['category' => 'eid', 'language' => 'en', 'title' => 'Eid wish', 'body' => 'Eid Mubarak to you and your family.', 'slug' => 'eid-1', 'status' => 'published']);
+        $u = \App\Models\UrduContent::create(['category' => 'quotes', 'body' => 'زندگی ایک سفر ہے۔', 'slug' => 'ur-1', 'status' => 'published']);
+        \App\Models\AllahName::create(['number' => 1, 'arabic' => 'الرَّحْمَٰنُ', 'transliteration' => 'Ar-Rahman', 'meaning_en' => 'The Most Merciful', 'status' => 'published']);
+
+        $this->get(route('birthday-messages.show', $en))->assertOk()->assertSee('Listen (English voice)', false)->assertSee('Choose English voice', false);
+        $this->get(route('messages.show', $msg))->assertOk()->assertSee('Listen (English voice)', false);
+        $this->get(route('urdu-content.show', $u))->assertOk()->assertSee('Listen (Urdu voice)', false)->assertSee('Choose Urdu voice', false);
+        $this->get(route('urdu-content.index'))->assertOk()->assertSee('Listen (Urdu voice)', false);
+        $this->get(route('islamic.allah-names'))->assertOk()->assertSee('Listen to Ar-Rahman (Arabic voice)', false);
+    }
 }

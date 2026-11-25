@@ -24,6 +24,7 @@
                     @foreach ($items as $wish)
                         <div class="rounded-xl border border-slate-200 bg-white p-5" x-data="{ copied: false }" @if ($wish->language === 'ur') dir="rtl" @endif>
                             <p class="{{ $wish->language === 'ur' ? 'font-urdu text-lg leading-loose' : 'leading-relaxed' }} text-slate-800" @if ($wish->language === 'ur') lang="ur" @endif>{{ $wish->body }}</p>
+                            <x-speak :text="$wish->body" :lang="$wish->language" class="mt-2" />
                             <div class="mt-3 flex flex-wrap gap-2 text-sm" dir="ltr">
                                 <button type="button" class="rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-50"
                                         @click="navigator.clipboard.writeText(@js($wish->body)); copied = true; setTimeout(() => copied = false, 2000)">

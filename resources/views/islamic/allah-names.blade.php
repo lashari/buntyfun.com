@@ -26,7 +26,7 @@
                             <span class="text-xs font-semibold text-slate-400">{{ $n->number }}</span>
                             <span class="text-3xl leading-snug text-navy-700" dir="rtl" lang="ar">{{ $n->arabic }}</span>
                         </div>
-                        <p class="mt-2 font-semibold">{{ $n->transliteration }}</p>
+                        <p class="mt-2 flex items-center justify-between gap-2 font-semibold">{{ $n->transliteration }} <x-speak :text="$n->arabic" lang="ar" label="Listen to {{ $n->transliteration }}" /></p>
                         <div x-show="show === 'all' || open" class="mt-1">
                             <p class="text-sm text-slate-600">{{ $n->meaning_en }}</p>
                             @if ($n->meaning_ur)<p class="font-urdu mt-1 text-lg leading-loose text-slate-700" dir="rtl" lang="ur">{{ $n->meaning_ur }}</p>@endif

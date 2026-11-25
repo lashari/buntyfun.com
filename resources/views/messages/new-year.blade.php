@@ -34,6 +34,7 @@
                         <div class="rounded-xl border border-slate-200 bg-white p-5">
                             @if ($wish->title)<p class="text-xs font-semibold uppercase tracking-wide text-slate-500 {{ $wish->language === 'ur' ? 'font-urdu normal-case text-sm' : '' }}" @if ($wish->language === 'ur') dir="rtl" lang="ur" @endif>{{ $wish->title }}</p>@endif
                             <p class="mt-1 {{ $wish->language === 'ur' ? 'font-urdu text-lg leading-loose' : 'leading-relaxed' }} text-slate-800" @if ($wish->language === 'ur') dir="rtl" lang="ur" @endif>{{ $wish->body }}</p>
+                            <x-speak :text="$wish->body" :lang="$wish->language" class="mt-2" />
                             <div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
                                 <button type="button" class="rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-50" @click="copy({{ $wish->id }}, @js($wish->body))">
                                     <span x-show="copiedId !== {{ $wish->id }}">Copy</span><span x-show="copiedId === {{ $wish->id }}" x-cloak>Copied!</span>
@@ -55,6 +56,7 @@
                     @foreach ($more as $wish)
                         <div class="rounded-xl border border-slate-200 bg-white p-5">
                             <p class="leading-relaxed text-slate-800" @if ($wish->language === 'ur') dir="rtl" lang="ur" @endif>{{ $wish->body }}</p>
+                            <x-speak :text="$wish->body" :lang="$wish->language" class="mt-2" />
                             <div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
                                 <button type="button" class="rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-50" @click="copy({{ $wish->id }}, @js($wish->body))">
                                     <span x-show="copiedId !== {{ $wish->id }}">Copy</span><span x-show="copiedId === {{ $wish->id }}" x-cloak>Copied!</span>

@@ -31,6 +31,7 @@
         @if ($naat->description)<p class="mt-6 leading-relaxed text-slate-700">{{ $naat->description }}</p>@endif
         @if ($naat->lyrics)
             <h2 class="mt-8 text-lg font-bold">Lyrics</h2>
+            <x-speak :text="$naat->lyrics" lang="ur" :full="true" label="Read the lyrics aloud" class="mt-2" />
             <div class="font-urdu mt-3 whitespace-pre-line rounded-xl border border-slate-200 bg-white p-5 text-right text-xl leading-[2.4]" dir="rtl" lang="ur">{{ $naat->lyrics }}</div>
         @endif
         <p class="mt-6 text-xs text-slate-500">Licence: {{ $naat->audio?->license ?: ($naat->license ?: 'Text shown for reading only.') }}@if ($naat->source_url) · <a href="{{ $naat->source_url }}" class="underline" rel="noopener nofollow" target="_blank">source</a>@endif</p>

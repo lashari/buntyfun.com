@@ -34,6 +34,7 @@
                     @foreach ($items as $wish)
                         <div class="rounded-xl border border-slate-200 bg-white p-5" x-data="{ copied: false }">
                             <p class="font-urdu text-lg leading-loose text-slate-800" dir="rtl" lang="ur">{{ $wish->body }}</p>
+                            <x-speak :text="$wish->body" lang="ur" class="mt-2" />
                             <div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
                                 <span class="rounded-full bg-orange-50 px-2.5 py-0.5 text-xs text-orange-700">{{ Str::headline($wish->tone) }} · <span class="font-urdu" lang="ur">{{ $toneLabel[$wish->tone] ?? '' }}</span></span>
                                 <button type="button" class="rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-50"
