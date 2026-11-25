@@ -25,6 +25,8 @@ class AutomationRunner
         'import_quotes' => Tasks\ImportQuotesTask::class,
         'daily_picks' => Tasks\DailyPicksTask::class,
         'import_wallpapers' => Tasks\ImportWallpapersTask::class,
+        'library_checks' => Tasks\LibraryChecksTask::class,
+        'publish_poems' => Tasks\PublishPoemsTask::class,
     ];
 
     /** Called by cron every 5 minutes. Returns the runs it made. */

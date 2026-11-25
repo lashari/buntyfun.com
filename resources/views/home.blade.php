@@ -5,6 +5,8 @@
             [route('quizzes.index'), '🧠', 'Fun Quizzes', 'Trivia with answers explained', 'bg-sea-50 text-sea-700'],
             [route('birthday-messages.index'), '🎂', 'Birthday Wishes', 'Copy or send on WhatsApp', 'bg-brand-50 text-brand-700'],
             [route('name-entries.index'), '🌙', 'Islamic Names', 'Meanings with sources', 'bg-sun-50 text-brand-800'],
+            [route('poetry.index'), '📜', 'Urdu Poetry', 'غالب، اقبال، میر', 'bg-brand-50 text-brand-700'],
+            [route('duas.index'), '🤲', 'Daily Duas', '99 Names & Islamic calendar', 'bg-sun-50 text-brand-800'],
             [route('urdu-content.index'), '✍️', 'Urdu Corner', 'اردو پیغامات', 'bg-sea-50 text-sea-700'],
             [route('ai-tools.index'), '✨', 'AI Fun Tools', 'Jokes, greetings & more', 'bg-navy-50 text-navy-700'],
         ];
@@ -23,7 +25,7 @@
         </div>
     </section>
 
-    <nav aria-label="Sections" class="mx-auto mt-8 grid max-w-6xl grid-cols-2 gap-3 px-4 sm:grid-cols-3 lg:grid-cols-6">
+    <nav aria-label="Sections" class="mx-auto mt-8 grid max-w-6xl grid-cols-2 gap-3 px-4 sm:grid-cols-4">
         @foreach ($tiles as [$href, $icon, $label, $sub, $tone])
             <a href="{{ $href }}" class="group rounded-2xl border border-slate-200 bg-white p-4 text-center transition hover:-translate-y-1 hover:border-brand-300 hover:shadow-lg">
                 <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl text-2xl {{ $tone }}" aria-hidden="true">{{ $icon }}</span>

@@ -36,6 +36,30 @@
         </div>
 
         <div>
+            <label class="block text-sm font-medium text-slate-700">Meaning (Urdu)</label>
+            <textarea name="meaning_ur" rows="2" dir="rtl" class="font-urdu mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-lg">{{ old('meaning_ur', $name->meaning_ur) }}</textarea>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-slate-700">List</label>
+            <select name="category" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
+                @foreach (\App\Models\NameEntry::CATEGORIES as $k => $l)<option value="{{ $k }}" @selected(old('category', $name->category ?? 'general') === $k)>{{ $l }}</option>@endforeach
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-slate-700">Quran reference (only if verified, e.g. "Quran 2:31")</label>
+            <input type="text" name="quranic_ref" value="{{ old('quranic_ref', $name->quranic_ref) }}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-slate-700">Verification</label>
+            <select name="verification" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
+                @foreach (['needs_review' => 'Needs review', 'editor_checked' => 'Checked by editor', 'scholar_checked' => 'Checked by a scholar'] as $k => $l)<option value="{{ $k }}" @selected(old('verification', $name->verification ?? 'needs_review') === $k)>{{ $l }}</option>@endforeach
+            </select>
+        </div>
+
+        <div>
             <label class="block text-sm font-medium text-slate-700">Origin</label>
             <input type="text" name="origin" value="{{ old('origin', $name->origin) }}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
         </div>

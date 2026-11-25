@@ -23,7 +23,8 @@
         $nav['quotes'] ? [route('quotes.index'), 'Quotes'] : null,
         [route('birthday-messages.index'), 'Birthday Wishes'],
         $nav['messages'] ? [route('messages.index'), 'Messages'] : null,
-        [route('name-entries.index'), 'Islamic Names'],
+        [route('name-entries.index'), 'Islamic'],
+        [route('poetry.index'), 'Poetry'],
         [route('urdu-content.index'), 'اردو'],
         $nav['wallpapers'] ? [route('wallpapers.index'), 'Wallpapers'] : null,
         [route('ai-tools.index'), 'AI Fun'],
@@ -187,6 +188,15 @@
                 @foreach ($links as [$href, $label])
                     <a href="{{ $href }}" class="hover:text-navy-600">{{ $label }}</a>
                 @endforeach
+            </div>
+            <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
+                <a href="{{ route('islamic.allah-names') }}" class="hover:text-navy-600">99 Names of Allah</a>
+                <a href="{{ route('duas.index') }}" class="hover:text-navy-600">Daily Duas</a>
+                <a href="{{ route('islamic.calendar') }}" class="hover:text-navy-600">Islamic Calendar</a>
+                <a href="{{ route('name-entries.list', 'boys') }}" class="hover:text-navy-600">Boys Names</a>
+                <a href="{{ route('name-entries.list', 'girls') }}" class="hover:text-navy-600">Girls Names</a>
+                <a href="{{ route('poetry.segment', 'ghalib') }}" class="hover:text-navy-600">Ghalib</a>
+                <a href="{{ route('poetry.segment', 'iqbal') }}" class="hover:text-navy-600">Iqbal</a>
             </div>
             <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
                 <a href="{{ route('pages.about') }}" class="hover:text-navy-600">About</a>

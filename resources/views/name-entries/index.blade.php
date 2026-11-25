@@ -7,6 +7,8 @@
             <p>Many names come from Arabic roots of three letters that carry a core idea. Muhammad, Ahmad and Hamid all share the root ḥ-m-d ("praise"), for example. English spellings of the same name differ widely, so search by the spelling you know and check the Arabic form on the name page.</p>
         </div>
 
+        @include('name-entries.partials.lists-nav', ['active' => null])
+
         <form method="GET" class="mt-4 flex flex-wrap gap-3">
             <input type="search" name="q" value="{{ request('q') }}" placeholder="Search by name or meaning"
                    class="rounded-lg border border-slate-300 px-3 py-2 text-sm">

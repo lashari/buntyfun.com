@@ -27,6 +27,7 @@
                 <a href="{{ route('admin.games.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Games</a>
                 <a href="{{ route('admin.birthday-messages.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Birthday Wishes</a>
                 <a href="{{ route('admin.name-entries.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Islamic Names</a>
+                <a href="{{ route('admin.library.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Library (Poetry, Duas, 99 Names)</a>
                 <a href="{{ route('admin.messages.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Messages &amp; Quotes</a>
                 <a href="{{ route('admin.urdu-content.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Urdu Content</a>
                 <a href="{{ route('admin.wallpapers.index') }}" class="rounded px-3 py-2 hover:bg-brand-50 hover:text-navy-600">Wallpapers</a>

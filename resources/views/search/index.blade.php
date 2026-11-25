@@ -1,6 +1,6 @@
 @php
     $sections = ['quizzes' => 'Quizzes', 'games' => 'Games', 'quotes' => 'Quotes', 'wishes' => 'Birthday Wishes', 'messages' => 'Messages',
-        'names' => 'Islamic Names', 'urdu' => 'اردو', 'wallpapers' => 'Wallpapers', 'aiTools' => 'AI Fun Studio'];
+        'names' => 'Islamic Names', 'urdu' => 'اردو', 'wallpapers' => 'Wallpapers', 'aiTools' => 'AI Fun Studio', 'poems' => 'Urdu Poetry', 'duas' => 'Duas'];
     $hasAny = array_sum(array_map(fn ($c) => $c->count(), $results));
 @endphp
 <x-layout :title="($q !== '' ? 'Search: '.$q : 'Search').' — BuntyFun'" description="Search quizzes, games, quotes, birthday wishes, messages, Islamic names, Urdu content and wallpapers." :noindex="true" :ads="false">
@@ -43,6 +43,8 @@
                                     @case('names') <a href="{{ route('name-entries.show', $item) }}" class="text-navy-600 hover:underline">{{ $item->name_en }}</a> <span class="text-sm text-slate-500">— {{ Str::limit($item->meaning, 60) }}</span> @break
                                     @case('urdu') <a href="{{ route('urdu-content.show', $item) }}" class="text-navy-600 hover:underline" dir="rtl">{{ Str::limit($item->body, 90) }}</a> @break
                                     @case('wallpapers') <a href="{{ route('wallpapers.show', $item) }}" class="text-navy-600 hover:underline">{{ $item->title }}</a> @break
+                                    @case('poems') <a href="{{ route('poetry.show', [$item->poet->slug, $item->slug]) }}" class="font-urdu text-navy-600 hover:underline" dir="rtl" lang="ur">{{ Str::limit($item->firstLines(1), 90) }}</a> <span class="text-sm text-slate-500">— {{ $item->poet->name_en }}</span> @break
+                                    @case('duas') <a href="{{ route('duas.show', $item) }}" class="text-navy-600 hover:underline">{{ $item->title }}</a> @break
                                     @case('aiTools') <a href="{{ route('ai-tools.show', $item) }}" class="text-navy-600 hover:underline">{{ $item->title }}</a> @break
                                 @endswitch
                             </li>

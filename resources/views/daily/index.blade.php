@@ -1,6 +1,6 @@
 <x-layout :title="'Daily Challenge — Trivia, Quiz and Quote of the Day ('.now()->format('M j, Y').') | BuntyFun'"
           description="A new daily challenge every day: five trivia questions with explanations, a quiz of the day, a game of the day and a quote to share. Build your streak."
-          :breadcrumbs="['Daily Challenge' => null]">
+          :breadcrumbs="['Daily Challenge' => null]" :urduFont="(bool) $poem">
     <div class="mx-auto max-w-5xl px-4 py-10">
         <p class="text-sm font-semibold uppercase tracking-wide text-navy-600">{{ now()->format('l, F j, Y') }}</p>
         <h1 class="mt-1 text-3xl font-bold">Daily Challenge</h1>
@@ -39,6 +39,22 @@
                     <section>
                         <h2 class="mb-3 text-xl font-bold">💬 Quote of the day</h2>
                         @include('quotes.partials.card', ['quote' => $quote])
+                    </section>
+                @endif
+                @if ($poem)
+                    <section>
+                        <h2 class="mb-3 text-xl font-bold">📜 Poetry of the day</h2>
+                        @include('poetry.partials.card', ['poem' => $poem])
+                    </section>
+                @endif
+                @if ($dua)
+                    <section>
+                        <h2 class="mb-3 text-xl font-bold">🤲 Dua of the day</h2>
+                        <a href="{{ route('duas.show', $dua) }}" class="block rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md">
+                            <span class="font-semibold">{{ $dua->title }}</span>
+                            <span class="mt-2 block text-right text-xl leading-loose text-navy-700" dir="rtl" lang="ar">{{ Str::limit($dua->arabic, 100) }}</span>
+                            <span class="mt-1 block text-sm text-slate-600">{{ Str::limit($dua->translation_en, 110) }}</span>
+                        </a>
                     </section>
                 @endif
                 <section x-data="{ items: [] }" x-init="items = BF.recent().slice(0, 5)" x-show="items.length" x-cloak>
