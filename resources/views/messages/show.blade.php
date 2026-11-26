@@ -7,6 +7,7 @@
         <p class="text-xs uppercase tracking-wide text-slate-500">{{ $message->categoryLabel() }}</p>
         @if ($message->title)<h1 class="mt-2 text-2xl font-bold">{{ $message->title }}</h1>@endif
         <p class="mt-4 text-xl leading-relaxed">{{ $message->body }}</p>
+        <x-speak :text="$message->body" :lang="$message->language" :full="true" :player="'message:'.$message->slug" class="mt-4" />
 
         <div class="mt-8 flex flex-wrap gap-3"
              x-data="{

@@ -9,7 +9,7 @@ class NameEntry extends Model
     use \App\Models\Concerns\HasContentMeta;
 
     protected $fillable = [
-        'name_en', 'name_ar', 'name_ur', 'gender', 'meaning', 'meaning_ur', 'origin', 'category', 'quranic_ref', 'source_ref', 'verification', 'slug', 'status',
+        'name_en', 'name_ar', 'name_ur', 'pronunciation', 'gender', 'meaning', 'meaning_ur', 'origin', 'category', 'quranic_ref', 'source_ref', 'verification', 'slug', 'status',
     ];
 
     /** Name lists with their own page under /islamic-names/{key}. gender lists filter by gender; the rest by category. */
@@ -20,6 +20,16 @@ class NameEntry extends Model
         'prophets' => ['title' => 'Names of the Prophets', 'category' => 'prophet', 'intro' => 'The 25 prophets mentioned by name in the Quran, with Arabic and Urdu spelling and a verse in which each is named. Peace be upon them all.'],
         'sahaba' => ['title' => 'Sahaba Names (Companions)', 'category' => 'sahaba', 'intro' => 'Names of well-known Companions of the Prophet Muhammad ﷺ, men and women, with the meaning of each name and a link to read about the Companion.'],
     ];
+
+    public const VERIFICATION = [
+        'needs_review' => 'Needs review', 'source_checked' => 'Word found in the cited source (automatic check)',
+        'uncertain' => 'Meaning uncertain (shown with a warning)', 'editor_checked' => 'Checked by editor', 'scholar_checked' => 'Checked by a scholar',
+    ];
+
+    public function audio()
+    {
+        return $this->hasOne(AudioTrack::class, 'ref_id')->where('kind', 'name')->where('status', 'published')->latest('id');
+    }
 
     public const CATEGORIES = ['general' => 'General', 'quranic' => 'Quranic word', 'prophet' => 'Prophet', 'sahaba' => 'Companion (Sahabi)', 'sahabiyah' => 'Companion (Sahabiyah)'];
 }

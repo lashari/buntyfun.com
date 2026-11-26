@@ -1,6 +1,7 @@
 <figure class="flex flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
         x-data="{ copied: false, text: {{ Js::from($quote->shareText()) }} }">
     <blockquote class="text-lg leading-relaxed text-slate-800">“{{ $quote->body }}”</blockquote>
+    <x-speak :text="$quote->body" lang="en" class="mt-2" />
     <figcaption class="mt-3 text-sm font-medium text-slate-600">
         — @if ($quote->author !== 'Anonymous')<a href="{{ route('quotes.author', $quote->author_slug) }}" class="hover:underline">{{ $quote->author }}</a>@else Anonymous @endif
     </figcaption>

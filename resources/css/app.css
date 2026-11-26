@@ -63,3 +63,12 @@
     h1, h2, h3 { color: var(--color-navy-700); letter-spacing: -0.01em; }
 }
 .font-urdu, .font-urdu * { letter-spacing: 0; }
+
+/* Quran text (Tanzil Uthmani needs a font with the Uthmani marks) */
+.font-quran { font-family: 'Amiri Quran', 'Amiri', 'Scheherazade New', 'Traditional Arabic', serif; letter-spacing: 0; line-height: 2.3; }
+.ayah-active { background: #ecfdf5; box-shadow: inset 4px 0 0 #047857; }
+/* Quran verse action buttons (plain DOM, no per-verse Alpine bindings) */
+.ab { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px; font-size: 0.95rem; line-height: 1; }
+.ab:hover, .ab:focus-visible { background: #ecfdf5; }
+.ab.bm { color: #94a3b8; }
+.ab.bm.on { color: #f59e0b; }

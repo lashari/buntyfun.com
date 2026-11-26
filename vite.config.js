@@ -10,6 +10,12 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    build: {
+        rollupOptions: {
+            // pdf.js worker ships as .mjs; serve it as .js so cPanel's Apache sends a JavaScript MIME type
+            output: { assetFileNames: (a) => (a.names?.[0] || a.name || '').endsWith('.mjs') ? 'assets/[name]-[hash].js' : 'assets/[name]-[hash][extname]' },
+        },
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],

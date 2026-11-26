@@ -9,6 +9,7 @@
             <section class="mt-8 rounded-2xl bg-linear-to-br from-brand-50 to-white p-6 ring-1 ring-brand-100 sm:p-10">
                 <p class="text-xs font-semibold uppercase tracking-wide text-navy-600">Quote of the day · {{ now()->format('M j, Y') }}</p>
                 <blockquote class="mt-3 text-2xl font-semibold leading-snug text-slate-900 sm:text-3xl">“{{ $today->body }}”</blockquote>
+                <x-speak :text="$today->body.' — '.$today->author" lang="en" :full="true" class="mt-3" />
                 <p class="mt-3 text-slate-600">— {{ $today->author }}</p>
                 <div class="mt-5 flex flex-wrap gap-2" x-data="{ copied: false, text: {{ Js::from($today->shareText()) }} }">
                     <button type="button" @click="BF.share(text, {{ Js::from(route('quotes.show', $today)) }})" class="rounded-full bg-brand-600 px-5 py-2 font-semibold text-white hover:bg-brand-700">Share</button>

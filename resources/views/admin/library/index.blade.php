@@ -50,6 +50,18 @@
                                 @case('duas')
                                     <p class="font-semibold">{{ $it->title }}</p><p class="text-right text-lg" dir="rtl" lang="ar">{{ Str::limit($it->arabic, 120) }}</p><p class="text-xs text-slate-600">{{ Str::limit($it->translation_en, 120) }}</p>
                                     @break
+                                @case('reciters')
+                                    <p class="font-semibold">{{ $it->name }} <span class="text-xs font-normal text-slate-500">{{ $it->style }} · {{ $it->country }}</span></p><audio controls preload="none" class="mt-1 h-8 w-64" src="{{ $it->urlFor(1, 1, 1) }}"></audio>
+                                    @break
+                                @case('translations')
+                                    <p class="font-semibold">{{ $it->name }}</p><p class="text-xs text-slate-600">{{ $it->translator }} · {{ $it->license }}</p>
+                                    @break
+                                @case('naats')
+                                    <p class="font-semibold">{{ $it->title }}</p><p class="text-xs text-slate-600">{{ $it->poet }} · {{ $it->reciter }}</p>
+                                    @break
+                                @case('audio')
+                                    <p class="font-semibold">{{ \App\Models\AudioTrack::KINDS[$it->kind] ?? $it->kind }}: {{ $it->owner()?->name_en ?? $it->owner()?->title ?? '#'.$it->ref_id }}</p><audio controls preload="none" class="mt-1 h-8 w-64" src="{{ $it->src() }}"></audio><p class="text-xs text-slate-600">{{ $it->license }}</p>
+                                    @break
                                 @default
                                     <p><span class="text-slate-400">{{ $it->number }}.</span> <span class="text-xl" dir="rtl" lang="ar">{{ $it->arabic }}</span> {{ $it->transliteration }}</p>
                             @endswitch

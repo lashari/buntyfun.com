@@ -17,6 +17,11 @@
             <div class="mt-5 flex flex-wrap items-center gap-3">
                 <input type="search" x-model="q" placeholder="Search a name or meaning" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" aria-label="Search the 99 names">
                 <label class="flex items-center gap-2 text-sm"><input type="checkbox" @change="show = $event.target.checked ? 'learn' : 'all'"> Hide meanings (test yourself)</label>
+                <label class="flex items-center gap-2 text-sm" x-data="{ m: BF.store.get('meaning_lang', 'en') }">Listen: Arabic name, then meaning in
+                    <select x-model="m" @change="BF.store.set('meaning_lang', m)" class="rounded-lg border-slate-300 py-1 text-sm" aria-label="Language of the meaning when listening">
+                        <option value="en">English</option><option value="ur">Urdu (اردو)</option><option value="both">English + Urdu</option>
+                    </select>
+                </label>
             </div>
             <ol class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($names as $n)
@@ -26,7 +31,7 @@
                             <span class="text-xs font-semibold text-slate-400">{{ $n->number }}</span>
                             <span class="text-3xl leading-snug text-navy-700" dir="rtl" lang="ar">{{ $n->arabic }}</span>
                         </div>
-                        <p class="mt-2 font-semibold">{{ $n->transliteration }}</p>
+                        <p class="mt-2 flex items-center justify-between gap-2 font-semibold">{{ $n->transliteration }} <x-speak :parts="[['text' => $n->arabic, 'lang' => 'ar'], ['text' => $n->transliteration.'. '.$n->meaning_en, 'lang' => 'en'], ['text' => $n->meaning_ur, 'lang' => 'ur']]" lang="ar" label="Listen to {{ $n->transliteration }} and its meaning" /></p>
                         <div x-show="show === 'all' || open" class="mt-1">
                             <p class="text-sm text-slate-600">{{ $n->meaning_en }}</p>
                             @if ($n->meaning_ur)<p class="font-urdu mt-1 text-lg leading-loose text-slate-700" dir="rtl" lang="ur">{{ $n->meaning_ur }}</p>@endif

@@ -4,6 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AllahName;
+use App\Models\AudioTrack;
+use App\Models\Naat;
+use App\Models\NameEntry;
+use App\Models\QuranReciter;
+use App\Models\QuranTranslation;
 use App\Models\AuditLog;
 use App\Models\Dua;
 use App\Models\Poem;
@@ -61,6 +66,9 @@ class LibraryAdminController extends Controller
                     'translation_ur' => ['Meaning (Urdu)', 'textarea-rtl', ['nullable', 'string', 'max:3000']],
                     'reference' => ['Reference (Quran or hadith number)', 'text', ['required', 'string', 'max:190']],
                     'source_url' => ['Source URL (quran.com / sunnah.com)', 'text', ['nullable', 'url', 'max:255']],
+                    'grading' => ['Hadith grading (Sahih, Hasan …; "Quran" for verses)', 'text', $text(40)],
+                    'grading_by' => ['Graded by (scholar names)', 'text', $text(255)],
+                    'verification' => ['Text check', 'select:needs_review,source_checked,editor_checked,scholar_checked', ['required', Rule::in(['needs_review', 'source_checked', 'editor_checked', 'scholar_checked'])]],
                     'sort' => ['Order in category', 'number', ['nullable', 'integer', 'min:0', 'max:999']],
                 ]],
             'allah-names' => ['label' => '99 Names of Allah', 'model' => AllahName::class, 'search' => ['transliteration', 'meaning_en', 'meaning_ur'], 'unique' => 'number', 'order' => 'number',
@@ -71,6 +79,52 @@ class LibraryAdminController extends Controller
                     'meaning_en' => ['Meaning (English)', 'text', ['required', 'string', 'max:190']],
                     'meaning_ur' => ['Meaning (Urdu)', 'text-rtl', $text()],
                     'quran_ref' => ['Quran reference (optional)', 'text', $text(120)],
+                ]],
+            'reciters' => ['label' => 'Quran reciters', 'model' => QuranReciter::class, 'search' => ['name', 'country'], 'unique' => 'slug', 'order' => 'sort',
+                'fields' => [
+                    'name' => ['Name', 'text', ['required', 'string', 'max:120']],
+                    'name_ar' => ['Name (Arabic)', 'text-rtl', $text(120)],
+                    'slug' => ['URL key', 'text', ['required', 'alpha_dash', 'max:60']],
+                    'country' => ['Country', 'text', $text(60)],
+                    'style' => ['Style', 'select:'.implode(',', array_keys(QuranReciter::STYLES)), ['required', Rule::in(array_keys(QuranReciter::STYLES))]],
+                    'url_pattern' => ['Audio URL pattern ({g} = ayah 1–6236, {sss}{aaa} = surah/ayah)', 'text', ['required', 'url', 'max:255', 'regex:/\{(g|sss)\}/']],
+                    'source' => ['Audio source', 'text', ['required', 'string', 'max:120']],
+                    'license_note' => ['Licence / permission note', 'text', ['required', 'string', 'max:255']],
+                    'sort' => ['Order', 'number', ['nullable', 'integer', 'min:0', 'max:999']],
+                ]],
+            'translations' => ['label' => 'Quran translations', 'model' => QuranTranslation::class, 'search' => ['name', 'translator'], 'unique' => 'code', 'order' => 'sort',
+                'fields' => [
+                    'name' => ['Name shown to readers', 'text', ['required', 'string', 'max:120']],
+                    'code' => ['Code (e.g. en.pickthall)', 'text', ['required', 'string', 'max:40']],
+                    'language' => ['Language', 'select:en,ur', ['required', Rule::in(['en', 'ur'])]],
+                    'translator' => ['Translator', 'text', ['required', 'string', 'max:120']],
+                    'license' => ['Licence / copyright status (checked before publishing)', 'text', ['required', 'string', 'max:255']],
+                    'source_url' => ['Source URL', 'text', ['nullable', 'url', 'max:255']],
+                    'sort' => ['Order', 'number', ['nullable', 'integer', 'min:0', 'max:999']],
+                ]],
+            'naats' => ['label' => 'Naats', 'model' => Naat::class, 'search' => ['title', 'title_ur', 'poet', 'reciter'], 'unique' => 'slug', 'order' => 'title',
+                'fields' => [
+                    'title' => ['Title (English letters)', 'text', ['required', 'string', 'max:190']],
+                    'title_ur' => ['Title (Urdu)', 'text-rtl', $text()],
+                    'slug' => ['URL slug', 'text', ['required', 'alpha_dash', 'max:160']],
+                    'category' => ['Category', 'select:'.implode(',', array_keys(Naat::CATEGORIES)), ['required', Rule::in(array_keys(Naat::CATEGORIES))]],
+                    'poet' => ['Poet', 'text', $text(120)],
+                    'reciter' => ['Reciter (naat khawan)', 'text', $text(120)],
+                    'lyrics' => ['Lyrics (only if public domain or permitted)', 'textarea-rtl', ['nullable', 'string', 'max:20000']],
+                    'description' => ['Short description', 'textarea', ['nullable', 'string', 'max:2000']],
+                    'youtube_id' => ['YouTube video ID (official channel only, optional)', 'text', ['nullable', 'regex:/^[A-Za-z0-9_-]{11}$/']],
+                    'license' => ['Licence / permission for lyrics and video', 'text', $text(255)],
+                    'source_url' => ['Source URL', 'text', ['nullable', 'url', 'max:255']],
+                ]],
+            'audio' => ['label' => 'Audio', 'model' => AudioTrack::class, 'search' => ['speaker', 'license'], 'unique' => 'id', 'order' => 'id',
+                'fields' => [
+                    'kind' => ['For', 'select:'.implode(',', array_keys(AudioTrack::KINDS)), ['required', Rule::in(array_keys(AudioTrack::KINDS))]],
+                    'ref_slug' => ['Slug of the name / naat / dua (from its URL)', 'text', ['required', 'alpha_dash', 'max:160']],
+                    'upload' => ['Audio file (mp3, m4a, ogg; max 10 MB)', 'file', ['nullable', 'file', 'max:10240', 'mimes:mp3,m4a,ogg,oga,wav', 'mimetypes:audio/mpeg,audio/mp4,audio/x-m4a,audio/ogg,audio/wav,audio/x-wav,audio/webm']],
+                    'external_url' => ['…or an external audio URL you have permission to stream', 'text', ['nullable', 'url', 'max:500']],
+                    'speaker' => ['Speaker / reciter', 'text', $text(120)],
+                    'license' => ['Licence or permission (required: who allowed it, how)', 'text', ['required', 'string', 'max:255']],
+                    'source_url' => ['Source / permission link', 'text', ['nullable', 'url', 'max:255']],
                 ]],
         ];
     }
@@ -134,7 +188,28 @@ class LibraryAdminController extends Controller
         if (isset($rules[$key])) {
             $rules[$key][] = Rule::unique($item->getTable(), $key)->ignore($item->id);
         }
+        if ($type === 'audio') {
+            unset($rules['id']);
+            if ($item->exists) {
+                $request->merge(['ref_slug' => $request->input('ref_slug', $this->refSlug($item))]);
+            }
+        }
         $data = $request->validate($rules);
+        if ($type === 'audio') {
+            $owner = ['name' => NameEntry::class, 'naat' => Naat::class, 'dua' => Dua::class][$data['kind']]::where('slug', $data['ref_slug'])->first();
+            if (! $owner) {
+                return back()->withInput()->withErrors(['ref_slug' => 'No '.AudioTrack::KINDS[$data['kind']].' item has this slug.']);
+            }
+            $data['ref_id'] = $owner->id;
+            unset($data['ref_slug']);
+            if ($request->hasFile('upload')) {
+                $data['file_path'] = $request->file('upload')->store('audio/'.$data['kind'], 'public');
+            }
+            unset($data['upload']);
+            if (empty($data['file_path'] ?? $item->file_path) && empty($data['external_url'])) {
+                return back()->withInput()->withErrors(['upload' => 'Upload a file or give an external URL.']);
+            }
+        }
         if ($data['status'] === 'published' && ! $request->user()->canPublish()) {
             $data['status'] = 'in_review';
         }
@@ -157,6 +232,12 @@ class LibraryAdminController extends Controller
         return redirect()->route('admin.library.index', ['type' => $type, 'status' => $item->status])->with('status', 'Saved.');
     }
 
+    /** Slug of the item an audio track belongs to (for the edit form). */
+    public function refSlug(AudioTrack $t): ?string
+    {
+        return $t->owner()?->slug;
+    }
+
     public function bulk(Request $request, string $type)
     {
         $t = $this->type($type);
@@ -177,6 +258,7 @@ class LibraryAdminController extends Controller
     {
         $t = $this->type($type);
         abort_unless($request->user()->canModerate(), 403);
+        abort_if($type === 'audio', 404);
         $request->validate(['file' => ['required', 'file', 'max:5120', 'mimes:json,csv,txt']]);
         $raw = (string) file_get_contents($request->file('file')->getRealPath());
         $raw = preg_replace('/^\xEF\xBB\xBF/', '', $raw);

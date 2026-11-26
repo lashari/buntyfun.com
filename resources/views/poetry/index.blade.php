@@ -24,6 +24,7 @@
                 <a href="{{ route('poetry.show', [$today->poet->slug, $today->slug]) }}" class="mt-3 block">
                     @foreach (array_slice($today->stanzas(), 0, 1) as $st)
                         <p class="font-urdu text-center text-2xl leading-[2.4]" dir="rtl" lang="ur">@foreach ($st as $line){{ $line }}<br>@endforeach</p>
+                        <div class="mt-2 text-center"><x-speak :text="implode('۔ ', $st)" lang="ur" :full="true" /></div>
                     @endforeach
                     <p class="mt-2 text-center text-sm opacity-90">— {{ $today->poet->name_en }} <span class="font-urdu" lang="ur">({{ $today->poet->name_ur }})</span> · Read the full {{ Str::singular(Str::lower(\App\Models\Poem::FORMS[$today->form][0] ?? 'poem')) }}</p>
                 </a>

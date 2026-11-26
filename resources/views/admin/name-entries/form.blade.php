@@ -55,7 +55,7 @@
         <div>
             <label class="block text-sm font-medium text-slate-700">Verification</label>
             <select name="verification" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
-                @foreach (['needs_review' => 'Needs review', 'editor_checked' => 'Checked by editor', 'scholar_checked' => 'Checked by a scholar'] as $k => $l)<option value="{{ $k }}" @selected(old('verification', $name->verification ?? 'needs_review') === $k)>{{ $l }}</option>@endforeach
+                @foreach (\App\Models\NameEntry::VERIFICATION as $k => $l)<option value="{{ $k }}" @selected(old('verification', $name->verification ?? 'needs_review') === $k)>{{ $l }}</option>@endforeach
             </select>
         </div>
 
@@ -64,6 +64,11 @@
             <input type="text" name="origin" value="{{ old('origin', $name->origin) }}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
         </div>
 
+        <div>
+            <label class="block text-sm font-medium text-slate-700">Pronunciation guide (e.g. ah-MEEN; capitals = stress)</label>
+            <input type="text" name="pronunciation" value="{{ old('pronunciation', $name->pronunciation) }}" maxlength="80" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
+            <p class="mt-1 text-xs text-slate-500">Recorded pronunciations: Admin → Library → Audio (kind "Name pronunciation", this name's slug).</p>
+        </div>
         <div>
             <label class="block text-sm font-medium text-slate-700">Source (required — a real reference, not a placeholder, before publishing)</label>
             <input type="text" name="source_ref" value="{{ old('source_ref', $name->source_ref) }}" required class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">

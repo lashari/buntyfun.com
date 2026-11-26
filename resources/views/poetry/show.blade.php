@@ -17,6 +17,7 @@
         @endif
         <p class="text-sm font-semibold text-navy-600">{{ $single }} · <a href="{{ route('poetry.segment', $poem->poet->slug) }}" class="underline">{{ $poem->poet->name_en }}</a>@if ($poem->book) · <span class="font-urdu" lang="ur">{{ $poem->book }}</span>@endif</p>
         <h1 class="font-urdu mt-2 text-right text-3xl leading-[2.2]" dir="rtl" lang="ur">{{ $poem->title }}</h1>
+        <x-speak :text="collect($poem->stanzas())->flatten()->implode('۔ ')" lang="ur" :full="true" label="Listen to the poem" :player="'poem:'.$poem->slug" class="mt-5" />
         <article class="mt-6 rounded-2xl border border-slate-200 bg-white px-4 py-6 shadow-sm sm:px-8" dir="rtl" lang="ur">
             @foreach ($poem->stanzas() as $i => $st)
                 <div class="font-urdu group relative py-3 text-center text-xl leading-[2.4] sm:text-2xl {{ $i ? 'border-t border-slate-100' : '' }}">

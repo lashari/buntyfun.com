@@ -32,6 +32,7 @@
                     @foreach ($items as $item)
                         <div class="rounded-xl border border-slate-200 bg-white p-5">
                             <p class="font-urdu text-lg leading-loose text-slate-800" dir="rtl" lang="ur">{{ $item->body }}</p>
+                            <x-speak :text="$item->body" lang="ur" class="mt-2" />
                             <div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
                                 <button type="button" class="rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-50" @click="copy({{ $item->id }}, @js($item->body))">
                                     <span x-show="copiedId !== {{ $item->id }}">Copy</span><span x-show="copiedId === {{ $item->id }}" x-cloak>Copied!</span>

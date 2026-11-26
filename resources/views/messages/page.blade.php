@@ -36,6 +36,7 @@
                         <div class="rounded-xl border border-slate-200 bg-white p-5">
                             @if ($wish->title)<p class="text-xs font-semibold uppercase tracking-wide text-slate-500 {{ $ur ? 'font-urdu normal-case text-sm' : '' }}" @if ($ur) dir="rtl" lang="ur" @endif>{{ $wish->title }}</p>@endif
                             <p class="mt-1 {{ $ur ? 'font-urdu text-lg leading-loose' : 'leading-relaxed' }} text-slate-800" @if ($ur) dir="rtl" lang="ur" @endif>{{ $wish->body }}</p>
+                            <x-speak :text="$wish->body" :lang="$ur ? 'ur' : 'en'" class="mt-2" />
                             <div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
                                 <button type="button" class="rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-50" @click="copy({{ $wish->id }}, @js($wish->body))">
                                     <span x-show="copiedId !== {{ $wish->id }}">Copy</span><span x-show="copiedId === {{ $wish->id }}" x-cloak>Copied!</span>

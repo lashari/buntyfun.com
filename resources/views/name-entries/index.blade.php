@@ -1,5 +1,5 @@
 <x-layout :breadcrumbs="['Islamic Names' => null]" title="Islamic Names with Meanings — Arabic & Urdu Spelling | BuntyFun" description="Muslim baby names for boys and girls with Arabic and Urdu spelling, meaning and a cited source for every name."
-          :noindex="request()->hasAny(['q', 'gender', 'letter', 'page'])">
+          :noindex="request()->hasAny(['q', 'gender', 'letter', 'page'])" :player="true">
     <div class="mx-auto max-w-6xl px-4 py-10">
         <h1 class="text-3xl font-bold">Islamic Names</h1>
         <div class="mt-3 max-w-3xl space-y-3 leading-relaxed text-slate-700">
@@ -10,7 +10,7 @@
         @include('name-entries.partials.lists-nav', ['active' => null])
 
         <form method="GET" class="mt-4 flex flex-wrap gap-3">
-            <input type="search" name="q" value="{{ request('q') }}" placeholder="Search by name or meaning"
+            <input type="search" name="q" value="{{ request('q') }}" placeholder="Search by name, meaning or Urdu spelling"
                    class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
             <select name="gender" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" onchange="this.form.submit()">
                 <option value="">All genders</option>
@@ -32,10 +32,7 @@
 
         <div class="mt-6 grid gap-4 sm:grid-cols-3">
             @forelse ($names as $name)
-                <a href="{{ route('name-entries.show', $name) }}" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md">
-                    <h2 class="font-semibold">{{ $name->name_en }}</h2>
-                    <p class="mt-1 text-sm text-slate-500">{{ Str::limit($name->meaning, 60) }}</p>
-                </a>
+                @include('name-entries.partials.card', ['name' => $name])
             @empty
                 <p class="text-sm text-slate-500">No names match this search yet.</p>
             @endforelse

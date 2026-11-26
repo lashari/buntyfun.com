@@ -37,7 +37,7 @@ class NameEntryAdminController extends Controller
             if ($data['action'] === 'published' && (empty($name->source_ref) || stripos($name->source_ref, 'placeholder') !== false)) {
                 continue;
             }
-            $name->update(['status' => $data['action']] + ($data['action'] === 'published' ? ['verification' => 'editor_checked'] : []));
+            $name->update(['status' => $data['action']] + ($data['action'] === 'published' && in_array($name->verification, ['needs_review', 'source_checked'], true) ? ['verification' => 'editor_checked'] : []));
             AuditLog::record($request->user(), 'status:'.$data['action'], 'name_entry', $name->id);
             $done++;
         }
@@ -123,7 +123,8 @@ class NameEntryAdminController extends Controller
             'origin' => ['nullable', 'string', 'max:120'],
             'category' => ['required', 'in:'.implode(',', array_keys(NameEntry::CATEGORIES))],
             'quranic_ref' => ['nullable', 'string', 'max:190'],
-            'verification' => ['required', 'in:needs_review,editor_checked,scholar_checked'],
+            'verification' => ['required', 'in:'.implode(',', array_keys(\App\Models\NameEntry::VERIFICATION))],
+            'pronunciation' => ['nullable', 'string', 'max:80'],
             'source_ref' => ['required', 'string', 'max:500'],
             'slug' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:draft,in_review,published'],

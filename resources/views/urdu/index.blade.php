@@ -24,10 +24,13 @@
         <h2 class="mt-12 text-xl font-bold">Latest <span class="font-urdu" lang="ur">· تازہ ترین</span></h2>
         <div class="mt-4 grid gap-4 sm:grid-cols-2" dir="rtl">
             @forelse ($content as $item)
-                <a href="{{ route('urdu-content.show', $item) }}" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md" lang="ur">
-                    <p class="font-urdu text-lg leading-loose">{{ $item->body }}</p>
-                    <p class="mt-2 font-urdu text-sm text-slate-500">{{ \App\Content\UrduPages::label($item->category) }}</p>
-                </a>
+                <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md" lang="ur">
+                    <a href="{{ route('urdu-content.show', $item) }}" class="block">
+                        <p class="font-urdu text-lg leading-loose">{{ $item->body }}</p>
+                        <p class="mt-2 font-urdu text-sm text-slate-500">{{ \App\Content\UrduPages::label($item->category) }}</p>
+                    </a>
+                    <x-speak :text="$item->body" lang="ur" class="mt-2" />
+                </div>
             @empty
                 <p class="font-urdu text-sm text-slate-500">ابھی کوئی مواد دستیاب نہیں ہے۔</p>
             @endforelse
