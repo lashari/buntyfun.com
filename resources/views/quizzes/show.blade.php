@@ -24,6 +24,8 @@
         @endif
 
 
+        <x-fav-button class="mt-4 flex justify-start" :title="$quiz->title" :url="route('quizzes.show', $quiz)" type="quiz" />
+
         <form method="POST" action="{{ route('quizzes.submit', $quiz) }}" x-init="window.BF && BF.played({ url: location.pathname, title: {{ Js::from($quiz->title) }}, type: 'quiz' })"
               x-data="{
                   step: 0,

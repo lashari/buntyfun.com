@@ -1,4 +1,5 @@
 @php $guide = \App\Content\GameGuides::for($game->slug); @endphp
+<x-fav-button class="mt-8 flex justify-center" :title="$game->title" :url="route('games.show', $game)" type="game" />
 @if ($guide)
     <section class="mx-auto mt-12 max-w-2xl px-4 text-left prose-page">
         <h2>How to play {{ $game->title }}</h2>

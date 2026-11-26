@@ -8,6 +8,7 @@
                 <a href="{{ route('games.index', ['for' => $key]) }}" class="rounded-full px-3 py-1 {{ $for === $key ? 'bg-brand-600 font-semibold text-white' : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50' }}">{{ $label }}</a>
             @endforeach
         </nav>
+        <x-my-games type="game" class="mt-6" />
         <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @forelse ($games as $game)
                 <a href="{{ route('games.show', $game) }}" class="group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">

@@ -4,6 +4,8 @@
         <p class="mt-3 max-w-3xl leading-relaxed text-slate-700">Short quizzes you can finish in a few minutes on your phone. Trivia quizzes show your score and then explain every answer, so you learn something whether you get it right or not. Facts are checked against the sources listed on each quiz. No sign-up needed; share your result link with friends to compare.</p>
         <p class="mt-3 text-sm"><a href="{{ route('daily') }}" class="font-semibold text-navy-600 underline">Today's Daily Challenge →</a> a new quiz, five trivia questions and a quote every day.</p>
 
+        <x-my-games type="quiz" class="mt-5" />
+
         @include('quizzes.partials.topic-chips', ['current' => null])
         <nav aria-label="Difficulty" class="mt-3 flex flex-wrap gap-2 text-sm">
             <span class="py-1 text-slate-500">Level:</span>
