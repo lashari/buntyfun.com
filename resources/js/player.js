@@ -132,6 +132,8 @@ document.addEventListener('alpine:init', () => {
  * Only ever uses a voice of the right language: never reads Arabic with an English voice.
  * Natural / neural voices are preferred; the visitor can pick another one (saved on this device).
  */
+import { audioSupported, unlockAudio, speakUrdu, stopUrdu } from './urdu-espeak.js';
+
 const QUALITY = /natural|neural|online|premium|enhanced|wavenet|google|siri|hamed|zariyah|majed|maged|laila|tarik|mariam|shakir|hoda|naayf/i;
 
 function loadVoices() {
@@ -169,8 +171,13 @@ async function pickVoice(lang) {
  * Returns 'voice' if anything was spoken, else 'none'.
  */
 export async function say(text, lang = 'ar') {
-    if (!('speechSynthesis' in window)) return 'none';
     const parts = Array.isArray(text) ? text : [{ text, lang }];
+    // Urdu with no device voice → the built-in Urdu voice (via speakSeq, which reads part by part)
+    if (parts.some((p) => p && p.lang === 'ur') && audioSupported()) {
+        unlockAudio();
+        if (!(await pickVoice('ur'))) return speakSeq(parts);
+    }
+    if (!('speechSynthesis' in window)) return 'none';
     const ready = [];
     for (const p of parts) {
         if (!p || !String(p.text || '').trim()) continue;
@@ -196,6 +203,7 @@ export function stopVoice() {
     seqId++;
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     if (seqAudio) { seqAudio.pause(); seqAudio = null; }
+    stopUrdu();
 }
 
 /** Female or male for pre-recorded Urdu voices (saved site-wide). */
@@ -226,19 +234,24 @@ const playOne = (src) => new Promise((resolve) => {
  */
 export async function speakSeq(parts) {
     stopVoice();
+    if (parts.some((p) => p && p.lang === 'ur') && audioSupported()) unlockAudio(); // still inside the click
     const id = seqId;
     const plan = [];
     for (const p of parts) {
         if (!p || !String(p.text || '').trim()) continue;
         if (p.src && (p.src.female || p.src.male)) { const g = urduVoice(); plan.push(['audio', p.src[g] || p.src.female || p.src.male]); continue; }
-        if ('speechSynthesis' in window) { const v = await pickVoice(p.lang || 'en'); if (v) plan.push(['voice', p.text, v]); }
+        const v = 'speechSynthesis' in window ? await pickVoice(p.lang || 'en') : null;
+        if (v) plan.push(['voice', p.text, v]);
+        else if ((p.lang || 'en') === 'ur' && audioSupported()) plan.push(['urdu', p.text]); // built-in Urdu voice
     }
     if (!plan.length) return 'none';
     const kind = plan.some((x) => x[0] === 'audio') ? 'audio' : 'voice';
     (async () => {
         for (const step of plan) {
             if (id !== seqId) return;
-            if (step[0] === 'audio') await playOne(step[1]); else await speakOne(step[1], step[2]);
+            if (step[0] === 'audio') await playOne(step[1]);
+            else if (step[0] === 'urdu') await speakUrdu(step[1], 0.9, () => id === seqId).catch(() => {});
+            else await speakOne(step[1], step[2]);
         }
     })();
     return kind;

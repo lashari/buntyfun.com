@@ -1,4 +1,4 @@
-@props(['text' => '', 'lang' => 'en', 'full' => false, 'label' => null, 'parts' => null])
+@props(['text' => '', 'lang' => 'en', 'full' => false, 'label' => null, 'parts' => null, 'player' => null])
 {{--
     Listen button. Urdu text with a pre-generated recording (App\Support\UrduVoice, female + male) plays that;
     otherwise the visitor's device voice of the right language (never another language's voice).
@@ -55,6 +55,7 @@
         <span class="text-xs text-slate-500" x-show="said !== 'none'">Device voice (automatic)</span>
     @endif
     @if ($full && $recorded)<span class="text-xs text-slate-400">Computer voice (AI4Bharat Indic Parler-TTS)</span>@endif
-    <span x-show="said === 'none'" x-cloak class="text-xs text-amber-700">No {{ $names[$lang] }} voice on this device{{ $lang === 'ur' ? ' (add Urdu in your phone’s text-to-speech settings)' : '' }}.</span>
+    @if ($player)<a href="{{ route('listen', ['from' => $player]) }}" rel="nofollow" class="text-xs font-semibold text-navy-600 underline hover:text-brand-700">Open in Listen player (speed, highlighting)</a>@endif
+    <span x-show="said === 'none'" x-cloak class="text-xs text-amber-700">No {{ $names[$lang] }} voice on this device.</span>
 </span>
 @endif

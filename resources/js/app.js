@@ -3,6 +3,7 @@ import './bf';
 import { say, voicesFor, stopVoice, speakSeq, urduVoice } from './player';
 
 import Alpine from 'alpinejs';
+import { listenPlayer } from './reader';
 
 window.Alpine = Alpine;
 window.BF.say = say;
@@ -42,5 +43,7 @@ window.BF.listenDua = (listen, dua, reciters) => {
     }
     return say(dua.arabic, 'ar');
 };
+
+Alpine.data('listenPlayer', listenPlayer);
 
 Alpine.start();

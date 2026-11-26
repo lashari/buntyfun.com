@@ -26,7 +26,7 @@
                 </label>
             </template>
             <span x-show="said !== 'none'">Device voice (automatic, not a recitation)</span>
-            <span x-show="said === 'none'" x-cloak class="text-amber-700">No Arabic voice on this device. Read the transliteration below, or install an Arabic voice in your phone's text-to-speech settings.</span>
+            <span x-show="said === 'none'" x-cloak class="text-amber-700">No Arabic voice on this device. Read the transliteration below.</span>
         @endif
     </span>
 </span>

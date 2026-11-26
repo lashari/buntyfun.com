@@ -81,6 +81,7 @@ class SiteNav
                     $live['naats'] ? [route('naats.index'), 'Naats'] : null,
                     [route('islamic.allah-names'), '99 Names of Allah'],
                     [route('islamic.calendar'), 'Islamic calendar'],
+                    [route('listen'), 'Listen to text'],
                 ])),
             ],
             'urdu' => [
@@ -93,6 +94,7 @@ class SiteNav
                     [route('urdu-content.page', 'urdu-quotes'), 'Urdu quotes'],
                     [route('urdu-content.page', 'urdu-jokes'), 'Urdu jokes'],
                     [route('urdu-content.index'), 'Urdu corner (اردو)'],
+                    [route('listen'), 'Listen to text (read aloud)'],
                 ],
             ],
             'wallpapers' => $live['wallpapers'] ? [

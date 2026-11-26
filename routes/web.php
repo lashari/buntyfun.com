@@ -56,6 +56,7 @@ Route::prefix('quizzes')->group(function () {
 });
 
 Route::get('/daily', [\App\Http\Controllers\DailyController::class, 'index'])->name('daily');
+Route::get('/listen', [\App\Http\Controllers\ListenController::class, 'index'])->name('listen');
 
 Route::prefix('quotes')->group(function () {
     Route::get('/', [\App\Http\Controllers\QuoteController::class, 'index'])->name('quotes.index');

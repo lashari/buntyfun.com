@@ -5,7 +5,7 @@
         <h1 class="text-2xl font-bold sm:text-3xl">{{ $dua->title }}</h1>
         <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <p class="font-quran text-right text-3xl text-navy-800" dir="rtl" lang="ar">{{ $dua->arabic }}</p>
-            <div class="mt-4">@include('islamic.partials.listen', ['dua' => $dua])</div>
+            <div class="mt-4 flex flex-wrap items-center gap-3">@include('islamic.partials.listen', ['dua' => $dua])<a href="{{ route('listen', ['from' => 'dua:'.$dua->slug]) }}" rel="nofollow" class="text-xs font-semibold text-navy-600 underline hover:text-brand-700">Open in Listen player</a></div>
             @if ($dua->transliteration)<p class="mt-5 italic text-slate-700">{{ $dua->transliteration }}</p>@endif
             <h2 class="mt-5 text-sm font-semibold uppercase tracking-wide text-slate-500">Meaning</h2>
             <p class="mt-1 text-lg leading-relaxed">{{ $dua->translation_en }}</p>

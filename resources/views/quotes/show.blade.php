@@ -3,7 +3,7 @@
     <div class="mx-auto max-w-2xl px-4 py-12 text-center" x-data="{ copied: false, text: {{ Js::from($quote->shareText()) }} }">
         <div class="rounded-3xl bg-linear-to-br from-navy-600 to-brand-600 p-8 text-white shadow-lg sm:p-12">
             <blockquote class="text-2xl font-semibold leading-snug sm:text-3xl">“{{ $quote->body }}”</blockquote>
-            <x-speak :text="$quote->body.' — '.$quote->author" lang="en" :full="true" class="mt-4" />
+            <x-speak :text="$quote->body.' — '.$quote->author" lang="en" :full="true" :player="'quote:'.$quote->id" class="mt-4" />
             <p class="mt-5 text-lg opacity-90">— {{ $quote->author }}</p>
             <p class="mt-6 text-xs opacity-70">buntyfun.com/quotes</p>
         </div>

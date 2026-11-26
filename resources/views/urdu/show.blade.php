@@ -3,7 +3,7 @@
     <div class="mx-auto max-w-xl px-4 py-12">
         <p class="text-sm text-slate-500"><a href="{{ \App\Models\UrduContent::categoryUrl($item->category) }}" class="hover:underline">{{ \App\Content\UrduPages::label($item->category) }}</a></p>
         <p class="mt-4 text-xl leading-relaxed">{{ $item->body }}</p>
-        <x-speak :text="$item->body" lang="ur" :full="true" class="mt-4" />
+        <x-speak :text="$item->body" lang="ur" :full="true" :player="'urdu:'.$item->slug" class="mt-4" />
 
         <div class="mt-8 flex flex-wrap gap-3"
              x-data="{

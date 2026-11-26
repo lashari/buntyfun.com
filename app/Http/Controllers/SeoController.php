@@ -24,6 +24,7 @@ class SeoController extends Controller
             ['loc' => route('name-entries.index'), 'changefreq' => 'weekly'],
             ['loc' => route('urdu-content.index'), 'changefreq' => 'weekly'],
             ['loc' => route('ai-tools.index'), 'changefreq' => 'weekly'],
+            ['loc' => route('listen'), 'changefreq' => 'monthly'],
             ['loc' => route('pages.about'), 'changefreq' => 'yearly'],
             ['loc' => route('pages.contact'), 'changefreq' => 'yearly'],
             ['loc' => route('pages.privacy'), 'changefreq' => 'yearly'],
