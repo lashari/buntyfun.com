@@ -18,8 +18,9 @@
             ? preg_replace('/( [—|] BuntyFun)$/u', ' (Page '.$pageNo.')$1', $pageTitle)
             : $pageTitle.' (Page '.$pageNo.')';
     }
-    // No ads on pages we ask search engines not to index (thin, private, utility pages).
-    $showAds = $ads && ! $isNoindex;
+    // No ads on pages we ask search engines not to index (thin, private, utility pages),
+    // nor where Admin → Ads turns them off (section, device, excluded path).
+    $showAds = $ads && ! $isNoindex && \App\Services\Ads\AdControls::allowedHere();
     // Sections + dropdown links come from one place (App\Content\SiteNav); empty sections are left out there.
     $navGroups = \App\Content\SiteNav::groups();
     $here = url()->current();
