@@ -20,17 +20,23 @@
     }
 @endphp
 @if ($text !== '' || $parts)
-<span x-data="{ said: '', voices: [], v: '', g: 'female', lang: '{{ $lang }}', text: {{ Js::from($text) }}, parts: {{ Js::from($parts) }},
+<span x-data="{ said: '', can: true, failed: false, run: -1, voices: [], v: '', g: 'female', lang: '{{ $lang }}', text: {{ Js::from($text) }}, parts: {{ Js::from($parts) }},
                async go() {
                    BF.stopVoice();
-                   if (!this.parts) { this.said = await BF.say(this.text, this.lang); return; }
-                   const m = BF.store.get('meaning_lang', 'en');
-                   this.said = await BF.speakSeq(this.parts.filter((p) => this.parts.length === 1 || p.lang === 'ar' || m === 'both' || p.lang === m));
+                   this.failed = false;
+                   if (!this.parts) { this.said = await BF.say(this.text, this.lang); }
+                   else {
+                       const m = BF.store.get('meaning_lang', 'en');
+                       this.said = await BF.speakSeq(this.parts.filter((p) => this.parts.length === 1 || p.lang === 'ar' || m === 'both' || p.lang === m));
+                   }
+                   this.run = BF.currentSpeech();
+                   if (this.said === 'none') this.can = false; // nothing can read this here: hide the button, no error text
                },
                stop() { BF.stopVoice(); this.said = ''; } }"
-      x-init="g = BF.urduVoice(); @if ($full && ! $recorded) voices = await BF.voicesFor(lang); v = BF.store.get('voice_' + lang) || (voices[0] ? voices[0].id : ''); @endif"
+      x-init="g = BF.urduVoice(); @if (! $recorded) BF.canSpeak(lang).then((ok) => { can = ok; }); @endif @if ($full && ! $recorded) voices = await BF.voicesFor(lang); v = BF.store.get('voice_' + lang) || (voices[0] ? voices[0].id : ''); @endif"
+      @bf-voice-failed.window="if ($event.detail.id === run) { failed = true; said = ''; }"
       {{ $attributes->merge(['class' => 'inline-flex flex-wrap items-center gap-2']) }} dir="ltr">
-    <button type="button" @click.prevent.stop="go()"
+    <button type="button" x-show="can" @click.prevent.stop="go()"
             class="inline-flex items-center gap-1.5 rounded-full {{ $full ? 'bg-emerald-700 px-4 py-2 text-sm text-white hover:bg-emerald-800' : 'border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50' }} font-semibold"
             aria-label="{{ $label ?: 'Listen' }} ({{ $names[$lang] }} voice)">
         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 9v6h4l5 5V4L8 9z"/><path d="M16 8a5 5 0 0 1 0 8" stroke="currentColor" stroke-width="2" fill="none"/></svg>
@@ -45,17 +51,18 @@
             </select>
         </label>
     @elseif ($full)
-        <template x-if="voices.length > 1">
+        <template x-if="can && voices.length > 1">
             <label class="inline-flex items-center gap-1 text-xs text-slate-500">Voice:
                 <select x-model="v" @change="BF.setVoice(lang, v); go()" class="max-w-[11rem] rounded border-slate-300 py-0.5 pl-1 pr-6 text-xs" aria-label="Choose {{ $names[$lang] }} voice">
                     <template x-for="o in voices" :key="o.id"><option :value="o.id" x-text="o.label" :selected="o.id === v"></option></template>
                 </select>
             </label>
         </template>
-        <span class="text-xs text-slate-500" x-show="said !== 'none'">Device voice (automatic)</span>
+        <span class="text-xs text-slate-500" x-show="can">Device voice (automatic)</span>
     @endif
     @if ($full && $recorded)<span class="text-xs text-slate-400">Computer voice (AI4Bharat Indic Parler-TTS)</span>@endif
     @if ($player)<a href="{{ route('listen', ['from' => $player]) }}" rel="nofollow" class="text-xs font-semibold text-navy-600 underline hover:text-brand-700">Open in Listen player (speed, highlighting)</a>@endif
-    <span x-show="said === 'none'" x-cloak class="text-xs text-amber-700">No {{ $names[$lang] }} voice on this device.</span>
+    {{-- Shown only after a real failure; the text is set by script, so it is not in the page HTML (crawlers, reader mode, copy). --}}
+    <span x-show="failed" x-cloak class="text-xs text-amber-700" role="status" x-text="failed ? 'The {{ $names[$lang] }} voice did not load. Tap Listen to try again.' : ''"></span>
 </span>
 @endif

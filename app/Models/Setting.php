@@ -40,6 +40,19 @@ class Setting extends Model
         // EVERY quality check passed (blocking and non-blocking). Name meanings
         // never auto-publish: they need a person to verify the reference.
         'auto_publish' => false,
+        // Admin → Ads (26 Nov 2026). Ads still load only once ADSENSE_CLIENT_ID is in .env.
+        'ads_enabled' => true,
+        // Per section on/off; keys = App\Services\Ads\AdControls::SECTIONS. Quran is off by default.
+        'ads_sections' => ['home' => true, 'games' => true, 'quizzes' => true, 'daily' => true, 'birthday' => true,
+            'messages' => true, 'names' => true, 'quran' => false, 'islamic' => true, 'poetry' => true, 'urdu' => true,
+            'quotes' => true, 'wallpapers' => true, 'ai' => true, 'other' => true],
+        // Manual ad units only (Auto ads devices are set in the AdSense account).
+        'ads_desktop' => true,
+        'ads_mobile' => true,
+        // Most manual ad units on one page (0-3).
+        'ads_max_units' => 1,
+        // URL paths with no ads, one per line; "/games/ludo" also covers /games/ludo/...
+        'ads_excluded_paths' => [],
     ];
 
     public static function get(string $key): mixed

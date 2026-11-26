@@ -237,6 +237,19 @@ const playOne = (src) => new Promise((resolve) => {
  * A part with a recording plays it (chosen voice, else the other one); otherwise the device voice of that
  * language is used; a part with neither is skipped. Returns 'audio' | 'voice' | 'none'.
  */
+/** Id of the current read-aloud run (changes on every start/stop). */
+export const currentSpeech = () => seqId;
+
+/**
+ * Can this browser read `lang` aloud at all? Urdu: a device voice or the built-in one (needs Web Audio
+ * + WebAssembly). Others: a device voice of that language. Used to hide Listen buttons that cannot work.
+ */
+export async function canSpeak(lang) {
+    if (lang === 'ur' && audioSupported()) return true;
+    if (!('speechSynthesis' in window)) return false;
+    return (await voicesFor(lang)).length > 0;
+}
+
 export async function speakSeq(parts) {
     stopVoice();
     if (parts.some((p) => p && p.lang === 'ur') && audioSupported()) unlockAudio(); // still inside the click
@@ -255,7 +268,11 @@ export async function speakSeq(parts) {
         for (const step of plan) {
             if (id !== seqId) return;
             if (step[0] === 'audio') await playOne(step[1]);
-            else if (step[0] === 'urdu') await speakUrdu(step[1], 0.9, () => id === seqId).catch(() => {});
+            else if (step[0] === 'urdu') {
+                const ok = await speakUrdu(step[1], 0.9, () => id === seqId).then(() => true, () => false);
+                // engine could not load (offline, blocked): tell the button that started this, then stop
+                if (!ok) { if (id === seqId) window.dispatchEvent(new CustomEvent('bf-voice-failed', { detail: { id } })); return; }
+            }
             else await speakOne(step[1], step[2]);
         }
     })();

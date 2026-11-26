@@ -229,6 +229,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('ai-studio/{draft}/regenerate', [AiStudioController::class, 'regenerate'])->middleware('throttle:10,1')->name('ai-studio.regenerate');
 
         Route::get('growth-plan', [\App\Http\Controllers\Admin\GrowthPlanController::class, 'index'])->name('growth-plan');
+        Route::get('ads', [\App\Http\Controllers\Admin\AdsAdminController::class, 'index'])->name('ads.index');
+        Route::put('ads', [\App\Http\Controllers\Admin\AdsAdminController::class, 'update'])->name('ads.update');
         Route::get('automation', [AutomationController::class, 'index'])->name('automation.index');
         Route::get('automation/calendar', [AutomationController::class, 'calendar'])->name('automation.calendar');
         Route::get('automation/settings', [AutomationController::class, 'settings'])->name('automation.settings');

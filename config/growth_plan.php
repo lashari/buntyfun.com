@@ -55,7 +55,7 @@ return [
             'title' => 'Bring visitors back daily',
             'items' => [
                 ['task' => 'Daily page: quiz of the day, riddle, fun fact, featured game', 'status' => 'todo', 'who' => 'Claude', 'when' => '11-27-2026', 'note' => 'No login; changes every day.'],
-                ['task' => 'Recently played games + favourites (saved in the browser)', 'status' => 'todo', 'who' => 'Claude', 'when' => '11-28-2026', 'note' => ''],
+                ['task' => 'Recently played games + favourites (saved in the browser)', 'status' => 'done', 'who' => 'Claude', 'when' => '11-26-2026', 'note' => 'Star button on every game and quiz; lists on Home, Games, Quizzes.'],
                 ['task' => 'Track quiz completions, game starts, copy and WhatsApp clicks in GA4', 'status' => 'todo', 'who' => 'Claude', 'when' => '12-01-2026', 'note' => 'So we know what people use.'],
             ],
         ],
@@ -81,7 +81,7 @@ return [
             'items' => [
                 ['task' => 'Get AdSense publisher ID (ca-pub) and add it to .env', 'status' => 'needs_you', 'who' => 'You', 'when' => '12-10-2026', 'note' => 'Turns on /ads.txt.'],
                 ['task' => 'Set up AdSense consent message (EEA/UK + US states)', 'status' => 'needs_you', 'who' => 'You', 'when' => '12-10-2026', 'note' => 'AdSense → Privacy & messaging.'],
-                ['task' => 'Ad placement on/off controls with category exclusions', 'status' => 'todo', 'who' => 'Claude', 'when' => '12-12-2026', 'note' => 'No ads near game controls, quiz answers, copy buttons, condolence.'],
+                ['task' => 'Ad placement on/off controls with category exclusions', 'status' => 'done', 'who' => 'Claude', 'when' => '11-26-2026', 'note' => 'Admin → Ads: sections, devices, units per page, excluded pages. Quran off by default.'],
                 ['task' => 'Apply for AdSense', 'status' => 'needs_you', 'who' => 'You', 'when' => '12-15-2026', 'note' => 'Approval is up to Google.'],
             ],
         ],

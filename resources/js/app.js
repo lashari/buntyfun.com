@@ -1,6 +1,6 @@
 import './bootstrap';
 import './bf';
-import { say, voicesFor, stopVoice, speakSeq, urduVoice } from './player';
+import { say, voicesFor, stopVoice, speakSeq, urduVoice, canSpeak, currentSpeech } from './player';
 
 import Alpine from 'alpinejs';
 import { listenPlayer } from './reader';
@@ -11,6 +11,8 @@ window.BF.voicesFor = voicesFor;
 window.BF.stopVoice = stopVoice;
 window.BF.speakSeq = speakSeq;
 window.BF.urduVoice = urduVoice;
+window.BF.canSpeak = canSpeak;
+window.BF.currentSpeech = currentSpeech;
 window.BF.setVoice = (lang, id) => window.BF.store.set('voice_' + lang, id);
 
 // Play a name: reviewed recording if there is one, otherwise the device voice.

@@ -59,6 +59,7 @@
                 <span class="mt-4 inline-block rounded-full bg-white px-5 py-2 font-semibold text-navy-700" x-text="done ? '✓ Done today · 🔥 ' + streak + ' day streak' : (streak ? 'Keep your 🔥 ' + streak + '-day streak' : 'Play now')">Play now</span>
             </a>
         </section>
+        <x-my-games heading="Your games and quizzes" />
         <section aria-labelledby="h-games">
             <x-section-head id="h-games" :title="$gamesArePopular ? 'Popular Games' : 'Games'" :href="route('games.index')" more="All games"
                             :sub="$gamesArePopular ? 'Most played on BuntyFun in the last 30 days' : null" />
