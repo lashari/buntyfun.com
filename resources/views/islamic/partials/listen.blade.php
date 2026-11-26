@@ -26,7 +26,7 @@
                 </label>
             </template>
             <span x-show="said !== 'none'">Device voice (automatic, not a recitation)</span>
-            <span x-show="said === 'none'" x-cloak class="text-amber-700">No Arabic voice on this device. Read the transliteration below.</span>
+            <span x-show="said === 'none'" x-cloak class="text-amber-700" x-text="said === 'none' ? 'No Arabic voice on this device. Read the transliteration below.' : ''"></span>
         @endif
     </span>
 </span>

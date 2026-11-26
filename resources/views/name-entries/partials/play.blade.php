@@ -9,7 +9,7 @@
     </button>
     @if ($full ?? false)
         <span class="text-xs text-slate-500" x-show="r !== 'none'">{{ $src ? 'Recorded pronunciation' : 'Device voice (automatic)' }}</span>
-        <span class="text-xs text-amber-700" x-show="r === 'none'" x-cloak>No Arabic voice on this device — see the guide below.</span>
+        <span class="text-xs text-amber-700" x-show="r === 'none'" x-cloak x-text="r === 'none' ? 'No Arabic voice on this device — see the guide below.' : ''"></span>
     @endif
 </span>
 @endif
