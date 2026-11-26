@@ -98,27 +98,32 @@ const store = {
     },
 };
 
+// Audio events must change the reactive Alpine store (window.BFPlayer), not the plain object:
+// writes to the plain object never reach the player bar (it stayed on "verse 3, 0:00" while verse 7 played).
+const live = () => window.BFPlayer || store;
+
 if (audio) {
     audio.preload = 'auto';
-    audio.addEventListener('timeupdate', () => { store.time = audio.currentTime; });
-    audio.addEventListener('durationchange', () => { store.duration = audio.duration; });
-    audio.addEventListener('playing', () => { store.playing = true; store.loading = false; store.emit(); });
-    audio.addEventListener('pause', () => { store.playing = false; store.emit(); });
-    audio.addEventListener('waiting', () => { store.loading = true; });
-    audio.addEventListener('ended', () => store.ended());
+    audio.addEventListener('timeupdate', () => { live().time = audio.currentTime; });
+    audio.addEventListener('durationchange', () => { live().duration = audio.duration; });
+    audio.addEventListener('playing', () => { const s = live(); s.playing = true; s.loading = false; s.emit(); });
+    audio.addEventListener('pause', () => { const s = live(); s.playing = false; s.emit(); });
+    audio.addEventListener('waiting', () => { live().loading = true; });
+    audio.addEventListener('ended', () => live().ended());
     audio.addEventListener('error', () => {
         if (!audio.getAttribute('src')) return;
-        store.loading = false;
-        store.playing = false;
-        store.error = 'This recording could not be loaded. Check your connection and press play to try again.';
-        store.emit();
+        const s = live();
+        s.loading = false;
+        s.playing = false;
+        s.error = 'This recording could not be loaded. Check your connection and press play to try again.';
+        s.emit();
     });
     if ('mediaSession' in navigator) {
         const ms = navigator.mediaSession;
-        ms.setActionHandler('play', () => store.toggle());
-        ms.setActionHandler('pause', () => store.toggle());
-        ms.setActionHandler('previoustrack', () => store.prev());
-        ms.setActionHandler('nexttrack', () => store.next());
+        ms.setActionHandler('play', () => live().toggle());
+        ms.setActionHandler('pause', () => live().toggle());
+        ms.setActionHandler('previoustrack', () => live().prev());
+        ms.setActionHandler('nexttrack', () => live().next());
     }
 }
 
