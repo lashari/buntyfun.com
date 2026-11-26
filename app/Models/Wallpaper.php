@@ -66,6 +66,33 @@ class Wallpaper extends Model
         };
     }
 
+    /** Licence page we can state for sure; null when we only know the licence family, not its version. */
+    public function licenseUrl(): ?string
+    {
+        return match ($this->license) {
+            'public_domain' => 'https://creativecommons.org/publicdomain/mark/1.0/',
+            'cc0' => 'https://creativecommons.org/publicdomain/zero/1.0/',
+            'licensed' => $this->remote_url ? 'https://unsplash.com/license' : null,
+            default => null,
+        };
+    }
+
+    /** ImageObject JSON-LD (Google image licence metadata). Only fields we actually hold. */
+    public function schema(): array
+    {
+        return [array_filter([
+            '@context' => 'https://schema.org', '@type' => 'ImageObject',
+            'name' => $this->title,
+            'contentUrl' => $this->url(),
+            'thumbnailUrl' => $this->thumbUrl(),
+            'width' => $this->width ?: null, 'height' => $this->height ?: null,
+            'description' => $this->hasUsefulDescription() ? \Illuminate\Support\Str::limit($this->description, 300) : null,
+            'license' => $this->licenseUrl(),
+            'acquireLicensePage' => $this->source_url ?: null,
+            'creditText' => $this->attribution ?: null,
+        ])];
+    }
+
     public function resolutionLabel(): string
     {
         return "{$this->width}×{$this->height}";

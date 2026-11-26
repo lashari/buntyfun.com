@@ -2,6 +2,7 @@
 <x-layout :title="$label.' Quizzes — '.$quizzes->count().' Free Quizzes With Answers | BuntyFun'"
           :description="Str::limit($info['intro'], 120).' '.$quizzes->count().' free quizzes, answers explained.'"
           :noindex="$quizzes->count() < 2"
+          :schema="$quizzes->count() < 2 ? [] : \App\Support\Schema::itemList($label.' quizzes', $quizzes->map(fn ($q) => [route('quizzes.show', $q), $q->title]))"
           :breadcrumbs="['Quizzes' => route('quizzes.index'), $label => null]">
     <div class="mx-auto max-w-6xl px-4 py-10">
         <h1 class="text-3xl font-bold">{{ $info['emoji'] }} {{ $label }} Quizzes</h1>

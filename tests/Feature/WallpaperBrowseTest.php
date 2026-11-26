@@ -46,7 +46,13 @@ class WallpaperBrowseTest extends TestCase
             ->assertSee('<span aria-current="page" class="rounded-full bg-navy-700 px-3 py-1.5 font-semibold text-white">2</span>', false)
             // page 1 is linked by its clean URL, never ?page=1
             ->assertSee('href="'.route('wallpapers.category', 'cars').'" rel="prev"', false)->assertDontSee('?page=1', false)
-            ->assertSee('noindex', false);
+            // page 2+ is indexable and self-canonical so the wallpapers it lists stay crawlable (SEO pass 11-25-2026)
+            ->assertDontSee('name="robots"', false)
+            ->assertSee('<link rel="canonical" href="'.route('wallpapers.category', 'cars').'?page=2">', false)
+            ->assertSee('(Page 2)', false);
+        // filters/other params keep the clean URL as canonical
+        $this->get(route('wallpapers.category', 'cars').'?page=2&x=1')->assertOk()
+            ->assertSee('<link rel="canonical" href="'.route('wallpapers.category', 'cars').'">', false);
         $this->get(route('wallpapers.category', 'nothing'))->assertNotFound();
     }
 
