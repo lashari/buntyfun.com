@@ -9,7 +9,7 @@
 */
 
 return [
-    'updated' => '11-24-2026',
+    'updated' => '11-27-2026',
 
     'phases' => [
         [
@@ -38,6 +38,9 @@ return [
                 ['task' => 'Read the 6 Urdu pages once (a native speaker check)', 'status' => 'needs_you', 'who' => 'You', 'when' => '11-30-2026', 'note' => 'Written by AI; fix any line that sounds unnatural in Admin → Urdu Content.'],
                 ['task' => 'Wallpaper pages: real caption from NASA/Wikimedia on each page; pages without a 20+ word caption hidden from Google', 'status' => 'done', 'who' => 'Claude', 'when' => '11-24-2026', 'note' => 'Was 295 pages with ~46 words. Admin → Wallpapers → Fetch descriptions; captions can be edited per wallpaper.'],
                 ['task' => 'Check the 23 Islamic names (meanings) by a person', 'status' => 'needs_you', 'who' => 'You', 'when' => '12-05-2026', 'note' => 'Published without human check; religious content needs a review.'],
+                ['task' => 'Library: 300 poems, 23 duas, 99 Names, poets pages; 38 games', 'status' => 'done', 'who' => 'Claude', 'when' => '11-25-2026', 'note' => 'Sitemap 350 → 769 URLs.'],
+                ['task' => 'Content library: 10 quizzes, 7 games, 1,804 quotes published', 'status' => 'done', 'who' => 'Claude', 'when' => '11-25-2026', 'note' => '705 quotes still in review.'],
+                ['task' => 'Islamic audio library', 'status' => 'done', 'who' => 'Claude', 'when' => '11-25-2026', 'note' => 'Urdu voice batch still running.'],
                 ['task' => 'Ramadan 2027 page (duas, wishes, Urdu)', 'status' => 'todo', 'who' => 'Claude', 'when' => '01-10-2027', 'note' => 'Ramadan starts ~02-08-2027; Google needs ~4 weeks.'],
                 ['task' => 'Eid ul-Fitr 2027 wishes page', 'status' => 'todo', 'who' => 'Claude', 'when' => '02-10-2027', 'note' => 'Eid ~03-10-2027.'],
             ],
@@ -46,15 +49,17 @@ return [
             'title' => 'Get pages indexed',
             'items' => [
                 ['task' => 'Request indexing: wallpapers + 10 games', 'status' => 'done', 'who' => 'Claude', 'when' => '11-24-2026', 'note' => 'Google quota ~10 a day.'],
-                ['task' => 'Request indexing: underrun, tower-builder, block-drop, particle-clicker, tap-tap-tap', 'status' => 'todo', 'who' => 'Claude', 'when' => '11-25-2026', 'note' => ''],
-                ['task' => 'Find pages "discovered, not indexed" and make them stronger or merge them', 'status' => 'todo', 'who' => 'Claude', 'when' => '11-27-2026', 'note' => '57 pages not indexed on 11-22. Biggest traffic lever.'],
-                ['task' => 'Related-content links on every page (wishes ↔ quizzes ↔ games)', 'status' => 'todo', 'who' => 'Claude', 'when' => '11-30-2026', 'note' => 'Helps Google find and keep pages.'],
+                ['task' => 'Request indexing: underrun, tower-builder, block-drop, particle-clicker, tap-tap-tap', 'status' => 'todo', 'who' => 'Claude', 'when' => '11-28-2026', 'note' => 'underrun requested 11-27; daily quota ran out, other 4 on 11-28.'],
+                ['task' => 'Find pages "discovered, not indexed" and make them stronger or merge them', 'status' => 'todo', 'who' => 'Claude', 'when' => '11-27-2026', 'note' => '57 pages not indexed on 11-22; sitemap is now 1,059 URLs (11-27). Biggest traffic lever.'],
+                ['task' => 'Related-content links on every page (wishes ↔ quizzes ↔ games)', 'status' => 'done', 'who' => 'Claude', 'when' => '11-25-2026', 'note' => 'Dropdown menu, home sections, breadcrumbs, related links; crawl found 0 orphan pages.'],
+                ['task' => 'SEO check of every page (titles, schema, links)', 'status' => 'done', 'who' => 'Claude', 'when' => '11-25-2026', 'note' => 'Rich Results test valid.'],
             ],
         ],
         [
             'title' => 'Bring visitors back daily',
             'items' => [
-                ['task' => 'Daily page: quiz of the day, riddle, fun fact, featured game', 'status' => 'todo', 'who' => 'Claude', 'when' => '11-27-2026', 'note' => 'No login; changes every day.'],
+                ['task' => 'Daily page: quiz of the day, riddle, fun fact, featured game', 'status' => 'done', 'who' => 'Claude', 'when' => '11-25-2026', 'note' => '/daily, also poetry of the day and dua of the day.'],
+                ['task' => 'Listen to text page (read any text aloud, incl. Urdu)', 'status' => 'done', 'who' => 'Claude', 'when' => '11-26-2026', 'note' => '/listen.'],
                 ['task' => 'Recently played games + favourites (saved in the browser)', 'status' => 'done', 'who' => 'Claude', 'when' => '11-26-2026', 'note' => 'Star button on every game and quiz; lists on Home, Games, Quizzes.'],
                 ['task' => 'Track quiz completions, game starts, copy and WhatsApp clicks in GA4', 'status' => 'todo', 'who' => 'Claude', 'when' => '12-01-2026', 'note' => 'So we know what people use.'],
             ],
