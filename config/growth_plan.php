@@ -49,7 +49,7 @@ return [
             'title' => 'Get pages indexed',
             'items' => [
                 ['task' => 'Request indexing: wallpapers + 10 games', 'status' => 'done', 'who' => 'Claude', 'when' => '11-24-2026', 'note' => 'Google quota ~10 a day.'],
-                ['task' => 'Request indexing: underrun, tower-builder, block-drop, particle-clicker, tap-tap-tap', 'status' => 'todo', 'who' => 'Claude', 'when' => '11-28-2026', 'note' => '11-27 check: underrun crawled not indexed, tap-tap-tap discovered not indexed, other 3 unknown to Google.'],
+                ['task' => 'Request indexing: underrun, tower-builder, block-drop, particle-clicker, tap-tap-tap', 'status' => 'todo', 'who' => 'Claude', 'when' => '11-28-2026', 'note' => 'underrun requested 11-27; daily quota ran out, other 4 on 11-28.'],
                 ['task' => 'Find pages "discovered, not indexed" and make them stronger or merge them', 'status' => 'todo', 'who' => 'Claude', 'when' => '11-27-2026', 'note' => '57 pages not indexed on 11-22; sitemap is now 1,059 URLs (11-27). Biggest traffic lever.'],
                 ['task' => 'Related-content links on every page (wishes ↔ quizzes ↔ games)', 'status' => 'done', 'who' => 'Claude', 'when' => '11-25-2026', 'note' => 'Dropdown menu, home sections, breadcrumbs, related links; crawl found 0 orphan pages.'],
                 ['task' => 'SEO check of every page (titles, schema, links)', 'status' => 'done', 'who' => 'Claude', 'when' => '11-25-2026', 'note' => 'Rich Results test valid.'],
