@@ -141,6 +141,25 @@ class SocialPublishingTest extends TestCase
         $this->assertStringContainsString('pages_manage_posts', $fb->fresh()->last_error);
     }
 
+    public function test_empty_user_message_still_shows_the_real_meta_error(): void
+    {
+        [$fb] = $this->accounts();
+        Http::fake(['graph.facebook.com/*' => Http::response(['error' => ['message' => 'Error validating access token: The session has been invalidated', 'error_user_msg' => '', 'code' => 190, 'error_subcode' => 460]], 400)]);
+        $post = SocialPost::create(['platform' => 'facebook', 'social_account_id' => $fb->id, 'caption' => 'x', 'status' => 'approved']);
+        app(\App\Services\Social\SocialPublisher::class)->publish($post->id);
+        $this->assertStringContainsString('session has been invalidated', $post->fresh()->error);
+        $this->assertStringContainsString('code 190, subcode 460', $post->fresh()->error);
+    }
+
+    public function test_non_json_meta_error_shows_http_status(): void
+    {
+        [$fb] = $this->accounts();
+        Http::fake(['graph.facebook.com/*' => Http::response('Bad Gateway', 502)]);
+        $post = SocialPost::create(['platform' => 'facebook', 'social_account_id' => $fb->id, 'caption' => 'x', 'status' => 'approved']);
+        app(\App\Services\Social\SocialPublisher::class)->publish($post->id);
+        $this->assertStringContainsString('HTTP 502', (string) $post->fresh()->error);
+    }
+
     public function test_post_prefill_from_content_and_pages_render(): void
     {
         $this->accounts();
