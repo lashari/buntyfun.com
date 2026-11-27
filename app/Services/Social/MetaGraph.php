@@ -147,7 +147,19 @@ class MetaGraph
         }
 
         $err = $res->json('error') ?? [];
-        $msg = is_array($err) ? ($err['error_user_msg'] ?? $err['message'] ?? 'Meta API error') : (string) $err;
+        if (is_array($err)) {
+            // Meta often sends error_user_msg as "", so skip empty parts instead of using ??.
+            $parts = array_filter([
+                trim((string) ($err['error_user_title'] ?? '')),
+                trim((string) ($err['error_user_msg'] ?? '')),
+                trim((string) ($err['message'] ?? '')),
+            ], fn ($v) => $v !== '');
+            $codes = array_filter(['code '.($err['code'] ?? ''), 'subcode '.($err['error_subcode'] ?? '')], fn ($v) => ! str_ends_with($v, ' '));
+            $msg = implode(' — ', array_unique($parts)) ?: 'Meta API error (HTTP '.$res->status().')';
+            if ($codes) $msg .= ' ['.implode(', ', $codes).']';
+        } else {
+            $msg = trim((string) $err) ?: 'Meta API error (HTTP '.$res->status().'): '.mb_substr(trim($res->body()), 0, 200);
+        }
         $e = new SocialPublishException(mb_substr("Meta: {$msg}", 0, 480));
         // 190 = token invalid/expired, 200/10 = permission missing: retrying won't help.
         $e->permanent = in_array((int) ($err['code'] ?? 0), [10, 100, 190, 200], true) || $res->status() === 400;
