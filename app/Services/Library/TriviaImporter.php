@@ -77,8 +77,9 @@ class TriviaImporter
     /** "#Q prompt / ^ answer / A..D options" blocks. Keeps only 4-option questions whose answer is one of them. */
     public static function parseOpenTriviaQa(string $text): array
     {
+        $text = self::toUtf8($text);
         $out = [];
-        foreach (preg_split('/\R\s*\R/u', $text) as $block) {
+        foreach (preg_split('/\R\s*\R/u', $text) ?: [] as $block) {
             $lines = array_values(array_filter(array_map('trim', preg_split('/\R/u', trim($block)))));
             if (! $lines || ! str_starts_with($lines[0], '#Q')) {
                 continue;
@@ -98,6 +99,9 @@ class TriviaImporter
             if ($answer === null || count($options) !== 4 || ! in_array($answer, $options, true)) {
                 continue;
             }
+            if (self::looksGarbled($prompt.' '.implode(' ', $options))) {
+                continue;   // text already double-encoded in the source file (e.g. "â€œ")
+            }
             $out[] = ['prompt' => $prompt, 'correct' => $answer, 'wrong' => array_values(array_diff($options, [$answer]))];
         }
 
@@ -105,6 +109,31 @@ class TriviaImporter
     }
 
     /** Validate, de-duplicate and store. Public so the tests and the admin "paste" path share it. */
+    /**
+     * OpenTriviaQA files are UTF-8 with a few Windows-1252 lines (e.g. "Café" as one byte).
+     * With /u, preg_split returns false on such bytes, so fix only the invalid lines.
+     */
+    public static function toUtf8(string $text): string
+    {
+        if (mb_check_encoding($text, 'UTF-8')) {
+            return $text;
+        }
+        $lines = explode("\n", $text);
+        foreach ($lines as $i => $line) {
+            if (! mb_check_encoding($line, 'UTF-8')) {
+                $lines[$i] = mb_convert_encoding($line, 'UTF-8', 'Windows-1252');
+            }
+        }
+
+        return implode("\n", $lines);
+    }
+
+    /** Mojibake such as "â€œ", "Ã©", "Ï†" means the line was double-encoded and cannot be trusted. */
+    public static function looksGarbled(string $s): bool
+    {
+        return (bool) preg_match('/â€|Ã[\x{80}-\x{BF}\x{A0}-\x{FF}]|[ÎÏ][\x{80}-\x{BF}€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ]/u', $s);
+    }
+
     public function save(string $source, string $topic, array $rows): array
     {
         $stats = ['saved' => 0, 'duplicates' => 0, 'rejected' => 0, 'reasons' => []];
