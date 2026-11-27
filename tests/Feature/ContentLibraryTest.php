@@ -135,6 +135,18 @@ class ContentLibraryTest extends TestCase
         $this->assertCount(3, $rows[0]['wrong']);
     }
 
+    public function test_opentriviaqa_parser_handles_windows_1252_and_garbled_lines(): void
+    {
+        // Real files mix UTF-8 with single-byte Windows-1252 lines; preg_split(/u) used to return false and crash.
+        $text = "#Q Which show had the working title Insomnia Caf\xE9?\n^ Friends\nA Friends\nB Seinfeld\nC Frasier\nD Cheers\n\n"
+            ."#Q Wisconsin, \u{00E2}\u{20AC}\u{0153}Badger State\u{00E2}\u{20AC}?, was named in irony.\n^ True\nA True\nB False\nC Maybe\nD Never\n\n"
+            ."#Q Which team won the \u{201C}Treble\u{201D} in 1999?\n^ Manchester United\nA Manchester United\nB Bayern Munich\nC Arsenal\nD Chelsea\n";
+        $rows = TriviaImporter::parseOpenTriviaQa($text);
+        $this->assertCount(2, $rows);
+        $this->assertSame('Which show had the working title Insomnia Café?', $rows[0]['prompt']);
+        $this->assertSame('Which team won the “Treble” in 1999?', $rows[1]['prompt']);
+    }
+
     public function test_quiz_builder_needs_ten_approved_explained_questions(): void
     {
         $importer = app(TriviaImporter::class);
