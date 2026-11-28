@@ -1,0 +1,281 @@
+:root {
+  --primary: #eeeeee;
+  --primary-dark: #cccccc;
+  --secondary: #111111;
+}
+
+html {
+  --webkit-font-smoothing: antialiased;
+}
+
+body {
+  touch-action: manipulation;
+  margin: 0;
+  font-family: sans-serif;
+  background: #222;
+  height: 100vh;
+  line-height: 1.2;
+  color: var(--primary);
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (orientation: portrait) {
+  .container {
+    flex-direction: column;
+  }
+}
+
+h1 {
+  margin: 0 0 0.5rem;
+  font-size: 3rem;
+}
+
+p {
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+}
+
+button {
+  margin: 0.5rem 0;
+  background: var(--primary);
+  border: 0;
+  box-shadow: 3px 3px var(--secondary);
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+button:active {
+  background: var(--primary-dark);
+  box-shadow: none;
+  transform: translate(3px, 3px) scale(0.95);
+}
+
+header {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+}
+
+#levelselector {
+  width: 50px;
+  height: 34px;
+  margin-bottom: 4px;
+  background: #222;
+  border: 0;
+  font-size: 16px;
+  color: var(--primary);
+}
+
+#levelselector:focus, #levelselector:focus-visible {
+  border: 0 none;
+}
+
+.popup {
+  position: fixed;
+  max-width: 400px;
+  width: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #222;
+  border: 1px solid var(--secondary);
+  overflow: hidden;
+  box-shadow: 0 0 60px #00000047;
+}
+
+.popup h2 {
+  margin: 0;
+}
+
+.popup-container {
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+#highscore h2 {
+  margin: 0;
+}
+
+#highscore #score {
+  overflow-y: scroll;
+  padding-top: 20px;
+  height: calc(100% - 40px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+#highscore td, #highscore th {
+  padding: 0 10px;
+  text-align: left;
+}
+
+.d-none {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .d-md-none {
+    display: none;
+  }
+
+  .d-md-block {
+    display: block;
+  }
+}
+
+.closebutton {
+  position: absolute;
+  margin: 0.5rem;
+  top: 0;
+  right: 0;
+}
+
+.banner {
+  animation: 1s forwards circle;
+  max-width: 100%;
+  background-image: url(./banner.png);
+  max-height: 100%;
+  height: 50px;
+  width: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+}
+
+.controls {
+  justify-content: center;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  margin: 1rem;
+}
+
+.lowercontrols {
+  display: flex;
+  justify-content: center;
+  display: flex;
+}
+
+.mr-4 {
+  margin-right: 2rem;
+}
+
+.ml-4 {
+  margin-left: 2rem;
+}
+
+.mt-1 {
+  margin-top: 0.5rem;
+}
+
+.mb-1 {
+  margin-bottom: 0.5rem !important;
+}
+
+
+.triangle {
+  width: 30px;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.rotate-270 {
+  transform: rotate(270deg);
+}
+
+button {
+  padding: 0.5rem 0.5rem;
+}
+
+.m-0 {
+  margin: 0;
+}
+
+.controls button span,
+.controls button img {
+  pointer-events: none;
+}
+
+.header {
+  text-align: center;
+  display: none;
+}
+
+.header.menutoggled {
+  display: block;
+  position: fixed;
+  background: #333;
+  padding: 40px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.lowerbutton {
+  position: absolute;
+  right: 10px;
+  top: auto;
+  bottom: 0;
+}
+
+@media (min-width: 900px) {
+
+  .header {
+    padding: 0.5rem;
+    display: block;
+  }
+
+
+  .menubutton {
+    display: none;
+  }
+
+  button {
+    padding: 0.5rem 1rem;
+  }
+
+}
+
+@media (orientation: landscape) {}
+
+@keyframes circle {
+  0% {
+    clip-path: polygon(0 0, 0% 0%, 0% 100%, 0% 100%);
+  }
+
+  100% {
+    clip-path: polygon(0 0, 100% 0%, 100% 100%, 0% 100%);
+  }
+}
+
+.nobreak {
+  white-space: nowrap;
+}
