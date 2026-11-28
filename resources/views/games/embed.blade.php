@@ -36,9 +36,13 @@
         </div>
 
         <p class="mt-6 text-xs text-slate-500">
-            Game by {{ $oss['author'] }}, open source under the {{ $oss['license'] }} licence.
-            <a href="{{ $oss['repo'] }}" rel="nofollow noopener" target="_blank" class="underline">Source code</a>.
-            The licence text ships with the game files.
+            @if (! empty($oss['original']))
+                A BuntyFun original game, made for this site.
+            @else
+                Game by {{ $oss['author'] }}, open source under the {{ $oss['license'] }} licence.
+                <a href="{{ $oss['repo'] }}" rel="nofollow noopener" target="_blank" class="underline">Source code</a>.
+                The licence text ships with the game files.
+            @endif
         </p>
         <a href="{{ route('games.index') }}" class="mt-4 inline-block text-sm text-slate-500 hover:underline">More games</a>
     </div>

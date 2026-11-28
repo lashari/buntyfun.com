@@ -723,6 +723,29 @@ class OssGames
                 'Slow down before the runway and touch down level.',
             ],
         ],
+        'stunt-hopper' => [
+            'title' => 'Stunt Hopper',
+            'entry' => 'index.html',
+            'author' => 'BuntyFun',
+            'repo' => '',
+            'license' => 'MIT',
+            'original' => true,
+            'genre' => 'Racing',
+            'audience' => ['kids', 'family', 'teens', 'adults'],
+            'ratio' => '16/9',
+            'ratio_mobile' => '4/5',
+            'summary' => 'Drive a little stunt car over hills, ramps and gaps, flip in the air and land on your wheels to reach the flag.',
+            'how' => [
+                'Pick a level. Level 1 is open; finishing a level unlocks the next one (10 levels).',
+                'Right arrow or D is gas. Left arrow or A brakes, and reverses when you are stopped.',
+                'In the air, gas tips the nose up and brake tips it down. Land on both wheels.',
+                'If your helmet touches the ground or you fall into a gap, you crash. Press R to try again. On a phone, use the left and right buttons.',
+            ],
+            'tips' => [
+                'Hit a ramp with speed, then let go of the gas in the air so the car does not spin too far.',
+                'Finish under the level time to earn 3 stars. Full flips in the air show up as FLIP!',
+            ],
+        ],
     ];
 
     public static function for(string $slug): ?array
