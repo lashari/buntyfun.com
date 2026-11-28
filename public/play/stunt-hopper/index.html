@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Stunt Hopper</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #1b1f3a; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; touch-action: none; user-select: none; -webkit-user-select: none; }
+  canvas { display: block; width: 100%; height: 100%; }
+  .hud { position: absolute; top: 10px; left: 12px; right: 12px; display: flex; justify-content: space-between; align-items: center; color: #fff; font-weight: 700; font-size: 16px; text-shadow: 0 2px 0 rgba(0,0,0,.35); pointer-events: none; }
+  .hud .btn { pointer-events: auto; }
+  .btn { background: #ffb703; color: #3a2400; border: 0; border-radius: 999px; padding: 8px 16px; font: inherit; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 #c27c00; }
+  .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #c27c00; }
+  .btn.ghost { background: rgba(255,255,255,.18); color: #fff; box-shadow: none; }
+  .screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: rgba(20,24,52,.72); color: #fff; text-align: center; padding: 16px; box-sizing: border-box; }
+  .screen h1 { margin: 0; font-size: clamp(30px, 7vw, 54px); letter-spacing: 1px; color: #ffd166; text-shadow: 0 4px 0 #b5179e; }
+  .screen h2 { margin: 0; font-size: clamp(24px, 5vw, 36px); color: #ffd166; }
+  .screen p { margin: 0; max-width: 460px; opacity: .9; }
+  .grid { display: grid; grid-template-columns: repeat(5, 64px); gap: 10px; }
+  .lvl { width: 64px; height: 64px; border-radius: 16px; border: 0; background: #3a86ff; color: #fff; font: inherit; font-size: 22px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 #1d4fb8; position: relative; }
+  .lvl small { position: absolute; bottom: 4px; left: 0; right: 0; font-size: 11px; color: #ffd166; }
+  .lvl[disabled] { background: #4a4f72; box-shadow: 0 4px 0 #30344f; color: #9aa0c4; cursor: default; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .hidden { display: none !important; }
+  .pad { position: absolute; bottom: 14px; width: 92px; height: 92px; border-radius: 50%; background: rgba(255,255,255,.22); border: 3px solid rgba(255,255,255,.55); color: #fff; font-size: 34px; display: flex; align-items: center; justify-content: center; font-weight: 900; }
+  .pad.on { background: rgba(255,183,3,.6); }
+  #padL { left: 14px; } #padR { right: 14px; }
+  .toast { position: absolute; top: 22%; left: 0; right: 0; text-align: center; color: #ffd166; font-size: 34px; font-weight: 900; text-shadow: 0 3px 0 #b5179e; pointer-events: none; opacity: 0; transition: opacity .2s; }
+  .stars { font-size: 40px; letter-spacing: 6px; color: #ffd166; }
+  @media (max-width: 420px) { .grid { grid-template-columns: repeat(5, 52px); } .lvl { width: 52px; height: 52px; font-size: 18px; } }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div class="hud hidden" id="hud">
+  <span id="hudLeft">Level 1</span>
+  <span id="hudMid">0.0 s</span>
+  <span class="row"><button class="btn ghost" id="btnRestart" title="Restart (R)">&#8635;</button><button class="btn ghost" id="btnMenu" title="Levels (Esc)">&#9776;</button></span>
+</div>
+<div class="toast" id="toast">FLIP!</div>
+<div class="pad hidden" id="padL">&#9664;</div>
+<div class="pad hidden" id="padR">&#9654;</div>
+
+<div class="screen" id="menu">
+  <h1>STUNT HOPPER</h1>
+  <p>Drive over hills, jump the gaps and land on your wheels. Reach the chequered flag!</p>
+  <div class="grid" id="levels"></div>
+  <p style="font-size:14px">Right arrow or D = gas &nbsp;·&nbsp; Left arrow or A = brake / reverse<br>In the air: gas tips the nose up, brake tips it down.</p>
+</div>
+
+<div class="screen hidden" id="win">
+  <h2 id="winTitle">Level complete!</h2>
+  <div class="stars" id="winStars">&#9733;&#9733;&#9733;</div>
+  <p id="winText"></p>
+  <div class="row"><button class="btn ghost" id="winRetry">Retry</button><button class="btn ghost" id="winMenu">Levels</button><button class="btn" id="winNext">Next level</button></div>
+</div>
+
+<div class="screen hidden" id="lose">
+  <h2>Crashed!</h2>
+  <p id="loseText">Keep the roof off the ground.</p>
+  <div class="row"><button class="btn ghost" id="loseMenu">Levels</button><button class="btn" id="loseRetry">Try again</button></div>
+</div>
+
+<script>
+(function () {
+'use strict';
+// Stunt Hopper: an original BuntyFun game. Verlet car on a polyline terrain.
+
+// ---------- Levels (pieces laid out left to right; y grows downwards) ----------
+// flat(len) | slope(len, rise) | hills(len, amp, waves) | ramp(len, rise) | gap(len, drop) | bumps(n, h, w) | steps(n, h, w)
+var LEVELS = [
+  { name: 'First Drive', par: 10, p: [['flat', 500], ['hills', 1400, 60, 3], ['slope', 500, 120], ['flat', 300], ['slope', 600, -120], ['hills', 900, 40, 3]] },
+  { name: 'Little Jumps', par: 9, p: [['flat', 500], ['ramp', 260, 50], ['gap', 140, 50], ['flat', 500], ['ramp', 280, 70], ['gap', 200, 70], ['flat', 400], ['bumps', 6, 22, 120], ['flat', 300]] },
+  { name: 'Bumpy Road', par: 23, p: [['flat', 400], ['bumps', 10, 30, 140], ['slope', 500, 160], ['bumps', 6, 26, 120], ['slope', 600, -160], ['bumps', 10, 34, 150]] },
+  { name: 'Big Hill', par: 8, p: [['flat', 400], ['slope', 900, 340], ['flat', 200], ['slope', 700, -340], ['flat', 200], ['ramp', 300, 80], ['gap', 260, 80], ['flat', 400]] },
+  { name: 'Canyon', par: 9, p: [['flat', 600], ['ramp', 320, 90], ['gap', 320, 60], ['flat', 500], ['ramp', 320, 100], ['gap', 360, 100], ['hills', 800, 50, 2]] },
+  { name: 'Staircase', par: 9, p: [['flat', 400], ['slope', 700, 300], ['flat', 200], ['steps', 7, 45, 150], ['flat', 300], ['ramp', 300, 70], ['gap', 260, 40], ['flat', 400]] },
+  { name: 'Roller Coaster', par: 15, p: [['flat', 400], ['hills', 2400, 150, 4], ['ramp', 300, 90], ['gap', 300, 90], ['hills', 1200, 90, 3]] },
+  { name: 'Leap of Faith', par: 12, p: [['flat', 400], ['slope', 800, -200], ['flat', 400], ['ramp', 300, 120], ['gap', 460, 220], ['flat', 600], ['bumps', 8, 28, 130]] },
+  { name: 'Mountain Pass', par: 15, p: [['flat', 400], ['slope', 1000, 380], ['bumps', 5, 24, 120], ['slope', 800, 200], ['flat', 300], ['ramp', 300, 80], ['gap', 300, 220], ['steps', 5, 32, 190], ['slope', 800, -300], ['flat', 300]] },
+  { name: 'Grand Finale', par: 21, p: [['flat', 400], ['ramp', 300, 90], ['gap', 320, 90], ['hills', 1200, 110, 3], ['ramp', 320, 110], ['gap', 380, 140], ['bumps', 8, 30, 130], ['slope', 800, 260], ['ramp', 300, 60], ['gap', 360, 320], ['hills', 800, 60, 2]] }
+];
+
+var W = 0, H = 0, DPR = 1;
+var cv = document.getElementById('c'), cx = cv.getContext('2d');
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+}
+window.addEventListener('resize', resize); resize();
+
+// ---------- Terrain ----------
+var polys = [], grid = {}, CELL = 120, finishX = 0, worldBottom = 0;
+function buildLevel(def) {
+  polys = []; grid = {};
+  var x = 0, y = 0, cur = [[x, y]];
+  function add(nx, ny) { cur.push([nx, ny]); x = nx; y = ny; }
+  def.p.forEach(function (pc) {
+    var t = pc[0], i, n;
+    if (t === 'flat') { add(x + pc[1], y); }
+    else if (t === 'slope') { var x0 = x, y0 = y; n = Math.max(4, Math.round(pc[1] / 25)); for (i = 1; i <= n; i++) add(x0 + pc[1] * i / n, y0 - pc[2] * (1 - Math.cos(Math.PI * i / n)) / 2); }
+    else if (t === 'hills') { var hx = x, hy = y; n = Math.round(pc[1] / 25); for (i = 1; i <= n; i++) add(hx + pc[1] * i / n, hy - pc[2] * (1 - Math.cos(2 * Math.PI * pc[3] * i / n)) / 2); }
+    else if (t === 'ramp') { var rx = x, ry = y; n = 10; for (i = 1; i <= n; i++) { var u = i / n; add(rx + pc[1] * u, ry - pc[2] * u * u); } }
+    else if (t === 'gap') { polys.push(cur); x += pc[1]; y += pc[2]; cur = [[x, y]]; }
+    else if (t === 'bumps') { for (i = 0; i < pc[1]; i++) { var bx = x, by = y; for (var k = 1; k <= 8; k++) add(bx + pc[3] * k / 8, by - pc[2] * Math.sin(Math.PI * k / 8)); } }
+    else if (t === 'steps') { for (i = 0; i < pc[1]; i++) { add(x + pc[3], y); add(x + 2, y + pc[2]); } }
+  });
+  add(x + 260, y); finishX = x; add(x + 700, y); add(x + 700, y - 400);
+  polys.push(cur);
+  worldBottom = -1e9;
+  polys.forEach(function (pl) { pl.forEach(function (p) { if (p[1] > worldBottom) worldBottom = p[1]; }); });
+  worldBottom += 600;
+  // cliff faces at each piece edge so the car cannot drive through a ramp side
+  polys.forEach(function (pl, idx) {
+    var segs = [];
+    if (idx > 0) segs.push([pl[0][0], worldBottom + 400, pl[0][0], pl[0][1]]);
+    for (var i = 1; i < pl.length; i++) segs.push([pl[i - 1][0], pl[i - 1][1], pl[i][0], pl[i][1]]);
+    if (idx < polys.length - 1) { var e = pl[pl.length - 1]; segs.push([e[0], e[1], e[0], worldBottom + 400]); }
+    segs.forEach(function (s) {
+      var a = Math.floor(Math.min(s[0], s[2]) / CELL) - 1, b = Math.floor(Math.max(s[0], s[2]) / CELL) + 1;
+      for (var c = a; c <= b; c++) (grid[c] || (grid[c] = [])).push(s);
+    });
+  });
+  return { startX: 120, startY: polys[0][0][1] };
+}
+
+function closest(px, py, s) {
+  var dx = s[2] - s[0], dy = s[3] - s[1], l = dx * dx + dy * dy, t = l ? ((px - s[0]) * dx + (py - s[1]) * dy) / l : 0;
+  t = t < 0 ? 0 : t > 1 ? 1 : t;
+  return [s[0] + dx * t, s[1] + dy * t];
+}
+// push a circle out of the terrain; returns contact normal or null
+function collide(p, r) {
+  var cell = grid[Math.floor(p.x / CELL)], best = null;
+  if (!cell) return null;
+  for (var pass = 0; pass < 2; pass++) {
+    var hit = null, hd = r;
+    for (var i = 0; i < cell.length; i++) {
+      var q = closest(p.x, p.y, cell[i]), dx = p.x - q[0], dy = p.y - q[1], d = Math.sqrt(dx * dx + dy * dy);
+      if (d < hd) { hd = d; hit = { q: q, d: d, dx: dx, dy: dy, s: cell[i] }; }
+    }
+    if (!hit) break;
+    var nx, ny;
+    if (hit.d > 1e-6) { nx = hit.dx / hit.d; ny = hit.dy / hit.d; }
+    else { var s = hit.s, sx = s[2] - s[0], sy = s[3] - s[1], sl = Math.sqrt(sx * sx + sy * sy) || 1; nx = sy / sl; ny = -sx / sl; }
+    p.x = hit.q[0] + nx * r; p.y = hit.q[1] + ny * r;
+    best = [nx, ny];
+  }
+  return best;
+}
+
+// ---------- Car (verlet) ----------
+var G = 980, DT = 1 / 120, WR = 17, MAXW = 46, car, state = 'menu', level = 0, time = 0, flips = 0, airAngle = 0, lastAngle = 0, inAir = false, crashT = 0;
+function pt(x, y) { return { x: x, y: y, ox: x, oy: y }; }
+function makeCar(sx, sy) {
+  var y = sy - WR - 2;
+  var P = [pt(sx - 34, y - 26), pt(sx + 38, y - 22), pt(sx - 34, y), pt(sx + 34, y)]; // 0 rear body, 1 front body, 2 rear wheel, 3 front wheel
+  function L(a, b, k) { var dx = P[a].x - P[b].x, dy = P[a].y - P[b].y; return { a: a, b: b, len: Math.sqrt(dx * dx + dy * dy), k: k }; }
+  car = { P: P, C: [L(0, 1, 1), L(2, 3, 1), L(0, 2, 0.35), L(1, 3, 0.35), L(0, 3, 0.6), L(1, 2, 0.6)], w: [0, 0], spin: [0, 0], ground: [false, false] };
+}
+function carAngle() { var A = car.P[0], B = car.P[1]; return Math.atan2(B.y - A.y, B.x - A.x); }
+function head() {
+  var A = car.P[0], B = car.P[1], dx = B.x - A.x, dy = B.y - A.y, l = Math.sqrt(dx * dx + dy * dy);
+  return { x: (A.x + B.x) / 2 - 6 * dx / l + 24 * dy / l, y: (A.y + B.y) / 2 - 6 * dy / l - 24 * dx / l };
+}
+
+var keys = { gas: false, brake: false };
+function step() {
+  var P = car.P, i, gas = keys.gas, brk = keys.brake && !keys.gas;
+  var cxm = (P[0].x + P[1].x + P[2].x + P[3].x) / 4, cym = (P[0].y + P[1].y + P[2].y + P[3].y) / 4;
+  var touching = car.ground[0] || car.ground[1];
+  for (i = 0; i < 4; i++) {
+    var p = P[i], vx = (p.x - p.ox) * 0.9995, vy = (p.y - p.oy) * 0.9995;
+    p.ox = p.x; p.oy = p.y;
+    var ax = 0, ay = G;
+    if (!touching && (gas || brk)) { // air control: gas = nose up, brake = nose down
+      var rx = p.x - cxm, ry = p.y - cym, s = gas ? 1 : -1;
+      ax += ry * 9 * s; ay += -rx * 9 * s;
+    }
+    p.x += vx + ax * DT * DT; p.y += vy + ay * DT * DT;
+  }
+  // wheel motor
+  for (i = 0; i < 2; i++) {
+    if (gas) car.w[i] += (MAXW - car.w[i]) * (car.ground[i] ? 2.2 : 4) * DT;
+    else if (brk) car.w[i] += (-MAXW * 0.45 - car.w[i]) * 3 * DT;
+  }
+  for (var it = 0; it < 8; it++) {
+    car.C.forEach(function (c) {
+      var a = P[c.a], b = P[c.b], dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx * dx + dy * dy) || 1, f = (d - c.len) / d * 0.5 * c.k;
+      a.x += dx * f; a.y += dy * f; b.x -= dx * f; b.y -= dy * f;
+    });
+  }
+  // wheels on the ground
+  for (i = 0; i < 2; i++) {
+    var w = P[2 + i], n = collide(w, WR);
+    car.ground[i] = !!n;
+    if (n) {
+      var tx = -n[1], ty = n[0];
+      var vx2 = (w.x - w.ox) / DT, vy2 = (w.y - w.oy) / DT;
+      var vt = vx2 * tx + vy2 * ty, vn = vx2 * n[0] + vy2 * n[1];
+      if (vn < 0) vn = 0;
+      var target = car.w[i] * WR;
+      if (!gas && !brk) { car.w[i] = vt / WR * 0.999; target = vt * 0.997; }
+      var nvt = vt + (target - vt) * 0.32;
+      car.w[i] += (nvt / WR - car.w[i]) * 0.25;
+      w.ox = w.x - (tx * nvt + n[0] * vn) * DT; w.oy = w.y - (ty * nvt + n[1] * vn) * DT;
+    } else if (!gas && !brk) car.w[i] *= 0.995;
+    car.spin[i] += car.w[i] * DT;
+  }
+  // body corners rub on the ground too
+  for (i = 0; i < 2; i++) { var b = P[i]; if (collide(b, 6)) { b.ox += (b.x - b.ox) * 0.2; } }
+  // crash checks
+  var h = head(), hh = { x: h.x, y: h.y };
+  if (collide(hh, 11)) return crash('Your helmet hit the ground.');
+  if (cym > worldBottom) return crash('You fell into the gap.');
+  // flips
+  var ang = carAngle(), da = ang - lastAngle;
+  if (da > Math.PI) da -= 2 * Math.PI; else if (da < -Math.PI) da += 2 * Math.PI;
+  lastAngle = ang;
+  touching = car.ground[0] || car.ground[1];
+  if (!touching) { airAngle += da; inAir = true; }
+  else if (inAir) {
+    var f = Math.floor(Math.abs(airAngle) / (Math.PI * 2) + 0.15);
+    if (f > 0) { flips += f; toast(f > 1 ? f + 'x FLIP!' : (airAngle < 0 ? 'BACKFLIP!' : 'FRONT FLIP!')); }
+    airAngle = 0; inAir = false;
+  }
+  if (P[2].x > finishX && P[3].x > finishX) win();
+}
+
+// ---------- Game flow ----------
+var save = {};
+try { save = JSON.parse(localStorage.getItem('stunt-hopper') || '{}') || {}; } catch (e) { save = {}; }
+function store() { try { localStorage.setItem('stunt-hopper', JSON.stringify(save)); } catch (e) {} }
+function unlocked() { return Math.min(LEVELS.length, (save.done || 0) + 1); }
+function $(id) { return document.getElementById(id); }
+function show(id) { ['menu', 'win', 'lose'].forEach(function (s) { $(s).classList.toggle('hidden', s !== id); }); var play = !id; $('hud').classList.toggle('hidden', !play && id !== 'lose'); var touch = matchMedia('(pointer: coarse)').matches; $('padL').classList.toggle('hidden', !(play && touch)); $('padR').classList.toggle('hidden', !(play && touch)); }
+function drawMenu() {
+  var el = $('levels'); el.innerHTML = '';
+  LEVELS.forEach(function (L, i) {
+    var b = document.createElement('button'); b.className = 'lvl'; b.textContent = i + 1; b.title = L.name;
+    if (i >= unlocked()) b.disabled = true;
+    var st = (save.stars || {})[i]; if (st) { var s = document.createElement('small'); s.textContent = '★'.repeat(st); b.appendChild(s); }
+    b.onclick = function () { start(i); };
+    el.appendChild(b);
+  });
+  show('menu'); state = 'menu';
+}
+var cam = { x: 0, y: 0, z: 1 };
+function start(i) {
+  level = i; var s = buildLevel(LEVELS[i]); makeCar(s.startX, s.startY);
+  time = 0; flips = 0; airAngle = 0; inAir = false; lastAngle = carAngle(); acc = 0; crashT = 0;
+  cam.x = s.startX; cam.y = s.startY - 60;
+  $('hudLeft').textContent = 'Level ' + (i + 1) + ': ' + LEVELS[i].name;
+  state = 'play'; show(null);
+}
+function crash(msg) { if (state !== 'play') return; state = 'crash'; crashT = 0.7; $('loseText').textContent = msg + ' Press R or tap Try again.'; }
+function win() {
+  if (state !== 'play') return;
+  state = 'win';
+  var L = LEVELS[level], stars = time <= L.par ? 3 : time <= L.par * 1.35 ? 2 : 1;
+  save.done = Math.max(save.done || 0, level + 1); save.stars = save.stars || {}; save.stars[level] = Math.max(save.stars[level] || 0, stars); store();
+  $('winTitle').textContent = level === LEVELS.length - 1 ? 'You beat every level!' : 'Level ' + (level + 1) + ' complete!';
+  $('winStars').textContent = '★'.repeat(stars) + '☆'.repeat(3 - stars);
+  $('winText').textContent = 'Time ' + time.toFixed(1) + ' s' + (flips ? ' · ' + flips + ' flip' + (flips > 1 ? 's' : '') : '') + ' · 3 stars under ' + L.par + ' s';
+  $('winNext').classList.toggle('hidden', level === LEVELS.length - 1);
+  show('win');
+}
+var toastT = 0;
+function toast(t) { $('toast').textContent = t; $('toast').style.opacity = 1; toastT = 1.1; }
+
+$('btnRestart').onclick = function () { start(level); };
+$('btnMenu').onclick = drawMenu; $('winMenu').onclick = drawMenu; $('loseMenu').onclick = drawMenu;
+$('winRetry').onclick = function () { start(level); }; $('loseRetry').onclick = function () { start(level); };
+$('winNext').onclick = function () { start(Math.min(level + 1, LEVELS.length - 1)); };
+
+var KG = { ArrowRight: 1, KeyD: 1, ArrowUp: 1, KeyW: 1 }, KB = { ArrowLeft: 1, KeyA: 1, ArrowDown: 1, KeyS: 1 };
+window.addEventListener('keydown', function (e) {
+  if (KG[e.code]) keys.gas = true; else if (KB[e.code]) keys.brake = true;
+  else if (e.code === 'KeyR' && state !== 'menu') start(level);
+  else if (e.code === 'Escape') drawMenu();
+  else if ((e.code === 'Enter' || e.code === 'Space') && state === 'win' && level < LEVELS.length - 1) start(level + 1);
+  else if ((e.code === 'Enter' || e.code === 'Space') && (state === 'crash' || state === 'lose')) start(level);
+  if (KG[e.code] || KB[e.code] || e.code === 'Space') e.preventDefault();
+});
+window.addEventListener('keyup', function (e) { if (KG[e.code]) keys.gas = false; else if (KB[e.code]) keys.brake = false; });
+window.addEventListener('blur', function () { keys.gas = keys.brake = false; });
+function pad(id, k) {
+  var el = $(id);
+  function on(e) { e.preventDefault(); keys[k] = true; el.classList.add('on'); }
+  function off(e) { e.preventDefault(); keys[k] = false; el.classList.remove('on'); }
+  el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off); el.addEventListener('pointerleave', off);
+}
+pad('padL', 'brake'); pad('padR', 'gas');
+// tapping the left or right half of the screen also works on touch screens
+cv.addEventListener('pointerdown', function (e) { if (state === 'play') { keys[e.clientX < W / 2 ? 'brake' : 'gas'] = true; } });
+cv.addEventListener('pointerup', function () { keys.gas = keys.brake = false; });
+cv.addEventListener('pointercancel', function () { keys.gas = keys.brake = false; });
+
+// ---------- Drawing ----------
+function drawSky() {
+  var g = cx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#5ec8ff'); g.addColorStop(0.6, '#ffd6a5'); g.addColorStop(1, '#ffb4a2');
+  cx.fillStyle = g; cx.fillRect(0, 0, W, H);
+  cx.fillStyle = 'rgba(255,255,255,.85)';
+  for (var i = 0; i < 6; i++) { var x = ((i * 380 - cam.x * 0.1) % (W + 400) + W + 400) % (W + 400) - 200, y = 60 + (i * 53) % 120; cx.beginPath(); cx.ellipse(x, y, 60, 18, 0, 0, 7); cx.ellipse(x + 40, y - 10, 40, 16, 0, 0, 7); cx.fill(); }
+  [[0.25, '#9b8ac4', 120, 0.004], [0.45, '#7c6fb0', 80, 0.007]].forEach(function (L) {
+    cx.fillStyle = L[1]; cx.beginPath(); cx.moveTo(0, H);
+    for (var x = 0; x <= W + 20; x += 20) { var wx = x + cam.x * L[0]; cx.lineTo(x, H * 0.62 - L[2] * (0.5 + 0.5 * Math.sin(wx * L[3])) - 30 * Math.sin(wx * L[3] * 2.7)); }
+    cx.lineTo(W, H); cx.fill();
+  });
+}
+function tx(x) { return (x - cam.x) * cam.z + W * 0.38; }
+function ty(y) { return (y - cam.y) * cam.z + H * 0.58; }
+function drawWorld() {
+  polys.forEach(function (pl, idx) {
+    cx.beginPath();
+    var first = pl[0];
+    cx.moveTo(tx(first[0]), ty(worldBottom + 800));
+    pl.forEach(function (p) { cx.lineTo(tx(p[0]), ty(p[1])); });
+    cx.lineTo(tx(pl[pl.length - 1][0]), ty(worldBottom + 800)); cx.closePath();
+    cx.fillStyle = '#8d5a3b'; cx.fill();
+    cx.beginPath(); pl.forEach(function (p, i) { cx[i ? 'lineTo' : 'moveTo'](tx(p[0]), ty(p[1] + 6)); });
+    cx.strokeStyle = '#5fb43c'; cx.lineWidth = 14 * cam.z; cx.lineJoin = 'round'; cx.stroke();
+    cx.strokeStyle = '#86d65a'; cx.lineWidth = 4 * cam.z; cx.stroke();
+  });
+  // finish flag
+  var fx = tx(finishX), fy = ty(groundAt(finishX));
+  cx.fillStyle = '#333'; cx.fillRect(fx - 3 * cam.z, fy - 130 * cam.z, 6 * cam.z, 130 * cam.z);
+  var s = 12 * cam.z;
+  for (var r = 0; r < 4; r++) for (var c = 0; c < 6; c++) { cx.fillStyle = (r + c) % 2 ? '#fff' : '#111'; cx.fillRect(fx + 3 * cam.z + c * s, fy - 130 * cam.z + r * s, s, s); }
+}
+function groundAt(x) {
+  for (var k = 0; k < polys.length; k++) { var pl = polys[k]; for (var i = 1; i < pl.length; i++) if (pl[i - 1][0] <= x && pl[i][0] >= x) { var a = pl[i - 1], b = pl[i], t = (x - a[0]) / ((b[0] - a[0]) || 1); return a[1] + (b[1] - a[1]) * t; } }
+  return 0;
+}
+function drawCar() {
+  var P = car.P, A = P[0], B = P[1], ang = carAngle(), z = cam.z;
+  // suspension
+  cx.strokeStyle = '#444'; cx.lineWidth = 5 * z;
+  [[0, 2], [1, 3]].forEach(function (s) { cx.beginPath(); cx.moveTo(tx(P[s[0]].x), ty(P[s[0]].y)); cx.lineTo(tx(P[s[1]].x), ty(P[s[1]].y)); cx.stroke(); });
+  // body
+  cx.save(); cx.translate(tx((A.x + B.x) / 2), ty((A.y + B.y) / 2)); cx.rotate(ang); cx.scale(z, z);
+  cx.fillStyle = '#ef476f'; cx.strokeStyle = '#8c1c3a'; cx.lineWidth = 3;
+  cx.beginPath(); cx.moveTo(-46, 8); cx.lineTo(-44, -10); cx.lineTo(-18, -14); cx.lineTo(4, -30); cx.lineTo(18, -30); cx.lineTo(26, -12); cx.lineTo(48, -8); cx.lineTo(50, 8); cx.closePath(); cx.fill(); cx.stroke();
+  cx.fillStyle = '#bde0fe'; cx.beginPath(); cx.moveTo(8, -26); cx.lineTo(17, -26); cx.lineTo(22, -13); cx.lineTo(8, -13); cx.closePath(); cx.fill();
+  cx.fillStyle = '#ffd166'; cx.fillRect(-40, -4, 84, 5);
+  // driver
+  cx.fillStyle = '#073b4c'; cx.beginPath(); cx.arc(-6, -24, 11, 0, 7); cx.fill();
+  cx.fillStyle = '#06d6a0'; cx.fillRect(-4, -28, 12, 6);
+  cx.restore();
+  // wheels
+  for (var i = 0; i < 2; i++) {
+    var w = P[2 + i];
+    cx.save(); cx.translate(tx(w.x), ty(w.y)); cx.rotate(car.spin[i]); cx.scale(z, z);
+    cx.fillStyle = '#222'; cx.beginPath(); cx.arc(0, 0, WR, 0, 7); cx.fill();
+    cx.fillStyle = '#ccc'; cx.beginPath(); cx.arc(0, 0, WR * 0.5, 0, 7); cx.fill();
+    cx.strokeStyle = '#666'; cx.lineWidth = 3; cx.beginPath(); cx.moveTo(-WR * 0.5, 0); cx.lineTo(WR * 0.5, 0); cx.moveTo(0, -WR * 0.5); cx.lineTo(0, WR * 0.5); cx.stroke();
+    cx.restore();
+  }
+}
+function drawProgress() {
+  var x0 = 120, p = Math.max(0, Math.min(1, (car.P[3].x - x0) / (finishX - x0)));
+  var w = Math.min(260, W * 0.4), x = (W - w) / 2, y = H - 16;
+  cx.fillStyle = 'rgba(0,0,0,.25)'; cx.fillRect(x, y, w, 6);
+  cx.fillStyle = '#ffd166'; cx.fillRect(x, y, w * p, 6);
+}
+
+var acc = 0, last = performance.now();
+function frame(now) {
+  var dt = Math.min(0.05, (now - last) / 1000); last = now;
+  if (state === 'play') {
+    acc += dt;
+    while (acc >= DT && state === 'play') { step(); time += DT; acc -= DT; }
+    $('hudMid').textContent = time.toFixed(1) + ' s';
+  } else if (state === 'crash') {
+    acc += dt; while (acc >= DT) { if (car) stepLimp(); acc -= DT; }
+    crashT -= dt; if (crashT <= 0) { state = 'lose'; show('lose'); }
+  }
+  if (toastT > 0) { toastT -= dt; if (toastT <= 0) $('toast').style.opacity = 0; }
+  cx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  drawSky();
+  if (car && state !== 'menu') {
+    var P = car.P, mx = (P[0].x + P[1].x) / 2, my = (P[0].y + P[1].y) / 2;
+    var vx = (P[0].x - P[0].ox) / DT;
+    var zt = Math.max(0.55, Math.min(1, Math.min(W, H * 1.6) / 1100)) * (1 - Math.min(0.2, Math.abs(vx) / 4000));
+    cam.z += (zt - cam.z) * 0.05; cam.x += (mx + vx * 0.15 - cam.x) * 0.12; cam.y += (my - 40 - cam.y) * 0.1;
+    drawWorld(); drawCar(); drawProgress();
+  } else if (state === 'menu') {
+    cam.x += 60 * dt;
+  }
+  requestAnimationFrame(frame);
+}
+// after a crash the car tumbles for a moment with no motor
+function stepLimp() {
+  keys.gas = keys.brake = false;
+  var P = car.P;
+  for (var i = 0; i < 4; i++) { var p = P[i], vx = (p.x - p.ox) * 0.99, vy = (p.y - p.oy) * 0.99; p.ox = p.x; p.oy = p.y; p.x += vx; p.y += vy + G * DT * DT; }
+  for (var it = 0; it < 6; it++) car.C.forEach(function (c) { var a = P[c.a], b = P[c.b], dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx * dx + dy * dy) || 1, f = (d - c.len) / d * 0.5 * c.k; a.x += dx * f; a.y += dy * f; b.x -= dx * f; b.y -= dy * f; });
+  for (i = 0; i < 4; i++) { var q = P[i]; if (collide(q, i < 2 ? 6 : WR)) { q.ox += (q.x - q.ox) * 0.3; q.oy += (q.y - q.oy) * 0.3; } }
+}
+
+// hooks for automated tests
+window.__stunt = { levels: LEVELS, start: start, keys: keys, state: function () { return state; }, time: function () { return time; }, car: function () { return car; }, finishX: function () { return finishX; }, angle: carAngle, ground: function () { return car.ground; } };
+
+drawMenu();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

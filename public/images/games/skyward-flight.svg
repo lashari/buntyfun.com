@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="400" height="250" role="img" aria-hidden="true">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8cc7ea"/><stop offset="1" stop-color="#cfe7f5"/></linearGradient></defs>
+<rect width="400" height="250" fill="url(#g)"/>
+<rect x="0" y="150" width="400" height="100" fill="#1f6f99"/><polygon points="40,150 90,110 140,130 190,150" fill="#5c8f4a"/><polygon points="250,150 300,95 330,118 380,150" fill="#6a9a52"/><polygon points="300,95 312,108 290,108" fill="#eef"/><g transform="translate(200 95) rotate(-8)"><rect x="-50" y="-5" width="100" height="10" rx="5" fill="#f4f4f4"/><polygon points="-10,-4 10,-4 4,-34 -4,-34" fill="#d33"/><polygon points="-10,4 10,4 4,34 -4,34" fill="#d33"/><polygon points="-50,-3 -64,-18 -58,-3" fill="#d33"/></g><text x="200" y="40" font-family="Arial,sans-serif" font-size="24" letter-spacing="8" fill="#fff" text-anchor="middle">SKYWARD</text>
+</svg>

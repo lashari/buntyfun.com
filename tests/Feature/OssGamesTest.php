@@ -82,4 +82,23 @@ class OssGamesTest extends TestCase
 
         $this->assertSame(['adults', 'teens'], $game->fresh()->config_json['audience']);
     }
+
+    public function test_original_game_shows_buntyfun_credit_not_a_source_link(): void
+    {
+        $this->game('stunt-hopper', 'published');
+
+        $this->get(route('games.show', 'stunt-hopper'))->assertOk()
+            ->assertSee('/play/stunt-hopper/index.html', false)
+            ->assertSee('A BuntyFun original game')
+            ->assertDontSee('Source code');
+    }
+
+    public function test_landscape_games_get_a_taller_box_on_phones(): void
+    {
+        $this->game('skyline-flight', 'published');
+
+        $this->get(route('games.show', 'skyline-flight'))->assertOk()
+            ->assertSee('aspect-ratio: 16/9; --ratio-mobile: 4/5;', false)
+            ->assertSee('.game-box { aspect-ratio: var(--ratio-mobile) !important; }', false);
+    }
 }

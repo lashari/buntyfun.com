@@ -19,8 +19,10 @@
         </p>
 
         <div x-data="{ fs() { const f = this.$refs.frame; (f.requestFullscreen || f.webkitRequestFullscreen || (() => {})).call(f); } }" class="mt-5">
-            <div class="overflow-hidden rounded-xl border border-slate-200 bg-black shadow-sm"
-                 style="aspect-ratio: {{ $oss['ratio'] ?? '16/9' }}; max-height: 80vh; margin-inline: auto;">
+            {{-- Phones get a taller box for games whose start screen does not fit a short 16:9 frame. --}}
+            <style>@media (max-width: 640px) { .game-box { aspect-ratio: var(--ratio-mobile) !important; } }</style>
+            <div class="game-box overflow-hidden rounded-xl border border-slate-200 bg-black shadow-sm"
+                 style="aspect-ratio: {{ $oss['ratio'] ?? '16/9' }}; --ratio-mobile: {{ $oss['ratio_mobile'] ?? $oss['ratio'] ?? '16/9' }}; max-height: 80vh; margin-inline: auto;">
                 <iframe x-ref="frame" src="{{ $src }}" title="{{ $game->title }}" class="h-full w-full"
                         loading="lazy" allow="fullscreen; autoplay" allowfullscreen
                         sandbox="allow-scripts allow-same-origin allow-pointer-lock"></iframe>
@@ -34,9 +36,13 @@
         </div>
 
         <p class="mt-6 text-xs text-slate-500">
-            Game by {{ $oss['author'] }}, open source under the {{ $oss['license'] }} licence.
-            <a href="{{ $oss['repo'] }}" rel="nofollow noopener" target="_blank" class="underline">Source code</a>.
-            The licence text ships with the game files.
+            @if (! empty($oss['original']))
+                A BuntyFun original game, made for this site.
+            @else
+                Game by {{ $oss['author'] }}, open source under the {{ $oss['license'] }} licence.
+                <a href="{{ $oss['repo'] }}" rel="nofollow noopener" target="_blank" class="underline">Source code</a>.
+                The licence text ships with the game files.
+            @endif
         </p>
         <a href="{{ route('games.index') }}" class="mt-4 inline-block text-sm text-slate-500 hover:underline">More games</a>
     </div>
