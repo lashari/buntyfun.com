@@ -623,6 +623,7 @@ class OssGames
             'genre' => 'Racing',
             'audience' => ['teens', 'adults'],
             'ratio' => '16/9',
+            'ratio_mobile' => '4/5',
             'summary' => 'A fast 3D anti-gravity racer: steer your ship around a futuristic track against the clock.',
             'how' => [
                 'Press Start. On a phone, set Controls to Touch first.',
@@ -644,6 +645,7 @@ class OssGames
             'genre' => 'Racing',
             'audience' => ['kids', 'family', 'teens', 'adults'],
             'ratio' => '16/9',
+            'ratio_mobile' => '4/5',
             'summary' => 'A neon highway racer: weave through traffic, fire your nitro and finish the laps without crashing.',
             'how' => [
                 'Choose Easy, Medium or Hard, then press Start Engine.',
@@ -708,6 +710,7 @@ class OssGames
             'genre' => 'Flying',
             'audience' => ['teens', 'adults'],
             'ratio' => '16/9',
+            'ratio_mobile' => '4/5',
             'summary' => 'Take off, fly through ten gates in a mountain pass and land on runway 27.',
             'how' => [
                 'Press Start Engine, then go to full throttle and keep the plane on the runway centre line.',
